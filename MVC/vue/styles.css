@@ -1,0 +1,260 @@
+body {
+    margin: 0;
+    padding: 0;
+    height:100vh;
+    width:100vw;
+     display:flex;
+  flex-direction: column;
+  align-items:center;
+  width:100%;
+  justify-content:flex-start;
+   
+  }
+  header{
+    height:10vh;
+    background-color: rgba(157, 9, 236, 0.4);
+    display:flex;
+    justify-content:center;
+    gap:50px;
+    align-items: center;
+    width:100%;
+  }
+
+  #sousDivHeader{
+    width:95%;
+    display:flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+  
+  }
+    header h1{
+    width:30%;
+    margin:0;
+    text-align:left;
+  }
+  h1{
+  text-align:left;
+  margin:0;
+  }
+  #sousDivHeader nav{
+    width:55%;
+    text-align:right;
+    display: flex;
+    flex-direction:row;
+    align-items: center;
+    justify-content: space-between;
+    color:black;
+      gap:10px;
+  }
+  main{
+    height:80vh;
+    background-color:rgba(157, 161, 172,0.4);
+  }
+  footer{
+    height:10vh;
+    width:100%;
+    display:flex;
+     background-color: rgba(157, 9, 236, 0.4);
+    
+  }
+body #accueil, body #connexion, body #inscription, body #profil, body #jeu1, body #jeu2, body #jeu3{
+  height:80vh;
+  background-color:rgba(157, 161, 172,0.4);
+  display:flex;
+  flex-direction: column;
+  align-items:center;
+  width:100%;
+  justify-content:flex-start;
+  gap:30px;
+
+  /* align-items: center; */
+}
+body #divMain {
+  width:100%;
+display:flex;
+flex-direction: row;
+justify-content: space-between;
+align-items: center;
+height: 50vh;
+     /* background-color:rgba(157, 161, 172,0.4); */
+
+}
+ body #divMain .section{
+width:30%;
+height:100%;
+background-color:rgb(254, 254, 255);
+display:flex;
+flex-direction:column;
+
+justify-content:space-between;
+align-items:center; 
+}
+
+.disabled {
+  background-color: #ccc;
+  color: #666;
+  cursor: not-allowed;
+  pointer-events: none; /* empêche le clic */
+  opacity: 0.6;
+}
+
+body #divBody .btnSection {
+
+ width:150px;
+ height:35px;
+ background-color: rgb(26, 137, 63);
+
+
+}
+#accueil a {
+    width:150px;
+    height: 30px;
+
+    text-decoration: none;
+    color: black;
+    margin: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width: 300px;
+    background-color:rgb(18, 116, 55);
+    text-align:center;
+}
+btn:over{
+    background-color:rgb(5, 89, 33);
+    border:1px solid rgb(61, 70, 64);
+}
+#accueil input{
+    margin: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width: 300px;
+    background-color:rgb(253, 250, 250);
+
+
+}
+#accueil  label{
+    
+    margin: 10px;
+    padding: 10px;
+    width: 300px;
+}
+.displayNone{
+    display: none;
+}
+.displayBlock{
+    display:block;
+}
+
+#accueil  #btn{
+    margin: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width: 300px;
+}
+#accueil  #form, #inscription #orm{
+    margin: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    /* display:flex;
+    flex-direction: column; */
+
+}
+
+input .validChamp {
+    border: 2px solid green;   /* Bordure verte pour un champ valide */
+    background-color: #e8f5e9; /* Fond vert clair pour un champ valide */
+    color: green;               /* Texte en vert */
+    }
+
+/* Classe pour un champ invalide */
+input .invalidChamp {
+border: 2px solid red;     /* Bordure rouge pour un champ invalide */
+background-color: #ffebee; /* Fond rouge clair pour un champ invalide */
+color: red;                 /* Texte en rouge */
+}
+.btn {
+    display: inline-block;
+    padding: 10px 15px;
+    background-color: #28a745;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+  }
+  .btn {
+    padding: 10px 15px;
+    background-color: #28a745;
+    color: white;
+    border-radius: 5px;
+    text-decoration: none;
+  }
+
+  #contentPageInscription, #contentPageConnexion{
+  
+    width: 100%;
+    min-height:80vh;
+    background-color:rgb(157, 161, 172);
+    display:flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+
+  #formulaireInscription,#formulaireConnexion{
+    margin: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width: 80%;
+    background-color:rgb(252, 252, 252);
+    display:flex;
+    align-items:center;
+    flex-direction: column;
+  }
+  #formulaireInscription input, #formulaireConnexion input{
+    /* margin-top: 5px;
+    margin-bottom: 5px;
+    margin-right:5px; */
+    margin: 3px;
+    /* margin-left: 40px; */
+    /* padding: 10px; */
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width: 90%;
+    background-color:rgb(253, 250, 250);
+    text-align:right;
+  }
+  br{
+    height:5px;
+  }
+  #formulaireInscription p{
+
+    margin:3px;
+    /* margin-left: 40px; */
+    text-align:left;
+    padding: 3px;
+    width: 90%;
+    background-color:rgb(253, 250, 250);
+  }
+  #formulaireInscription label, #formulaireConnexion label{
+ 
+    margin:3px;
+    /* margin-left: 40px; */
+    text-align:left;
+
+    width: 90%;
+    background-color:rgb(253, 250, 250);
+  }
+  #formulaireInscription .btn, #formulaireConnexion .btn{
+    margin: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    text-align: center;
+    border: 1px solid #ccc;
+    width: 300px;
+    background-color:rgb(0, 107, 59);
+  }
