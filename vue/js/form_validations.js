@@ -1,3 +1,13 @@
+
+
+
+
+
+  function togglePassword(id) {
+    const input = document.getElementById(id);
+    input.type = input.type === "password" ? "text" : "password";
+  }
+
 function showTextComment(idIdentification,text){
   console.log("showTextComment");
   // Cette fonction montre juste le commentaire et met le display on 

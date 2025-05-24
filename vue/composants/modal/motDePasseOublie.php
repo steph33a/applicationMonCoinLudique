@@ -1,32 +1,22 @@
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <script src="form_validations.js" defer></script>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    
- 
- 
-<main>
-    <div id="contentPageInscription">
 
-    
-        <form class="formulaire" id="formulaireInscription" action="register.php" method="POST">
-            <h3>Formulaire d'inscription</h3>
+ 
+        
+      
+       
+        <form class="formulaire" id="formulaireRecuperationDeMotDePasse" action="../controller/controller.php" method="POST">
+              <h2 style=" font-size: 36px; font-weight: 700; margin-left: auto; margin-right: auto; margin-top: 28px; font-family: 'Nunito Sans', sans-serif;"> Mot de passe Oublié</h2>
+            
            <!-- Nom de famille -->
+            <label>Quel est </label>
             <input  class="formElement"type="text" id="username" name="username" min="2" placeholder="nom" required autofocus>
-            <br>
+            
              <p class="commentaire displayNone" id="usernameCommentaire"></p>
             <!-- prénom -->
             <input  class="formElement" type="text" id="userPrenom" name="userPrenom" min="2" placeholder="prénom" required>
             <br>
             <p class="commentaire displayNone" id="userPrenomCommentaire"></p>
-            <br>
+           
              
             <input class="formElement"type="text" id="mail" name="mail" placeholder="mail" required>
         
@@ -49,9 +39,3 @@
             
 
         </form>
-    </div>
-   
-
-</main>
-</body>
-</html>

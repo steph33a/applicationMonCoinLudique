@@ -3,39 +3,44 @@
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-include_once 'db.php';
+include_once ($_SERVER['DOCUMENT_ROOT'].'/model/db.php'); //require $_SERVER['DOCUMENT_ROOT'] /model/db.php';
 
-require ($_SERVER['DOCUMENT_ROOT'].'/MVC/model/model.php');
+require ($_SERVER['DOCUMENT_ROOT'].'/model/model.php');
 //fonctiosns helpers
 
     function handleLoginAndRegistration() {
+      if ( (!isset($_POST['btnInscription']))&& (!isset($_SESSION['id']))&& (!isset($_POST['btnConnexion']))){ {
+          locationView('accueil');
+          exit();
+      }
       
       if  (isset($_POST['btnConnexion'])){
 
+       
           existInDbUtilisateur($_POST);
 
           if (isset($_SESSION['id'])) {
 
-            includeView('dashboard');
+            locationView('gestion_evenements');
 
             exit();
 
-          } else
-          includeView('index');
+          } 
          
-          exit();
+          
+        }
       }
 
       if  (isset($_POST['btnGoToInscription'])){
 
 
-          if (isset($_SESSION['id'])) {
+          // if (isset($_SESSION['id'])) {
 
-            includeView('dashboard');
+          //   locationView('gestion_evenements'); 
 
-            exit();
+          //   exit();
 
-          } else
+          // } else
 
           if (isset($_POST['btnInscription'])){
         
@@ -45,42 +50,50 @@ require ($_SERVER['DOCUMENT_ROOT'].'/MVC/model/model.php');
 
               if (isset($_SESSION['id'])) {
 
-              includeView('dashboard');
+              locationView('gestion_evenements');
 
               exit();
 
               }
 
-            }
-
-            includeView('register');
-
-            exit();
+             } 
+            // ici affichage également du modal d'inscription
+          
             }
           
 
           if (isset($_POST['btnDeconnexion'])) {
               session_destroy();
-             includeView('index');
+             locationView('accueil');
               exit();
           }
     }
+  
 function includeView($viewName) {
-    include($_SERVER['DOCUMENT_ROOT'] . "/MVC/vue/{$viewName}.php");
+    include($_SERVER['DOCUMENT_ROOT'] . "/vue/{$viewName}.php");
 }
+
+
+
+ function locationView($viewName) {
+    $path =  "../vue/pages/{$viewName}.php";
+    header("Location: $path");
+    exit();
+}
+
 
 
 
 if (isset($_SESSION['id'])) { 
 
-    if ((( isset($_GET['page']) && $_GET['page'] == 'dashboard')) || (!isset($_POST['actionDashboard']))){
-      includeView('dashboard');
+    if ((( isset($_GET['page']) && $_GET['page'] == 'gestion_evenements')) || (!isset($_POST['actionPage']))){
+      locationView('accueil');
       exit();
 
     } 
 
-    if (isset($_POST['actionDashboard'])){
-       handleActionDashboard();
+    if (isset($_POST['actionPage'])){
+       handleActionAccueil();
     }
 
    // Si l'utilisateur est connecté
@@ -92,7 +105,7 @@ if (isset($_SESSION['id'])) {
 
 
 
-function handleActionDashboard() {
+function handleActionAccueil() {
 
   switch ($_POST['actionDashboard']) {
         case 'btnJeuQuiz':
@@ -116,13 +129,7 @@ function handleActionDashboard() {
             break;
 
         case 'btnJeuNombreMystere':
-             echo "<script>console.log('Le bouton jeu nombre mystère a été cliqué');</script>";
-            includeView('nombre');
-    
-            exit();
-
-          
-            break;
+            
         
         case 'btnScores':
            echo "<script>console.log('Le bouton scores a été cliqué');</script>";

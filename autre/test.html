@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      body {
+        margin: 0;
+        font-size: 18px;
+      }
+      .container {
+        height: 500vh;
+        background: blue;
+        width: 600px;
+        max-width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      .element {
+        min-height: 200px;
+        background-color: red;
+        padding: 1rem;
+        width: 300px;
+      }
+
+      .static {
+        position: static;
+      }
+
+      .relative {
+        position: relative;
+      }
+
+      .absolute {
+        position: absolute;
+        left: 3rem;
+        top: 0.5rem;
+      }
+
+      .absolute.green {
+        background: green;
+        top: 1rem;
+        z-index: 2;
+      }
+      .absolute.black {
+        background: black;
+        top: 1.5rem;
+        z-index: 3;
+      }
+      .absolute.yellow {
+        background: yellow;
+        top: 2rem;
+      }
+
+      .fixed {
+        position: fixed;
+        left: 4rem;
+        top: 4rem;
+        background: purple;
+      }
+
+      .mon_lien {
+        color: white;
+        font-size: 4rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container relative">
+      <div class="element absolute">Mon contenu</div>
+      <div class="element absolute green">Mon contenu</div>
+      <div class="element absolute black">Mon contenu</div>
+      <div class="element absolute yellow">Mon contenu</div>
+    </div>
+  </body>
+</html>

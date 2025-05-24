@@ -1,0 +1,1173 @@
+
+/* important */
+/* Tailwind active déjà box-sizing: border-box globalement par défaut. */
+h1,h2,h3,h4,h5,h6{
+  margin-block-start: 0px;
+  margin-block-end: 0px;
+  padding: 0;
+  border: 1px solid red; /* Pour voir la boîte */
+
+}
+ul {
+  margin-block-start: 0px;
+  margin-block-end: 0px;
+  padding: 0;
+  
+}
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  padding: 0;
+ 
+ max-width: 100%;
+  display:flex; 
+  flex-direction: column; 
+  min-height: 100vh;
+  /* align-items:center; */
+
+  /* justify-content:flex-start; */
+  }
+  .accueilWithoutModalAndResearch{
+  height: 100vh;
+  }
+
+
+
+header{
+width: 100%;
+height: 100px;
+/* left: -2px;
+top: 3px; */
+background: #E1A95F;
+display: flex;
+flex-direction: row;
+justify-content: space-between;
+padding-left: 15px;
+padding-right: 15px;
+  }
+/* Group 2424 */
+header #divlogo{
+position:relative;
+/* width:310px; */
+/* margin-left:30px; */
+}
+  main {
+    width:100%;
+    
+    /* display: flex;
+    justify-content: center;
+    align-items: center;     */
+    background-color: #ffffff;
+  }
+
+
+
+
+
+header #divlogo img{
+  width: 90px;
+  height: 90px;
+  left: 0px;
+  top: 0px;
+}
+header #divLogo h1{
+  position:absolute;
+  left: 92px;
+  top: 45px;
+  font-family:'nunito-sans', sans-serif;
+  font-weight: 600;
+  font-size: 32px;
+  line-height: 32px;
+  color:#704405;
+  
+  margin-block-end: 0;
+  margin-block-start: 0;
+}
+/* header nav{
+  margin-right:60px;
+} */
+
+header nav ul{
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+ 
+  margin-top:15px;
+  gap: 15px;
+  list-style: none;
+
+}
+header nav ul li a{
+  text-decoration: none;
+  font-family:'nunito-sans', sans-serif;
+  font-weight: 600;
+  /* font-size: 20px; */
+  line-height: 20px;
+  color: #5F3A04;
+}
+/* Group 2509 */
+nav .admin li a {
+  font-size: 18px;
+}
+nav .utilisateur li a, nav .moderateur li a, nav .groupe li a, nav .no_role li a {
+  font-size: 20px;
+}
+
+.menu-toggle {
+  display: none;
+  font-size: 28px;
+  cursor: pointer;
+  user-select: none;
+}
+
+@media screen and (min-width: 1000px) {
+  .menu { display: flex; }
+  .menu-toggle { display: none; }
+}
+
+
+  
+/* Sur tablette et petits écrans (≤1200px) */
+@media screen and (max-width: 1000px) {
+  .menu {
+    display: none;       /* menu caché par défaut */
+    flex-direction: column;  /* menu vertical quand visible */
+    position: absolute;
+    right: 20px;
+    top: 50px;
+    /* background: #444; */
+    padding: 10px;
+   
+  }
+  .menu.active {
+    display: flex;       /* menu visible quand class active ajoutée */
+  }
+  .menu-toggle {
+    display: block;      /* bouton burger visible */
+  }
+}
+
+
+
+footer{
+  width: 100%;
+  height: 80px;
+  /* left: -2px;
+  top: 3px; */
+  background-color: #E1A95F;
+  /* margin-right:50px; */
+  /* padding-left:50px; */
+
+  
+}
+footer #footerElement{
+  margin-left: 50px;
+  margin-right: 50px;
+  margin-top:20px;
+  margin-bottom:20px;
+      display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  gap:20px;
+}
+
+
+footer h3{
+font-size: 20px;
+font-weight: 600;
+  font-family:'nunito-sans', sans-serif;
+  color: #5F3A04;
+}
+
+footer h4{
+font-size: 18px;
+font-weight: 600;
+  font-family:'nunito-sans', sans-serif;
+  color: #5F3A04;
+}
+.accueil{
+  background-color: #F8F3EB;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  
+flex-grow: 1; 
+  
+} 
+.accueilDuringOpeningModal{
+  flex-grow: 1;
+  background-color: #F8F3EB;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  /* justify-content: flex-start; */
+  align-items: center;
+  /* padding-top:50px; */
+}
+/* Group 2510 */
+.image-wrapper {
+  position: relative;
+  width: 50%;        /* largeur de l’image par rapport à main */
+  max-width: 960px;  /* largeur max pour ne pas être trop large sur grands écrans */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* aspect-ratio: 1.789; */
+  margin-bottom: 90px;
+  margin-top:10px;
+
+}
+.image-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 0px;
+  z-index: 0.8;
+}
+.image-wrapper::before {
+   /* Nécessaire pour afficher un pseudo-élément. Ici, il est vide car on veut juste un bloc visuel. */
+  content: "";
+  position: absolute;
+  top: 0;
+right: 0;
+bottom: 0;
+left: 0;
+
+  background-color: rgba(0, 0, 0, 0.4);
+  border-radius: 0px;
+  z-index: 1;
+}
+/* — Cible un pseudo-élément avant le contenu réel de .image-wrapper. Ce pseudo-élément sera inséré dans le DOM juste avant le contenu, mais reste un élément CSS, pas dans le HTML. */
+
+
+/* Rejoignez, créez et partagez des événements ludiques */
+
+
+.image-wrapper .textAndResearch{
+  position:absolute;
+  width: 729px;
+  /* height: 50%; */
+  right: 42px;
+  bottom: 50px;
+ display: flex;
+  flex-direction: column;
+  z-index:1.2;
+}
+ .image-wrapper h2{
+    margin-bottom:39px;
+  margin-right:0px;
+ 
+  text-align:right;
+text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.image-wrapper h3{
+   margin-bottom:24px;
+  
+   margin-right:0px;
+   
+  text-align:right;
+text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+.image-wrapper .textAndResearch #rechercheEvenement{
+margin-left: auto;
+  margin-bottom:0px;
+   margin-right:0px;
+   /* margin-left:0px; */
+  width: 373px;
+  height: 102px;
+  background-color: #F8F3EB;
+  border:1px solid #704405;
+  padding-left:38px;
+  padding-right:38px;
+}
+#modal_content{
+position: absolute; 
+/* top: 0;
+ left: 0; */
+ top:0px;
+ left:50%;
+ /* bottom:50%;
+ right:50%; */
+ z-index:200;
+ transform: translate(-50%,0); 
+} 
+/* .image-wrapper .textAndResearch #rechercheEvenement h4{
+  
+} */
+input{
+  height:40px;
+  border:1px solid #4C4C4C;
+}
+.display-block, .displayBlock{
+  display:block;
+}
+.display-none, .displayNone{
+  display:none;
+}
+#overlayPrincipalAccueil{
+
+}
+p{
+  
+  margin-block-start: 0px;
+  margin-block-end: 0px;
+  padding: 0;
+
+}
+/* #modal-content  {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+} */
+#modalFormInscription, #modalFormConnexion, #modalFormRecupMotDePasse, #modalFormRedefinitionMotDePasse, #modalConditionsUtilisation,#modalFormRechercheAvancee,#modalDetailsEvenement
+{
+  
+  width:620px;
+  min-height: 448px;
+
+}
+ /* #modalFormInscription{
+ height: 1174px;
+ padding-top:50px;
+ padding-bottom:50px;
+
+}  */
+
+
+#modalContent{
+   width:620px;
+ min-height: 448px;
+ z-index:1.8;
+
+}
+.image-wrapper::before {
+   /* Nécessaire pour afficher un pseudo-élément. Ici, il est vide car on veut juste un bloc visuel. */
+  content: "";
+  position: absolute;
+  top: 0;
+right: 0;
+bottom: 0;
+left: 0;
+
+  background-color: rgba(0, 0, 0, 0.4);
+  border-radius: 0px;
+  z-index: 1.6;
+}
+.formulaire-section input{
+width:305px;
+}
+
+.photo-container {
+  position: relative;
+  width: 81px; /* 75 + 2*3 */
+  height: 81px;
+  border: 3px solid #704405;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #fff;
+}
+
+.photo-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+}
+
+.photo-add-icon {
+  position: absolute;
+  top:50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+ 
+  background-color: #704405;
+  color: white;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+
+  font-weight: bold;
+  font-size: 18px;
+
+  /* Centrage parfait du + */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  box-shadow: 0 0 4px rgba(0,0,0,0.3);
+  user-select: none;
+}
+
+/* Cacher l’input file */
+.photo-input {
+  display: none;
+}
+/* #footer{
+  position:absolute;
+  bottom:0px;
+  left: 0;
+  right: 0;
+  width:100%;
+  height: 80px;
+  display:flex;
+  flex-direction:row; 
+  justify-content:space-between;
+} */
+
+
+
+/* Tu touches exactement le cœur du malentendu courant en CSS : ce que tu dis est logique dans un raisonnement spatial, mais ce n’est pas comme ça que CSS fonctionne. Voici pourquoi c’est faux dans le contexte du navigateur.
+
+❌ Pourquoi “pas de marge à droite = collé à droite” est faux en CSS
+⚠️ En CSS, les éléments block s’alignent par défaut à gauche
+Même si :
+
+margin-right: 0
+
+margin-left n’est pas défini
+
+Il y a de la place à droite
+
+➡️ Le navigateur ne fera rien de lui-même pour “centrer” ou “aligner à droite”.
+
+🧠 Ce qu’il faut retenir
+Le navigateur ne positionne pas un élément selon l’espace disponible.
+Il place l’élément là où c’est dit par les règles (ou les règles par défaut).
+
+🧪 Preuve par l’exemple :
+html
+Copier
+Modifier
+<div style="width: 100%; border: 2px solid blue;">
+  <div style="width: 200px; margin-right: 0; border: 2px solid red;">
+    Bloc
+  </div>
+</div>
+Ce code affiche un bloc rouge collé à gauche, même si margin-right: 0.
+
+🧩 Pourquoi ?
+
+Parce que rien ne lui dit de se décaler vers la droite.
+
+Et margin-right: 0 n'est pas une instruction de positionnement, c’est juste une “interdiction de marge”.
+
+✅ Pour qu’il soit collé à droite, il faut le pousser
+1. Avec margin-left: auto
+css
+Copier
+Modifier
+.bloc {
+  width: 200px;
+  margin-left: auto;
+  margin-right: 0;
+}
+➡️ Ça pousse le bloc vers la droite.
+
+2. Ou avec display: flex et justify-content: flex-end
+css
+Copier
+Modifier
+.parent {
+  display: flex;
+  justify-content: flex-end;
+}
+🧠 Conclusion simple :
+Ce que tu écris	Ce que ça veut dire réellement en CSS
+margin-right: 0	“Pas de marge à droite” (pas une position)
+margin-left: auto	“Pousse-moi vers la droite”
+Pas de marge définie	L’élément reste à gauche par défaut
+
+Si tu veux, colle-moi ton bloc HTML + CSS et je te montre la version corrigée en 10 secondes 👌 */
+
+/* margin ne positionne pas, il espace
+Tu crois dire "mets-toi à droite", mais CSS entend :
+
+"Ne mets pas d'espace à droite, je me place comme d’habitude." */
+
+/* Group 2512 */
+
+position: absolute;
+width: 701px;
+height: 1096px;
+
+
+
+/* Ellipse 35 */
+
+position: absolute;
+width: 41px;
+height: 39px;
+
+background: #D9D9D9;
+
+
+/* Rectangle 3 */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 701px;
+height: 1096px;
+
+background: #FFFFFF;
+border: 3px solid #704405;
+border-radius: 30px;
+
+
+/* Inscription */
+
+position: absolute;
+width: 186px;
+height: 54px;
+
+font-family: 'Lora';
+font-style: normal;
+font-weight: 700;
+font-size: 36px;
+line-height: 150%;
+/* identical to box height, or 54px */
+letter-spacing: -0.022em;
+
+color: #1E1E1E;
+
+
+
+/* E-mail */
+
+position: absolute;
+width: 88px;
+height: 25px;
+
+font-family: 'Nunito Sans';
+font-style: normal;
+font-weight: 600;
+font-size: 18px;
+line-height: 25px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* Pseudo */
+
+position: absolute;
+width: 88px;
+height: 25px;
+
+font-family: 'Nunito Sans';
+font-style: normal;
+font-weight: 600;
+font-size: 18px;
+line-height: 25px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* Mot de passe */
+
+position: absolute;
+width: 110px;
+height: 25px;
+
+font-family: 'Nunito Sans';
+font-style: normal;
+font-weight: 600;
+font-size: 18px;
+line-height: 25px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* Nom */
+
+position: absolute;
+width: 40px;
+height: 25px;
+
+font-family: 'Nunito Sans';
+font-style: normal;
+font-weight: 600;
+font-size: 18px;
+line-height: 25px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* Voir le mot de passe */
+
+position: absolute;
+width: 167px;
+height: 25px;
+
+font-family: 'Nunito Sans';
+font-style: normal;
+font-weight: 600;
+font-size: 18px;
+line-height: 25px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* Confirmer votre mot de passe */
+
+position: absolute;
+width: 243px;
+height: 25px;
+
+font-family: 'Nunito Sans';
+font-style: normal;
+font-weight: 600;
+font-size: 18px;
+line-height: 25px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* Prénom */
+
+position: absolute;
+width: 64px;
+height: 25px;
+
+font-family: 'Nunito Sans';
+font-style: normal;
+font-weight: 600;
+font-size: 18px;
+line-height: 25px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* Date de naissance */
+
+position: absolute;
+width: 149px;
+height: 25px;
+
+font-family: 'Nunito Sans';
+font-style: normal;
+font-weight: 600;
+font-size: 18px;
+line-height: 25px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* J’ai lu et j’appouvre les conditions d’utilisations */
+
+position: absolute;
+width: 383px;
+height: 25px;
+
+font-family: 'Nunito Sans';
+font-style: normal;
+font-weight: 600;
+font-size: 18px;
+line-height: 25px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* Conditions d’utilisations */
+
+position: absolute;
+width: 197px;
+height: 25px;
+
+font-family: 'Nunito Sans';
+font-style: normal;
+font-weight: 600;
+font-size: 18px;
+line-height: 25px;
+/* identical to box height */
+text-decoration-line: underline;
+
+color: #000000;
+
+
+
+/* Shape with text */
+
+position: absolute;
+width: 111px;
+height: 101px;
+
+
+
+/* Shape */
+
+position: absolute;
+width: 111px;
+height: 101px;
+left: 0px;
+top: 0px;
+
+background: url(flowers-7660120_1920);
+border: 5px solid #000000;
+border-radius: 6px;
+
+
+/* Text */
+
+position: absolute;
+width: 78px;
+height: 24px;
+left: 16.5px;
+top: 39px;
+
+
+
+
+/* + */
+
+position: absolute;
+width: 131px;
+height: 154px;
+
+font-family: 'Nunito';
+font-style: normal;
+font-weight: 700;
+font-size: 120px;
+line-height: 164px;
+
+color: #FFFFFF;
+
+
+
+/* Buttons */
+
+/* Auto layout */
+display: flex;
+flex-direction: row;
+justify-content: center;
+align-items: center;
+padding: 10px 16px;
+gap: 10px;
+
+position: absolute;
+width: 111px;
+min-width: 111px;
+height: 39px;
+min-height: 39px;
+
+background: #6EBA46;
+border-radius: 10px;
+
+
+/* Valider */
+
+width: 60px;
+height: 25px;
+
+font-family: 'Nunito';
+font-style: normal;
+font-weight: 700;
+font-size: 18px;
+line-height: 25px;
+/* identical to box height */
+
+color: #FFFFFF;
+
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+flex-grow: 0;
+
+
+/* Buttons */
+
+/* Auto layout */
+display: flex;
+flex-direction: row;
+justify-content: center;
+align-items: center;
+padding: 10px 16px;
+gap: 10px;
+
+position: absolute;
+width: 111px;
+min-width: 111px;
+height: 39px;
+min-height: 39px;
+
+background: #6EBA46;
+opacity: 0.5;
+border-radius: 10px;
+
+
+/* Valider */
+
+width: 68px;
+height: 25px;
+
+font-family: 'Nunito';
+font-style: normal;
+font-weight: 700;
+font-size: 18px;
+line-height: 25px;
+/* identical to box height */
+
+color: #FFFFFF;
+
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+flex-grow: 0;
+
+
+/* champemail */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 305px;
+height: 40px;
+
+background: #FFFFFF;
+border: 1px solid #4C4C4C;
+border-radius: 5px;
+
+
+/* champemail */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 305px;
+height: 40px;
+
+background: #FFFFFF;
+border: 1px solid #4C4C4C;
+border-radius: 5px;
+
+
+/* champemail */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 305px;
+height: 40px;
+
+background: #FFFFFF;
+border: 1px solid #4C4C4C;
+border-radius: 5px;
+
+
+/* champparticulier */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 223px;
+height: 40px;
+
+background: #FFFFFF;
+border: 2px solid #141414;
+border-radius: 5px;
+
+
+/* champentreprise */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 223px;
+height: 40px;
+
+background: #FFFFFF;
+border: 1px solid #4C4C4C;
+border-radius: 5px;
+
+
+/* Votre adresse e-mail */
+
+position: absolute;
+width: 171px;
+height: 25px;
+
+font-family: 'Nunito Sans';
+font-style: normal;
+font-weight: 600;
+font-size: 18px;
+line-height: 25px;
+/* identical to box height */
+
+color: #4C4C4C;
+
+
+
+/* Groupe */
+
+position: absolute;
+width: 61px;
+height: 25px;
+
+font-family: 'Nunito Sans';
+font-style: normal;
+font-weight: 600;
+font-size: 18px;
+line-height: 25px;
+/* identical to box height */
+
+color: #4C4C4C;
+
+
+
+/* Particulier */
+
+position: absolute;
+width: 84px;
+height: 25px;
+
+font-family: 'Nunito Sans';
+font-style: normal;
+font-weight: 600;
+font-size: 18px;
+line-height: 25px;
+/* identical to box height */
+
+color: #4C4C4C;
+
+
+
+/* champmotpasse */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 305px;
+height: 40px;
+
+background: #FFFFFF;
+border: 1px solid #4C4C4C;
+border-radius: 5px;
+
+
+/* champnom */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 305px;
+height: 40px;
+
+background: #FFFFFF;
+border: 1px solid #4C4C4C;
+border-radius: 5px;
+
+
+/* motdepasse */
+
+position: absolute;
+width: 65px;
+height: 25px;
+
+font-family: 'Nunito Sans';
+font-style: normal;
+font-weight: 600;
+font-size: 18px;
+line-height: 25px;
+/* identical to box height */
+
+color: #4C4C4C;
+
+
+
+/* motdepasse */
+
+position: absolute;
+width: 110px;
+height: 25px;
+
+font-family: 'Nunito Sans';
+font-style: normal;
+font-weight: 600;
+font-size: 18px;
+line-height: 25px;
+/* identical to box height */
+
+color: #4C4C4C;
+
+
+
+/* champmotpasse */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 305px;
+height: 43px;
+
+background: #FFFFFF;
+border: 1px solid #4C4C4C;
+border-radius: 5px;
+
+
+/* champprenom */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 305px;
+height: 40px;
+
+background: #FFFFFF;
+border: 1px solid #4C4C4C;
+border-radius: 5px;
+
+
+/* champnaissance */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 305px;
+height: 40px;
+
+background: #FFFFFF;
+border: 1px solid #4C4C4C;
+border-radius: 5px;
+
+
+/* champconfirmemdp */
+
+position: absolute;
+width: 63.81px;
+height: 6.68px;
+
+background: #4C4C4C;
+
+
+/* Nom */
+
+position: absolute;
+width: 40px;
+height: 25px;
+
+font-family: 'Nunito Sans';
+font-style: normal;
+font-weight: 600;
+font-size: 18px;
+line-height: 25px;
+/* identical to box height */
+
+color: #4C4C4C;
+
+
+
+/* Prénom */
+
+position: absolute;
+width: 64px;
+height: 25px;
+
+font-family: 'Nunito Sans';
+font-style: normal;
+font-weight: 600;
+font-size: 18px;
+line-height: 25px;
+/* identical to box height */
+
+color: #4C4C4C;
+
+
+
+/* JJ/MM/AA */
+
+position: absolute;
+width: 80px;
+height: 25px;
+
+font-family: 'Nunito Sans';
+font-style: normal;
+font-weight: 600;
+font-size: 18px;
+line-height: 25px;
+/* identical to box height */
+
+color: #4C4C4C;
+
+
+
+/* Ellipse 36 */
+
+position: absolute;
+width: 25px;
+height: 25px;
+
+background: #D9D9D9;
+
+
+/* Ellipse 163 */
+
+position: absolute;
+width: 22.95px;
+height: 20.94px;
+
+background: #D9D9D9;
+
+
+/* Voir le mot de passe */
+
+position: absolute;
+width: 167px;
+height: 25px;
+
+font-family: 'Nunito Sans';
+font-style: normal;
+font-weight: 600;
+font-size: 18px;
+line-height: 25px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* Ellipse 164 */
+
+position: absolute;
+width: 22.95px;
+height: 20.94px;
+
+background: #D9D9D9;
+
+
+
+
+
+
+
+
+

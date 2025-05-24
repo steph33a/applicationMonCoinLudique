@@ -1,84 +1,3 @@
-body {
-    margin: 0;
-    padding: 0;
-    height:100vh;
-    width:100vw;
-     display:flex;
-  flex-direction: column;
-  align-items:center;
-  width:100%;
-  justify-content:flex-start;
-   
-  }
-  header{
-    height:10vh;
-    background-color: rgba(157, 9, 236, 0.4);
-    display:flex;
-    justify-content:center;
-    gap:50px;
-    align-items: center;
-    width:100%;
-  }
-
-  #sousDivHeader{
-    width:95%;
-    display:flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    align-items: center;
-  
-  }
-    header h1{
-    width:30%;
-    margin:0;
-    text-align:left;
-  }
-  h1{
-  text-align:left;
-  margin:0;
-  }
-  #sousDivHeader nav{
-    width:55%;
-    text-align:right;
-    display: flex;
-    flex-direction:row;
-    align-items: center;
-    justify-content: space-between;
-    color:black;
-      gap:10px;
-  }
-  main{
-    height:80vh;
-    background-color:rgba(157, 161, 172,0.4);
-  }
-  footer{
-    height:10vh;
-    width:100%;
-    display:flex;
-     background-color: rgba(157, 9, 236, 0.4);
-    
-  }
-body #accueil, body #connexion, body #inscription, body #profil, body #jeu1, body #jeu2, body #jeu3{
-  height:80vh;
-  background-color:rgba(157, 161, 172,0.4);
-  display:flex;
-  flex-direction: column;
-  align-items:center;
-  width:100%;
-  justify-content:flex-start;
-  gap:30px;
-
-  /* align-items: center; */
-}
-body #divMain {
-  width:100%;
-display:flex;
-flex-direction: row;
-justify-content: space-between;
-align-items: center;
-height: 50vh;
-     /* background-color:rgba(157, 161, 172,0.4); */
-
 }
  body #divMain .section{
 width:30%;
@@ -257,4 +176,165 @@ color: red;                 /* Texte en rouge */
     border: 1px solid #ccc;
     width: 300px;
     background-color:rgb(0, 107, 59);
+  } */ */
+
+  
+/* Rectangle 96 */
+
+
+position: absolute;
+width: 373px;
+height: 98px;
+left: 785px;
+top: 541px;
+
+background: #F8F3EB;
+border: 1px solid #704405;
+
+
+/* Recherche */
+
+position: absolute;
+width: 110px;
+height: 25px;
+left: 810px;
+top: 555px;
+
+font-family: 'Nunito Sans';
+font-style: normal;
+font-weight: 600;
+font-size: 18px;
+line-height: 25px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* Recherche avancé */
+
+position: absolute;
+width: 116px;
+height: 19px;
+left: 985px;
+top: 620px;
+
+font-family: 'Nunito Sans';
+font-style: normal;
+font-weight: 600;
+font-size: 14px;
+line-height: 19px;
+/* identical to box height */
+
+color: #000000;
+
+
+
+/* champemail */
+
+box-sizing: border-box;
+
+position: absolute;
+width: 257px;
+height: 40px;
+left: 843px;
+top: 580px;
+
+background: #FFFFFF;
+border: 1px solid #4C4C4C;
+border-radius: 5px;
+
+
+/* Nom de l’organisateur */
+
+position: absolute;
+width: 181px;
+height: 25px;
+left: 861px;
+top: 588px;
+
+font-family: 'Nunito Sans';
+font-style: normal;
+font-weight: 600;
+font-size: 18px;
+line-height: 25px;
+/* identical to box height */
+
+color: #6EBA46;
+
+
+
+
+  /* body #accueil{
+    height:100vh;
   }
+  header{
+    height:10vh;
+    background-color: rgba(157, 9, 236, 0.4);
+    display:flex;
+    justify-content:center;
+    gap:50px;
+    align-items: center;
+    width:100%;
+  }
+
+  #sousDivHeader{
+    width:95%;
+    display:flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+  
+  }
+    header h1{
+    width:30%;
+    margin:0;
+    text-align:left;
+  }
+  h1{
+  text-align:left;
+  margin:0;
+  }
+  #sousDivHeader nav{
+    width:55%;
+    text-align:right;
+    display: flex;
+    flex-direction:row;
+    align-items: center;
+    justify-content: space-between;
+    color:black;
+      gap:10px;
+  }
+  main{
+    height:80vh;
+    background-color:rgba(157, 161, 172,0.4);
+  }
+  footer{
+    height:10vh;
+    width:100%;
+    display:flex;
+     background-color: rgba(157, 9, 236, 0.4);
+    
+  }
+body #accueil, body #connexion, body #inscription, body #profil, body #jeu1, body #jeu2, body #jeu3{
+  height:80vh;
+  background-color:rgba(157, 161, 172,0.4);
+  display:flex;
+  flex-direction: column;
+  align-items:center;
+  width:100%;
+  justify-content:flex-start;
+  gap:30px;
+
+  /* align-items: center; */
+/* }
+body #divMain {
+  width:100%;
+display:flex;
+flex-direction: row;
+justify-content: space-between;
+align-items: center;
+height: 50vh;
+     /* background-color:rgba(157, 161, 172,0.4); */
+
+
