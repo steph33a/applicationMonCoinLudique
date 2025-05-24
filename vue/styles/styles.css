@@ -29,9 +29,9 @@ body {
 
   /* justify-content:flex-start; */
   }
-  .accueilWithoutModalAndResearch{
+  /* .accueilWithoutModalAndResearch{
   height: 100vh;
-  }
+  } */
 
 
 
@@ -152,6 +152,10 @@ nav .utilisateur li a, nav .moderateur li a, nav .groupe li a, nav .no_role li a
 
 
 footer{
+  /* position:absolute;  */
+  /* bottom:0px;
+   left: 0; 
+   right: 0; */
   width: 100%;
   height: 80px;
   /* left: -2px;
@@ -210,14 +214,13 @@ flex-grow: 1;
 /* Group 2510 */
 .image-wrapper {
   position: relative;
-  width: 50%;        /* largeur de l’image par rapport à main */
+  width: 100%;        /* largeur de l’image par rapport à main */
   max-width: 960px;  /* largeur max pour ne pas être trop large sur grands écrans */
   display: flex;
   justify-content: center;
   align-items: center;
   /* aspect-ratio: 1.789; */
-  margin-bottom: 90px;
-  margin-top:10px;
+
 
 }
 .image-wrapper img {
@@ -284,18 +287,17 @@ margin-left: auto;
   border:1px solid #704405;
   padding-left:38px;
   padding-right:38px;
-}
-#modal_content{
+ }
+
+/* #modal_content{
 position: absolute; 
-/* top: 0;
- left: 0; */
+
  top:0px;
  left:50%;
- /* bottom:50%;
- right:50%; */
+
  z-index:200;
  transform: translate(-50%,0); 
-} 
+}    */
 /* .image-wrapper .textAndResearch #rechercheEvenement h4{
   
 } */
@@ -412,6 +414,51 @@ width:305px;
 /* Cacher l’input file */
 .photo-input {
   display: none;
+}
+
+
+
+body {
+  margin: 0;
+  font-family: sans-serif;
+}
+
+main {
+  position: relative;
+}
+
+.image-wrapper {
+  position: relative;
+}
+
+/* Image de fond */
+.background-img {
+  width: 100%;
+  display: block;
+}
+
+.image-wrapper {
+  position: relative;
+}
+
+.modal-wrapper {
+  position: relative;
+  margin-bottom: 2rem;
+}
+
+/* Le modal est absolument positionné, mais dans un wrapper qui occupe sa place */
+.modal {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  /* width: 80%; */
+  background: white;
+  padding: 2rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+}
+.modal-spacer {
+  height: 0; /* sera ajusté par JS */
 }
 /* #footer{
   position:absolute;

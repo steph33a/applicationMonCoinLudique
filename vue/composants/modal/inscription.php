@@ -5,7 +5,18 @@
     
         <form style="background-color: #FFFFFF; display:flex; flex-direction:column; justify-content:space-between; align-items:center;" class="formulaire" id="formulaireInscription" action="register.php" method="POST">
             <h2 style=" font-size: 36px; font-weight: 700; margin-left: auto; margin-right: auto; margin-top: 28px; font-family: 'Nunito Sans', sans-serif;">Inscription</h2>
-
+      <!-- Section Particulier -->
+            <div style="margin-top:25px; display:flex; flex-direction:column; justify-content:space-between;   width:305px"id="formParticulier" class="" style=" margin-top: 20px;">
+                <?php if ($role === 'admin') { ?>
+                    <label for="jeux">Choisissez un role</label>
+                    <select name="role[]" id="jeux" multiple>
+                    <option value="particulier">particulier</option>
+                    <option value="groupe">groupe</option>
+                    <option value="modérateur">modérateur</option>
+                    <option value="administrateur">administrateur</option>
+                    </select>
+                <?php } ?>
+            </div>   
             <div style="display:flex; flex-direction:row; justify-content:space-between;align-items:center; width:305px;" id="choixProfil">
                 <input style="font-size:20px; font-weight: 600; font-family: 'Nunito Sans', sans-serif;" type="radio" name="profil" value="particulier" id="profilParticulier" checked><label style=""for="profilParticulier">particulier</label>
                 <input style="font-size:20px; font-weight: 600; font-family: 'Nunito Sans', sans-serif;" type="radio" name="profil" value="groupe" id="profilGroupe"><label for="profilGroupe">groupe</label>
@@ -17,19 +28,8 @@
                     <input type="file" id="photoInput" accept="image/*" class="photo-input" />
                 </div>
             </label>
-
-              <!-- Section Particulier -->
             <div style="margin-top:25px; display:flex; flex-direction:column; justify-content:space-between;   width:305px"id="formParticulier" class="formulaire-section" style=" margin-top: 20px;">
-                <?php if ($role === 'admin') { ?>
-                    <label for="jeux">Choisissez un role</label>
-                    <select name="role[]" id="jeux" multiple>
-                    <option value="particulier">particulier</option>
-                    <option value="groupe">groupe</option>
-                    <option value="modérateur">modérateur</option>
-                    <option value="administrateur">administrateur</option>
-                    </select>
-                <?php } ?>
-
+               
                 <label style="text-align: left;margin-top: 25px;" for="pseudo">Pseudo :</label>
                 <input class="formElement" type="text" name="pseudo" id="pseudo">
                 <!-- <br> -->

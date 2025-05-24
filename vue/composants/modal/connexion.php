@@ -30,7 +30,7 @@
 
         </ul>
         
-        <button style="width:114px; height:40px;background-color: #6EBA46; color: #FFFFFF; font-size:18px; font-weight: 600; font-family: 'Nunito Sans', sans-serif;"type="submit" class="btnFormulaire" type="submit" id="btnConnexion" name="btnConnexion" class="">connection</button>
+        <button style="width:114px; height:40px;background-color: #6EBA46; color: #FFFFFF; font-size:18px; font-weight: 600; font-family: 'Nunito Sans', sans-serif;"type="submit" class="btnFormulaire" type="submit" id="btnConnexion" name="btnConnexion" class="">connexion</button>
         
         <div id="formulaireConnexionCommentaire"></div>
     </form>  

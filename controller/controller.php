@@ -10,6 +10,8 @@ require ($_SERVER['DOCUMENT_ROOT'].'/model/model.php');
 
     function handleLoginAndRegistration() {
       if ( (!isset($_POST['btnInscription']))&& (!isset($_SESSION['id']))&& (!isset($_POST['btnConnexion']))){ {
+        
+
           locationView('accueil');
           exit();
       }
@@ -107,50 +109,7 @@ if (isset($_SESSION['id'])) {
 
 function handleActionAccueil() {
 
-  switch ($_POST['actionDashboard']) {
-        case 'btnJeuQuiz':
-            echo "<script>console.log('Le bouton quizz a été cliqué');</script>";
-           includeView('quiz');
-    
-           
-            exit();
 
-            break;
-        
-        case 'btnJeuMotMelange':
-                
-            if (isset($_POST['btnSubmit'])==false) {
-                $_SESSION['score']=0;
-            }
-            echo "<script>console.log('Le bouton jeu mélangé a été cliqué');</script>";
-              includeView('mot_melange');
-           
-            exit();
-            break;
-
-        case 'btnJeuNombreMystere':
-            
-        
-        case 'btnScores':
-           echo "<script>console.log('Le bouton scores a été cliqué');</script>";
-            includeView('scores');
-        
-           exit();
-            
-            break;
-        
-        case 'btnDeconnexion':
-             echo "<script>console.log('Le bouton deconnexion a été cliqué');</script>";
-            session_destroy();
-                includeView('index');
-             exit();
-            break;
-        
-        default:
-            echo "Aucun bouton valide n'a été cliqué";
-            break;
-    }
-  
        
 }
 

@@ -1,3 +1,49 @@
+function updateFooterPositionnement() {
+
+const footer=document.querySelector('footer');
+//  heightFooter=parseFloat(getComputedStyle(footer).height);
+heightFooter=80;
+ 
+// let heightMainWithModal=parseFloat(getComputedStyle(mainAccueil).height);
+document.querySelectorAll('.modal').forEach(modal => {
+
+  if (modal.classList.contains('display-block')) {
+      console.log(heightMainDepart);
+      
+    let modalHeight = parseFloat(getComputedStyle(modal).height);
+    console.log(modalHeight);
+     if (modalHeight>heightMainDepart){
+      heightMainWithModal=modalHeight;
+      console.log(heightMainWithModal);
+
+     } else {
+      heightMainWithModal=heightMainDepart;
+      console.log(heightMainWithModal);
+     }
+  }
+})
+if (heightMainWithModal==heightMainDepart){
+   mainAccueil.style.minHeight=heightMainWithModal+"px";
+mainAccueil.style.height=heightMainWithModal+"px";
+}else {
+  
+  console.log("ligne73",heightMainWithModal);
+paddingMain=50;
+// console.log("heightMainWithModal",heightMainWithModal);
+// console.log("heightFooter",heightFooter);
+
+heightMainWithModal=heightMainWithModal+heightFooter;
+// console.log("heightMainWithModal",heightMainWithModal);
+// heightMainWithModal=heightMainWithModal+heightFooter+paddingMain;
+// const header=document.querySelector('header');
+//  let heightHeader=parseFloat(getComputedStyle(header).height);
+//  let height= heightMainWithModal+heightHeader;
+ mainAccueil.style.minHeight=heightMainWithModal+"px";
+mainAccueil.style.height=heightMainWithModal+"px";
+  console.log(heightMainWithModal);
+}
+
+}
 // Récupère tous les boutons radio du formulaire qui ont l’attribut name="profil" (c’est-à-dire "particulier", "groupe" et "professionnel").
 const radios = document.querySelectorAll('input[name="profil"]');
 
@@ -23,7 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
     Object.keys(sections).forEach(key => {
       sections[key].style.display = (selected.value === key) ? 'block' : 'none';
     });
-    
+    updateFooterPositionnement(); // recalcul si nécessaire
   }
 });
 const toggle = document.getElementById('menu-toggle');
@@ -53,7 +99,7 @@ const connexion = document.getElementById("connexion");
 
 document.querySelectorAll('input[name="profil"]').forEach(radio => {
   radio.addEventListener('change', () => {
-    adjustModalSpacers();
+    updateFooterPositionnement(); // on met à jour la hauteur du main
   });
 });
 
@@ -77,12 +123,12 @@ document.querySelectorAll(".openModalLinkConnexion").forEach(element => {
     document.getElementById("modalFormConnexion").classList.add("display-block");
 
     // Modifier les classes du body et du main
-    // body.classList.add("accueilWithoutModalAndResearch");
-    // mainAccueil.classList.add("accueil");
-    // mainAccueil.classList.remove("accueilDuringOpeningModal");
+    body.classList.add("accueilWithoutModalAndResearch");
+    mainAccueil.classList.add("accueil");
+    mainAccueil.classList.remove("accueilDuringOpeningModal");
 
     // Recalculer la hauteur du footer
-    adjustModalSpacers();
+    updateFooterPositionnement();
   });
 });
 
@@ -105,12 +151,12 @@ document.querySelectorAll(".openModalLinkInscription").forEach(element => {
     document.getElementById("modalFormInscription").classList.add("display-block");
 
     // Modifier les classes du body et du main
-    // body.classList.remove("accueilWithoutModalAndResearch");
-    // mainAccueil.classList.remove("accueil");
-    // mainAccueil.classList.add("accueilDuringOpeningModal");
+    body.classList.remove("accueilWithoutModalAndResearch");
+    mainAccueil.classList.remove("accueil");
+    mainAccueil.classList.add("accueilDuringOpeningModal");
 
     // Recalculer la hauteur du footer
-    adjustModalSpacers();
+    updateFooterPositionnement();
   });
 });
 
@@ -129,9 +175,9 @@ document.getElementById("openModalLinkMotDePasseOublie").addEventListener("click
 
   document.getElementById("modalFormMotDePasseOublie").classList.add("display-block");
   document.getElementById("modalFormMotDePasseOublie").classList.remove("display-none");
-    //   body.classList.add("accueilWithoutModalAndResearch");
-    // mainAccueil.classList.add("accueil");
-    // mainAccueil.classList.remove("accueilDuringOpeningModal");
+      body.classList.add("accueilWithoutModalAndResearch");
+    mainAccueil.classList.add("accueil");
+    mainAccueil.classList.remove("accueilDuringOpeningModal");
     adjustModalSpacers();
  
 });
@@ -149,10 +195,10 @@ document.getElementById("openModalConditionsUtilisation").addEventListener("clic
    body.classList.remove("accueilWithoutModalAndResearch");
   document.getElementById("modalConditionsUtilisation").classList.add("display-block");
   
-    // body.classList.add("accueilWithoutModalAndResearch");
-    // mainAccueil.classList.add("accueil");
-    // mainAccueil.classList.remove("accueilDuringOpeningModal");
-     adjustModalSpacers();
+    body.classList.add("accueilWithoutModalAndResearch");
+    mainAccueil.classList.add("accueil");
+    mainAccueil.classList.remove("accueilDuringOpeningModal");
+     updateFooterPositionnement();
 });
 
 document.getElementById("closeModalBtn").addEventListener("click", function () {
@@ -161,43 +207,4 @@ document.getElementById("closeModalBtn").addEventListener("click", function () {
     document.getElementById("modalFormConnexion").classList.remove("display-none");
 
 
-});
-
-window.addEventListener("click", function (e) {
-  const modal = document.getElementById("modalForm");
-  if (e.target === modal) {
-    modal.style.display = "none";
-  }
-});
-
-
-
-function adjustModalSpacers() {
-  const wrappers = document.querySelectorAll('.modal-wrapper');
-
-  wrappers.forEach(wrapper => {
-    const modal = wrapper.querySelector('.modal');
-    const spacer = wrapper.querySelector('.modal-spacer');
-
-    // S'assurer que le modal est visible pour calculer sa taille
-    if (modal && spacer) {
-      spacer.style.height = modal.offsetHeight + 'px';
-    }
-  });
-}
-
-// Appeler au chargement
-
-const allModals = document.querySelectorAll('.modal');
-
-  adjustModalSpacers();
-
-window.addEventListener('load', adjustModalSpacers);
-
-// Au redimensionnement
-window.addEventListener('resize', adjustModalSpacers);
-
-// Après modification dynamique, par exemple lors d’un événement JS lié à un formulaire
-document.querySelector('#mon-formulaire').addEventListener('change', () => {
-  adjustModalSpacers();
 });
