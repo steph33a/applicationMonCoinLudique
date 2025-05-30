@@ -132,6 +132,10 @@ function allChampsNecessaryPresents($datas,$fonctionnalite)
  if ($fonctionnalite=="createEvent") {
     $champNecessary=["pseudo","dateEvent","heureEvent"];
  }
+ 
+ if ($fonctionnalite=="redefinitionMotDePasse") {
+    $champNecessary=["dateEvent","heureEvent"];
+ }
 
     
 
@@ -142,6 +146,7 @@ function allChampsNecessaryPresents($datas,$fonctionnalite)
     }
     return true;
 }
+
 function areValidChamps($datas)
 {
     $areValidChamps=[];
@@ -269,6 +274,33 @@ function trimDataForConnexion($datas){
     }
     return $datas;
 }
+function trimDataForResearchRecupMotDePasse($datas){
+    foreach ($datas as $key => $data) {
+        $datas[$key]=trim($data);
+    }
+    return $datas;
+
+}
+function trimDataForRedefinitionMotDePasse($datas){
+        foreach ($datas as $key => $data) {
+        $datas[$key]=trim($data);
+    }
+    return $datas;
+
+}
+
+/**
+ * Sanitizes an array of data by converting special characters to HTML entities.
+ *
+ * This function iterates over the provided associative array and applies the
+ * `htmlspecialchars` function to each value, ensuring that any special characters
+ * are converted to their corresponding HTML entities. This is useful for preventing
+ * XSS (Cross-Site Scripting) attacks by escaping characters like '<', '>', '&', etc.
+ *
+ * @param array $datas The array of data to be sanitized.
+ * @return array The sanitized array with special characters converted to HTML entities.
+ */
+
 function protectData($datas){
      foreach ($datas as $key => $data) {
         $datas[$key]=htmlspecialchars($data);
@@ -374,7 +406,18 @@ function findAllEventsByParticipantId(){
     $evenements=$requetePreparee->fetchAll(PDO::FETCH_ASSOC);
     return $evenements;
 } 
-
+function modificationMotDePasse(){
+    $idUtilisateur=$_SESSION['id'];
+    $motDePasse=$_POST['motDePasse'];
+    global $connexion_bd;
+    $requete="update utilisateurs set motDePasse = :motDePasse where id_utilisateur = :idUtilisateur";
+    $requetePreparee=$connexion_bd->prepare($requete);
+    $requetePreparee->execute([
+        ':motDePasse' => $motDePasse,
+        ':idUtilisateur' => $idUtilisateur,
+    ]);
+    return true;
+}
 function saveProfilImageFile()
 {
     $save_directory = __DIR__ . DIRECTORY_SEPARATOR . 'facturesUBL' . DIRECTORY_SEPARATOR .    $IDComm  . DIRECTORY_SEPARATOR;

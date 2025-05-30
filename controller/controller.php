@@ -21,8 +21,47 @@ function handleLoginAndRegistration() {
   echo "<script>console.log('arrive dans inscription ligne17');</script>";
   if (isset($_POST['btnEnvoiReponsesRecupMotDePasse'])){
     if (allChampsNecessaryPresents($_POST,'reponsesQuestionForRecupMotDePasse')){
+      $datas=trimDataForResearchRecupMotDePasse($_POST);
+      $datas=protectData($datas);
+      //verif exist in db va rechercher dans la bd si l'utilisateur existe ou non suivant le mail si il existe
+      $result=verifExistInDb($datas);
+      var_dump($result);
+     if (is_array($result) && isset($result["success"]) && $result["success"] === true){
+        $userFound=$result["utilisateur"];
+        $firstReponseInBD=$userFound["reponse1"];
+        $firstReponseInBD=protectData(trim($firstReponseInBD));
+         $secondReponseInBD=$userFound["reponse2"];
+        $secondReponseInBD=protectData(trim($secondReponseInBD));
+        if (($firstReponseInBD==$datas["reponse1"])&&($secondReponseInBD==$datas["reponse2"])){
+         $_SESSION['redefinitionMotDePasse']=true;
+         
+
+        }
+       else if (($firstReponseInBD!=$datas["reponse1"])&&($secondReponseInBD!=$datas["reponse2"])){
+        $phrase="Les reponses sont incorrectes";
+      } else {
+        $phrase="erreur";
+      }
     }
   }
+}
+  if (isset($_POST['btnRedefinitionMotDePasse'])){
+    if (allChampsNecessaryPresents($_POST,'redefinitionMotDePasse')){
+      $datas=trimDataForRedefinitionMotDePasse($_POST);
+      $datas=protectData($datas);
+      //verif exist in db va rechercher dans la bd si l'utilisateur existe ou non suivant le mail si il existe
+      verifExistInDb($datas);
+      var_dump($result);
+      if (is_array($result) && isset($result["success"]) && $result["success"] === true){
+      modificationMotDePasse($datas); 
+       
+     
+    }
+    else {
+      $phrase=$result["phraseEchec"];
+    }
+  }
+}
   if  (isset($_POST['btnConnexion'])){
     if (allChampsNecessaryPresents($_POST,'connexion')){
         $datas=trimDataForConnexion($_POST);

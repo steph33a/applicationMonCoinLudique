@@ -7,7 +7,9 @@ session_start();
 // echo"session role :".$_SESSION['role'];
 // Exemple de rôles possibles : 'admin', 'utilisateur', null si non connecté
 $role = $_SESSION['role'] ?? null;
-
+var_dump($role);
+$affichageFormulaireRedefinitionMotDePasse = (isset($_SESSION["affichageFormulaireRedefinitionMotDePasse"]) && $_SESSION["affichageFormulaireRedefinitionMotDePasse"]) ? true : false;
+echo "affichageFormulaireRedefinitionMotDePasse:" . $affichageFormulaireRedefinitionMotDePasse;
 $estConnecte = isset($_SESSION['id_utilisateur']); // ou autre variable qui dit si connecté
 $page_contexte = 'accueil';
 include('../composants/includes/header.php');
@@ -28,6 +30,9 @@ include('../composants/includes/header.php');
             </div>
             <div style="display:block;" class="modal-spacer"></div> 
         </div> 
+
+
+       
        
         
         <div style=" position:relative;" class="modal-wrapper">
@@ -46,7 +51,7 @@ include('../composants/includes/header.php');
             <div style=" position:relative;"class="modal-spacer"></div>
        </div>
        <div style=" position:relative;" class="modal-wrapper">
-                <div style=" padding-bottom:50px; padding-top:50px;" class="modal" id="modalConditionsUtilisation">
+                <div style=" padding-bottom:50px; padding-top:50px;" class="modal <?php if (!$affichageFormulaireRedefinitionMotDePasse) echo 'displayNone'; ?>" id="modalConditionsUtilisation">
                 <?php if ((!$estConnecte) || ($role === 'admin')) include '../composants/modal/conditionsUtilisation.php'; ?>
                 </div>
                  <div style="display:block;" class="modal-spacer"></div>

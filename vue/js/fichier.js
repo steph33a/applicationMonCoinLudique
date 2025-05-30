@@ -1,5 +1,84 @@
 
 // A   Partie Validation des formulaires
+
+const voirMDPCheckbox = document.getElementById('voirMDPInscription');
+  const motDePasseInput = document.getElementById('motDePasseInscription');
+if (voirMDPCheckbox) {
+  voirMDPCheckbox.addEventListener('change', () => {
+    motDePasseInput.type = voirMDPCheckbox.checked ? 'text' : 'password';
+  });
+}
+
+  // Pour le champ "Confirmation du mot de passe"
+  const voirConfMDPCheckbox = document.getElementById('voirConfMPDInscription');
+  const confirmationMotDePasseInput = document.getElementById('confirmationMotDePasseInscription');
+if (voirConfMDPCheckbox) {
+  voirConfMDPCheckbox.addEventListener('change', () => {
+    confirmationMotDePasseInput.type = voirConfMDPCheckbox.checked ? 'text' : 'password';
+  });
+}
+
+  const voirMDPCheckboxConnexion = document.getElementById('voirMDPConnexion');
+  const motDePasseInputConnexion = document.getElementById('motDePasseConnexion');
+
+if (voirMDPCheckboxConnexion) {
+  voirMDPCheckboxConnexion.addEventListener('change', () => {
+    motDePasseInputConnexion.type = voirMDPCheckboxConnexion.checked ? 'text' : 'password';
+  });
+}
+
+let photoInput=document.getElementById('photoInput');
+if (photoInput) {
+photoInput.addEventListener('change', function (e) {
+    
+    // On récupère le premier fichier sélectionné par l'utilisateur
+    const file = e.target.files[0];
+
+    // Si aucun fichier sélectionné, on arrête la fonction
+    if (!file) return;
+
+    // Liste des types MIME autorisés (formats d'image acceptés)
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+     // Taille maximale autorisée : 2 Mo (2 * 1024 * 1024 octets)
+    const maxSizeInBytes = 2 * 1024 * 1024;
+    let  indexInput;
+
+    // Si le type du fichier n'est pas dans la liste autorisée, on alerte l'utilisateur
+    if (!allowedTypes.includes(file.type)) {
+       // Ajouter à validChamps si pas déjà dedans
+         indexInput = validChamps.indexOf("imageProfil");
+        if (indexInput !== -1) {
+          validChamps.splice(indexInput, 1);
+        }
+        alert('Veuillez sélectionner une image au format JPEG, PNG ou WEBP.');
+        e.target.value = ''; // On réinitialise le champ fichier pour forcer une nouvelle sélection
+        return; // On quitte la fonction
+    } else if (file.size > maxSizeInBytes) {
+        alert('La taille de l’image ne doit pas dépasser 2 Mo.');
+        e.target.value = ''; // Réinitialisation du champ
+        indexInput = validChamps.indexOf("imageProfil");
+        if (indexInput !== -1) {
+          validChamps.splice(indexInput, 1);
+        }
+    } else {
+       if (!validChamps.includes("imageProfil")) {
+          validChamps.push("imageProfil");
+        }
+    }
+
+    // Création d’un FileReader pour lire le fichier localement
+    const reader = new FileReader();
+
+    // Quand le fichier est lu avec succès
+    reader.onload = function (e) {
+        // On insère l'image lue (en base64) dans la balise <img> ayant la classe 'photo-preview'
+        document.querySelector('.photo-preview').src = e.target.result;
+    };
+
+    // Lecture du fichier sous forme de DataURL (base64), nécessaire pour afficher un aperçu
+    reader.readAsDataURL(file);
+});
+}
 function showTextComment(classIdentification,text){
   console.log("showTextComment");
   // Cette fonction montre juste le commentaire et met le display on 
@@ -442,7 +521,7 @@ let formulaireConnexion=document.getElementById('formulaireConnexion');
 
 let commentaireErreur;
 let validChamps=[];
-let photoInput=document.getElementById('photoInput');
+
 
 document.getElementById("modalFormConnexion").classList.add("display-none");
 document.getElementById("modalFormInscription").classList.add("display-none");
@@ -455,57 +534,7 @@ document.getElementById("modalDetailsEvenement").classList.add("display-none");
 
 
  heightMainDepart=parseFloat(getComputedStyle(mainAccueil).height)
-if (photoInput) {
-photoInput.addEventListener('change', function (e) {
-    
-    // On récupère le premier fichier sélectionné par l'utilisateur
-    const file = e.target.files[0];
 
-    // Si aucun fichier sélectionné, on arrête la fonction
-    if (!file) return;
-
-    // Liste des types MIME autorisés (formats d'image acceptés)
-    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
-     // Taille maximale autorisée : 2 Mo (2 * 1024 * 1024 octets)
-    const maxSizeInBytes = 2 * 1024 * 1024;
-    let  indexInput;
-
-    // Si le type du fichier n'est pas dans la liste autorisée, on alerte l'utilisateur
-    if (!allowedTypes.includes(file.type)) {
-       // Ajouter à validChamps si pas déjà dedans
-         indexInput = validChamps.indexOf("imageProfil");
-        if (indexInput !== -1) {
-          validChamps.splice(indexInput, 1);
-        }
-        alert('Veuillez sélectionner une image au format JPEG, PNG ou WEBP.');
-        e.target.value = ''; // On réinitialise le champ fichier pour forcer une nouvelle sélection
-        return; // On quitte la fonction
-    } else if (file.size > maxSizeInBytes) {
-        alert('La taille de l’image ne doit pas dépasser 2 Mo.');
-        e.target.value = ''; // Réinitialisation du champ
-        indexInput = validChamps.indexOf("imageProfil");
-        if (indexInput !== -1) {
-          validChamps.splice(indexInput, 1);
-        }
-    } else {
-       if (!validChamps.includes("imageProfil")) {
-          validChamps.push("imageProfil");
-        }
-    }
-
-    // Création d’un FileReader pour lire le fichier localement
-    const reader = new FileReader();
-
-    // Quand le fichier est lu avec succès
-    reader.onload = function (e) {
-        // On insère l'image lue (en base64) dans la balise <img> ayant la classe 'photo-preview'
-        document.querySelector('.photo-preview').src = e.target.result;
-    };
-
-    // Lecture du fichier sous forme de DataURL (base64), nécessaire pour afficher un aperçu
-    reader.readAsDataURL(file);
-});
-}
 let formulaireInscription=document.getElementById('formulaireInscription');
 
 
@@ -613,33 +642,6 @@ formulaireCreationEvenement.addEventListener('submit', function (e) {
 //Quand l'utilisateur sélectionne un fichier (input type="file") avec l’id photoInput, cette fonction est déclenchée.
 
 // On écoute l'événement 'change' sur le champ fichier avec l'ID 'photoInput'
-
-const voirMDPCheckbox = document.getElementById('voirMDPInscription');
-  const motDePasseInput = document.getElementById('motDePasseInscription');
-if (voirMDPCheckbox) {
-  voirMDPCheckbox.addEventListener('change', () => {
-    motDePasseInput.type = voirMDPCheckbox.checked ? 'text' : 'password';
-  });
-}
-
-  // Pour le champ "Confirmation du mot de passe"
-  const voirConfMDPCheckbox = document.getElementById('voirConfMPDInscription');
-  const confirmationMotDePasseInput = document.getElementById('confirmationMotDePasseInscription');
-if (voirConfMDPCheckbox) {
-  voirConfMDPCheckbox.addEventListener('change', () => {
-    confirmationMotDePasseInput.type = voirConfMDPCheckbox.checked ? 'text' : 'password';
-  });
-}
-
-  const voirMDPCheckboxConnexion = document.getElementById('voirMDPConnexion');
-  const motDePasseInputConnexion = document.getElementById('motDePasseConnexion');
-
-if (voirMDPCheckboxConnexion) {
-  voirMDPCheckboxConnexion.addEventListener('change', () => {
-    motDePasseInputConnexion.type = voirMDPCheckboxConnexion.checked ? 'text' : 'password';
-  });
-}
-
 
 
 // Récupère tous les boutons radio du formulaire qui ont l’attribut name="profil" (c’est-à-dire "particulier", "groupe" et "professionnel").
