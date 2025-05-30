@@ -7,24 +7,27 @@
              <h2 style=" font-size: 36px; font-weight: 700; margin-left: auto; margin-right: auto; margin-top: 28px; font-family: 'Nunito Sans', sans-serif;">Mot de passe oublé</h2>
             
             
-            <label style=" text-align: left; font-size: 18px; font-family: 'Nunito Sans', sans-serif; color: #000000; margin-top:20px;" for="motDePasse">Mot de passe</label>  
+            <label style=" text-align: left; font-size: 18px; font-family: 'Nunito Sans', sans-serif; color: #000000; margin-top:20px;" for="motDePasseForRedefinition">Mot de passe</label>  
             
-            <input style="font-weight:600; margin-top:10px; padding-right: 25px; text-align: left; font-size: 18px; font-family: 'Nunito Sans', sans-serif; color: #4c4c4c; margin-top:20px;" class="formElement"type="text" id="motDePasse" name="motDePasse" placeholder="Mot de passe"  required>
+            <input style="font-weight:600; margin-top:10px; padding-right: 25px; text-align: left; font-size: 18px; font-family: 'Nunito Sans', sans-serif; color: #4c4c4c; margin-top:20px;" class="formElement"type="text" id="motDePasseRedefinition" name="motDePasse" placeholder="Mot de passe"  required>
             <p class="commentaire displayNone" id="motDePasseCommentaire"></p>
             <div>
-                <input type="checkbox" name="voirMDP" id="voirMDP">
-                <label for="voirMDP">Afficher le mot de passe</label><br>
+                <input type="checkbox" name="voirMDP" id="voirMDPPremier">
+                <label for="voirMDPPremier">Afficher le mot de passe</label><br>
             </div>
-            <label style=" text-align: left; font-size: 18px; font-family: 'Nunito Sans', sans-serif; color: #000000; margin-top:20px;" for="motDePasse">confirmation du mot de passe</label>  
+            <label style=" text-align: left; font-size: 18px; font-family: 'Nunito Sans', sans-serif; color: #000000; margin-top:20px;" for="confirmationMotDePasseSecond">confirmation du mot de passe</label>  
             
-            <input style="font-weight:600; margin-top:10px; padding-right: 25px; text-align: left; font-size: 18px; font-family: 'Nunito Sans', sans-serif; color: #4c4c4c; margin-top:20px;" class="formElement"type="text" id="motDePasse" name="motDePasse" placeholder="Mot de passe"  required>
+            <input style="font-weight:600; margin-top:10px; padding-right: 25px; text-align: left; font-size: 18px; font-family: 'Nunito Sans', sans-serif; color: #4c4c4c; margin-top:20px;" class="formElement"type="text" id="confirmationMotDePasseRedefinition" name="confirmationMotDePasse" placeholder="Mot de passe"  required>
             <p class="commentaire displayNone" id="motDePasseCommentaire"></p>
             <div>
-                <input type="checkbox" name="voirMDP" id="voirMDP">
-                <label for="voirMDP">Afficher le mot de passe</label><br>
+                <input type="checkbox" name="voirMDP" id="voirMDPSecond">
+                <label for="voirMDPSecond">Afficher le mot de passe</label><br>
             </div>
             <br>
             <input class="formElement" type="submit" value="Envoyer" name="btnRedefinitionMotDePasse" id="btnRedefinitionMotDePasse">
         </form>
     
 
+
+
+        

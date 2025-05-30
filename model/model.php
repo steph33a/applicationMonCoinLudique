@@ -1,25 +1,7 @@
 <?php
 include_once 'db.php';
  global $connexion_bd;
-function getUser()
-{
-    $tab=["user1" => "gertrude", "user2" => "Bertrand"];
-    return $tab;
-}
-function getPhrase($phrase)
-{
-    return $phrase;
-}
-function getDonnees($phrase)
-{
-    if (isset($phrase))
-    {
-        return $phrase;;
-    } else
-    {
-        return "";
-    }
-}
+
 
 function isValidPassword($password) {
     // Vérifier la longueur du mot de passe (min 8 caractères)
@@ -51,380 +33,361 @@ function isValidPassword($password) {
     return true;
 }
 
-
-function isValidChamp($typeChamp,$valeurChamp)
+function champIsValid($nomChamp,$valeurChamp)
 {
-    // $typeChamp = $typeChamp;
-    // $valeurChamp = $valeurChamp;
-    if ($valeurChamp == "") {
-        return [
-            "booleen" => false,
-            "phraseEchec" => "Le champ $typeChamp ne peut pas être vide."
-        ];
-    }
-    $isValid=true;
-    $phrase="";
-    switch ($typeChamp) {
-        
-
-        case  "mail":
-            {
-                 echo "test";
-                 ?>
-                    <script>
-                       console.log("mailinfo"); 
-                    </script>
-                    <?php
-                if (strpos($valeurChamp, '@') === false || strpos($valeurChamp, '.') === false) {
-                    
-                   return  [
-                    "booleen" => false,
-                    "phraseEchec" => "mail incorrect"
-                   ];
-                    ?>
-                    <script>
-                        console.log("mail incorrect"); 
-                    </script>
-                    <?php
-                    
+    switch ($nomChamp) {
+            case 'pseudo':
+                if (strlen($valeurChamp) < 3) {
+                    return  [
+                        "success" => false,
+                        "phraseEchec" => "Le pseudo doit contenir au moins 3 caractères"
+                    ];
                 } else {
                   return  [
-                    "booleen" => true,
+                    "success" => true,
                     "phraseEchec" => ""
                   ];
                 }
-                }  break;
-        
-        case  "motDePasse":
-            {
-                 echo "test";
-                
-                if (!isValidPassword($valeurChamp)) {
-                    return  [
-                        "booleen" => false,
-                        "phraseEchec" => "Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un caractère special"
-                    ];
+                break;
             
-                    ?>
-                    <script>
-                       console.log("mot de passe incorrect"); 
-                    </script>
-                    <?php
+            case 'nom':
+                if (strlen($valeurChamp) < 3) {
+                    return  [
+                        "success" => false,
+                        "phraseEchec" => "Le nom doit contenir au moins 3 caractères"
+                    ];
                 } else {
                   return  [
-                    "booleen" => true,
+                    "success" => true,
                     "phraseEchec" => ""
                   ];
-                } break;
-              
-        }
-     
-    };}
-        
-          
-
-function areValidChamps($listChamps)
-{
-      ?>
-                    <script>
-                          var listChamps = <?php echo json_encode($listChamps); ?>;
-    console.log("listChamps", listChamps);
-                    </script>
-                    <?php  
-     $isValid=true;
-    $phrase="";
-    // travail avec le tableau associatif listchamp
-    
-    if (isset($listChamps["mail"])) {
-        echo($listChamps["mail"]);
-        if (isValidChamp("mail",$listChamps["mail"])==false){
-            $isValid=false;
-             echo("mail pas valide");
-        }
-    }
-    if (isset($listChamps["motDePasse"])) {
-        echo($listChamps["motDePasse"]);
-        if (isValidChamp("motDePasse",$listChamps["motDePasse"])==false){
-            echo("mot de passe pas valide");
-            $isValid=false;
-        }
-    }
-    
-    if ($isValid==false) {
-        echo"isnotValid";
-        // je renvoie un tableau associatif avec le résultat et la raison de l'échec
-        return ["booleen"=>false,"phraseEchec"=>$phrase];
-    }else {
-        echo"isvalid";
-        return ["booleen"=>true,"phraseEchec"=>""];
-    }
-  
-    return true;
-  
-}
-
-function existInBD($listChampsToTest){
-
-if (isset($listChampsToTest["mail"])) {
-    // global $connBDApplicationJeux;
-    global $connexion_bd;
-   
-   
-    var_dump($listChampsToTest);
-    $motDePasse=$listChampsToTest["motDePasse"];
-    echo $motDePasse;
-    $mail=$listChampsToTest["mail"];
-    echo "mail".$mail;  
-   
-    $requete="select * from users where email = :mail";
-    $requetePreparee= $connexion_bd ->prepare($requete);
-// on exécute la requete preparee en remplacant chaque élément de la requete  par sa valeur)
-    $requetePreparee->execute([
-    ':mail' => $mail
-]);
-$utilisateur = $requetePreparee->fetch(PDO::FETCH_ASSOC);
-var_dump ($utilisateur);
-if ($utilisateur && password_verify($motDePasse, $utilisateur['password'])){
-    $_SESSION['id'] = $utilisateur["id"];
-
-}}
-return true;
-}
-
-function existInBDUtilisateur($infoUtilisateur){
-        $mail=htmlspecialchars(trim($infoUtilisateur['mail']));
-       $motDePasse=htmlspecialchars(trim($infoUtilisateur['motDePasse']));
- 
-       $listChamps=["mail"=>$mail,"motDePasse"=>$motDePasse];
-    //    la premier élément du tableau reçu est le booléen pr dire SI OK LE DEUXIEme est la phrase qui l'accompagne
-       $validChamp=[];
-       $validChamp=areValidChamps($listChamps);
-
-        if ($validChamp==true)
-            // hashagedu mot de passe
-            {
-                $listChampsToTest=["mail"=>$mail,"motDePasse"=>$motDePasse];
-                $responseTest=existInBD($listChampsToTest);
-                return $responseTest;
-              
+                }
+                break;
+            case 'prenom':
+                if (strlen($valeurChamp) < 3) {
+                    return  [
+                        "success" => false,
+                        "phraseEchec" => "Le prenom doit contenir au moins 3 caractères"
+                    ];
+                } else {
+                  return  [
+                    "success" => true,
+                    "phraseEchec" => ""
+                  ];
+                }
+                break;
+            
+            case 'email':
                 
-            }
+                   if (strpos($valeurChamp, '@') === false || strpos($valeurChamp, '.') === false) {
+                    
+                   return  [
+                    "success" => false,
+                    "phraseEchec" => "mail incorrect"
+                   ];
+                } else {
+                  return  [
+                    "success" => true,
+                    "phraseEchec" => ""
+                  ];
+                }
+                break;
+            case 'motDePasse':
+                    if (!isValidPassword($valeurChamp)) {
+                    return  [
+                        "success" => false,
+                        "phraseEchec" => "Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un caractère special"
+                    ];
+                } else {
+                  return  [
+                    "success" => true,
+                    "phraseEchec" => ""
+                  ];
+                }
+          
+                break;
+            default:
+              return  [
+                    "success" => true,
+                    "phraseEchec" => ""
+                  ];
+
+                break;
+        }       
+}
+    
+function allChampsNecessaryPresents($datas,$fonctionnalite)
+{
+ if ($fonctionnalite=="inscription") {
+    $champNecessary=["pseudo","email","motDePasse","confirmationMotDePasse"];
+
+
+ }
+ if ($fonctionnalite=="connexion") {
+    $champNecessary=["email","motDePasse"];
+ }
+ if ($fonctionnalite=="reponsesQuestionForRecupMotDePasse") {
+    $champNecessary=["email","reponse1","reponse2"];
+ }
+ if ($fonctionnalite=="createEvent") {
+    $champNecessary=["pseudo","dateEvent","heureEvent"];
  }
 
-
-function itsPossibleToInsert($listChamps)
-{
- global $connexion_bd;
-    $mail=$listChamps["mail"];
-    echo"mail".$mail;
-    $motDePasseHash=$listChamps["motDePasseHash"]; 
-    echo"motDePasseHash".$motDePasseHash;
-    // mettre en guillement les requetes SQL   
     
-    $requete="select * from users where  email = :mail || password = :motDePasseHash";
-   
-    $requetePreparee=$connexion_bd ->prepare($requete);
-// on exécute la requete preparee en remplacant chaque élément de la requete  par sa valeur)
-    $requetePreparee->execute([
-    ':mail' => $mail,
-    ':motDePasseHash' => $motDePasseHash
-]);
 
-$utilisateur = $requetePreparee->fetch(PDO::FETCH_ASSOC);
-if ($utilisateur) {
-    return false;
-} else {
+  foreach ($champNecessary as $champ) {
+        if (!isset($datas[$champ]) || empty($datas[$champ])) {
+            return false;
+        }
+    }
     return true;
 }
+function areValidChamps($datas)
+{
+    $areValidChamps=[];
+    
+    $phraseEchec=[]; 
+    foreach ($datas as $nomChamp => $valeurChamp) {
+        
+        $isValidChamp=champIsValid($nomChamp,$valeurChamp);
+        $areValidChamps[]=$isValidChamp["success"];
+        if ($isValidChamp["success"]==false) {
+            $phraseEchec[]=$isValidChamp["phraseEchec"];
+        } 
+
+    }
+     $phrasesEchec=implode(", ", $phraseEchec);
+     $phraseReussite="Tous les champs sont valides";
+    if (in_array(false, $areValidChamps)) {
+        return [
+            "success" => false,
+            "phraseEchec" => $phrasesEchec
+        ];
+    } else {
+        return [
+            "success" => true,
+            "phraseReussite" => $phraseReussite
+        ];
+    }
 }
 
-function InsertInBD($listChamps){
-global $connexion_bd;
-     echo"in script insertinbd";
-    $username=$listChamps["username"];
-    $userPrenom=$listChamps["userPrenom"];
-    $mail=$listChamps["mail"];
-    echo"mail".$mail;
-    $motDePasseHash=$listChamps["motDePasseHash"]; 
-    $requete="insert into users (nom,prenom,email,password) values (:username,:userPrenom,:mail,:motDePasseHash)";
+function verifExistInDB($datas){
+    global $connexion_bd;
+ echo "<script>console.log('verif');</script>";
+    if (isset($datas["email"])&&isset($datas["pseudo"])) {
+ echo "<script>console.log('verif');</script>";
+       $pseudo=$datas["pseudo"];
+  
+       $email=$datas["email"];
+         $requete="select * from utilisateurs where email = :email OR pseudo = :pseudo";
+        $requetePreparee= $connexion_bd ->prepare($requete);
+        // on exécute la requete preparee en remplacant chaque élément de la requete  par sa valeur)
+        $requetePreparee->execute([
+            ':email' => $email
+            ,
+            ':pseudo' => $pseudo
+        ]);
+        $utilisateurs = $requetePreparee->fetch(PDO::FETCH_ASSOC);
+
+        if ($utilisateurs) {
+             echo "<script>console.log('verifexitedeja');</script>";
+                return  [
+                    "success" => true,
+                    "data" => "L'utilisateur existe deja"
+                ];
+        } else {
+             echo "<script>console.log('verifexistepas');</script>";
+            return  [
+                "success" => false,
+                "data" => "L'utilisateur n'existe pas"];
+        }
+        
+    } 
+
+    if (isset($datas["email"])&&!isset($datas["pseudo"])) {
+         $email=$datas["email"];
+            $requete="select * from utilisateurs where email = :email";
+            $requetePreparee= $connexion_bd ->prepare($requete);
+        // on exécute la requete preparee en remplacant chaque élément de la requete  par sa valeur)
+            $requetePreparee->execute([
+            ':email' => $email
+        ]);
+        $utilisateur = $requetePreparee->fetch(PDO::FETCH_ASSOC);
+        if ($utilisateur) {
+                return  [
+                    "success" => true,
+                    "utilisateur" => $utilisateur];
+        } else {
+            return  [
+                "success" => false,
+                "utilisateur" => null];
+        }
+
+    }
+
+
+}
+ function  verifPassword($datas,$userFound){
+    echo "224verifpassword";
+    var_dump($userFound);
+    var_dump($datas);
+    $test=password_verify($datas["motDePasse"], $userFound["password"]);
+        if ($test==true) {
+            return  [
+                "success" => true,
+                "utilisateur" => $userFound];
+        } else {
+            return  [
+                "success" => false,
+                "phraseEchec" => "Le mot de passe est incorrect"];
+        }
+    }
+ 
+
+function trimDataForInscription($datas){
+    foreach ($datas as $key => $data) {
+        if ($key!="nom") {
+            $datas[$key]=trim($data);
+        }
+        
+    }
+    return $datas;
+}
+
+function trimDataForConnexion($datas){
+    foreach ($datas as $key => $data) {
+        switch ($key) {
+            case 'email':
+                $datas[$key]=trim($data);
+                break;
+            // case 'motDePasse':
+            //     $datas[$key]=trim($data);
+            //     break;
+            default:
+                break;
+        }
+    }
+    return $datas;
+}
+function protectData($datas){
+     foreach ($datas as $key => $data) {
+        $datas[$key]=htmlspecialchars($data);
+    }
+    return $datas;
+}
+
+
+
+
+function InsertInBD($datas){
+    
+    global $connexion_bd;
+    //  echo"in script insertinbd";
+    $nomUtilisateur=$datas["nomUtilisateur"];
+    if (isset($datas["prenomUtilisateur"])) {
+        $prenomUtilisateur=$datas["prenomUtilisateur"];
+    } else {
+        $prenomUtilisateur="";
+    }
+  
+    $email=$datas["email"];
+    $motDePasse=$datas["motDePasse"];
+    $motDePasseHash=password_hash($motDePasse,PASSWORD_DEFAULT);
+    $role=$datas["role"];
+    $pseudo=$datas["pseudo"];
+    if (isset($datas["dateNaissance"])) {
+        $dateNaissance=$datas["dateNaissance"];
+    } else {
+        $dateNaissance=null;
+    }
+    if (isset($datas["imageProfil"])) {
+        $imageProfil=$datas["imageProfil"];
+    } else {
+        $imageProfil=null;
+    }
+ 
+  
+    // echo"mail".$mail;
+  
+    $requete="insert into utilisateurs (nom_utilisateur,prenom_utilisateur,email,password,imageProfil,pseudo,dateInscription,role,statut_utilisateur,dateNaissance) values (:nomUtilisateur,:prenomUtilisateur,:email,:motDePasseHash,:imageProfil,:pseudo,:dateInscription,:role,:statut_utilisateur,:dateNaissance)";
     $requetePreparee=$connexion_bd->prepare($requete);
     $requetePreparee->execute([
-        ':username' => $username,
-        ':userPrenom' => $userPrenom,
-        ':mail' => $mail,
-        ':motDePasseHash' => $motDePasseHash
+        ':nomUtilisateur' => $nomUtilisateur,
+        ':prenomUtilisateur' => $prenomUtilisateur,
+        ':email' => $email,
+        ':imageProfil' => $imageProfil,
+        ':motDePasseHash' => $motDePasseHash,
+        ':role' => $role,
+        ':pseudo' => $pseudo,
+        ':dateNaissance' => $dateNaissance,
+        ':dateInscription' => date("Y-m-d H:i:s"),
+        ':statut_utilisateur' => 1,
     ]);
     
     // La fonction lastInsertId()  permet de récupérer l'identifiant auto-incrémenté de la dernière ligne insérée dans la base de données
 
     // Récupération de l'ID auto-incrémenté
-    $id = $connexion_bd->lastInsertId();
-    $_SESSION['id'] = $id;
+    $id_utilisateur = $connexion_bd->lastInsertId();
+    echo"id".$id_utilisateur;
+   
+      $_SESSION['id_utilisateur']=$id_utilisateur;
+      $_SESSION['pseudo']=$pseudo;
+      $_SESSION['role']=$role;
+      session_write_close();
 
-    echo "<script>console.log('ID nouvel utilisateur : $id');</script>";
-    sleep(2);
-    return true;
+    echo "<script>console.log('ID nouvel utilisateur : $id_utilisateur');</script>";
+    // sleep(2);
+    // return true;
 }
-function InsertInBdUtilisateur ($infoUtilisateur){
-    
-       $username=htmlspecialchars(trim($infoUtilisateur(['username'])));
-       $userPrenom=htmlspecialchars(trim($infoUtilisateur['userPrenom']));
-       $mail=htmlspecialchars(trim($infoUtilisateur['mail']));
-       $motDePasse=htmlspecialchars(trim($infoUtilisateur['motDePasse']));
-       $listChamps=["username"=>$username,"userPrenom"=>$userPrenom,"mail"=>$mail,"motDePasse"=>$motDePasse];
 
-       $validChamp=[];
-    
-       $validChamp=areValidChamps($listChamps);
-        if ($validChamp["booleen"]==true){
-            // hashagedu mot de passe
-            $motDePasseHash = password_hash($motDePasse, PASSWORD_DEFAULT);
-            $listChamps=["username"=>$username,"userPrenom"=>$userPrenom,"mail"=>$mail,"motDePasseHash"=>$motDePasseHash];
-            $possibletoInsert=itsPossibleToInsert($listChamps);
-            if ($possibletoInsert==true){
-                $phrase="";
-                InsertInBD($listChamps);  
-               
-            } else {
-                 $phrase=$possibletoInsert["phraseEchec"];
-            }
-        } else {
-             $phrase=$validChamp["phraseEchec"];
-        }
-         
-        }
-    function  getBaseDonneesQuizz(){
-    
-   global $connexion_bd;
-  
-    $requete="select * from questions";
+function selectAllEvents(){
+    global $connexion_bd;
+    $requete="select * from evenements";
     $requetePreparee=$connexion_bd->prepare($requete);
-// on exécute la requete preparee en remplacant chaque élément de la requete  par sa valeur)
     $requetePreparee->execute();
-    $baseDonnees = $requetePreparee->fetchAll(PDO::FETCH_ASSOC);
-    // var_dump($baseDonnees);
-    $tableauDonneesQuizz=[];
-    $i=0;
-    // renvoi du tableau associatif $baseDonnees
-    foreach ($baseDonnees as $ligneBd) {
-        // ajout dans le tableau associatif $tableauDonnesQuizz des différents importants du quizz afin de le récupérer dans mon jeu
-        $tableauDonneesQuizz[$i]=[
-            "question"=>$ligneBd["question"],
-            "proposition1"=>$ligneBd["option1"],
-            "proposition2"=>$ligneBd["option2"],
-            "proposition3"=>$ligneBd["option3"],
-            "proposition4"=>$ligneBd["option4"],
-            "numeroBonneReponse"=>$ligneBd["correct_answer"],
-        ];
-        $i++;
-  
-    }
-    // var_dump($tableauDonneesQuizz);
-    return $tableauDonneesQuizz;
-}
-function chooseRandomNumbers(){
-    $tableauNumero=[];
-    for ( $i=0;$i<2;$i++) {
-        do {
-     $numero=rand(0,9);
-
-      } while (in_array($numero, $tableauNumero));
-        
-       $tableauNumero[] = $numero; 
-    }
-     return $tableauNumero;
-    }
-
-
-function getQuizz(){
-    $tableauDonneesQuizz=getBaseDonneesQuizz();
-    $tableauNumero =chooseRandomNumbers();
-    $listeQuestions=[];
-    foreach ($tableauNumero as $numero){
-       $element=$tableauDonneesQuizz[$numero];
-       $listeQuestions[]=$element;
-    }
-return $listeQuestions;
-
-}
-       function sendScoreInBD($idUtilisateur,$jeu,$score){
-     global $connexion_bd;
-switch ($jeu) {
-    case 'quiz':
-        {
-            $game="quiz";
-            $requete="insert into scores (user_id,game,score,date) values (:user_id,:game,:scoreToIntroduce,:date)";  
-           
-        }break;
-       
-    case 'mot_melange':
-        {
-            $game="mot_melange";
-            $requete="insert into scores (user_id,game,score,date) values (:user_id,:game,:scoreToIntroduce,:date)";  
-           
-        }
-        break;
-       
-    case 'nombre':
-        {
-            $game="nombre";
-            $requete="insert into scores (user_id,game,score,date) values (:user_id,:game,:scoreToIntroduce,:date)";  
-            
-        } 
-        break;
-}
-$requetePreparee=$connexion_bd->prepare($requete);
-$requetePreparee->execute([
-    ':user_id' => $idUtilisateur,
-    ':game' => $game,
-    ':scoreToIntroduce' => $score,
-    // date et heure au format actuel
-    ':date' => date("Y-m-d H:i:s")
-    
-]);
-            
-}
-function getWordMelange(){
-     $tableau=["ordinateur","programmation","developpeur","serveur","logiciel","constructeur","ifapme","formation"]; //ordinateur,programmation, developpeur,serveur, logiciel,constructeur, ifapme
-    $numero=rand(0,7);
-    $word=$tableau[$numero];
-    // transforme en tableau
-    $lettres=str_split($word);
-    shuffle($lettres);
-    $wordMelange = implode("", $lettres); // reconstruit le mot mélangé
-    // transformation en tableau de lettre
-    
-  
-   $_SESSION['wordMelange']=$wordMelange;
+    $evenements=$requetePreparee->fetchAll(PDO::FETCH_ASSOC);
+    return $evenements;
 }
 
-
-
-function  getScores(){
-    
-   global $connexion_bd;
-  
-    $requete="select * from scores where user_id = :user_id";  
+function findAllEventsByParticipantId(){
+    $idInscrit=$_SESSION['id'];
+    global $connexion_bd;
+    $requete="select * from inscriptions I join evenements E on I.id_evenement = E.id_evenement where id_inscrit = :idInscrit";
     $requetePreparee=$connexion_bd->prepare($requete);
+    $requetePreparee->execute([
+        ':idInscrit' => $idInscrit,
+    ]);
     
-// on exécute la requete preparee en remplacant chaque élément de la requete  par sa valeur)
-    $requetePreparee->execute([':user_id' => $_SESSION['id']]);
-    $baseDonneesScores = $requetePreparee->fetchAll(PDO::FETCH_ASSOC);
-    // var_dump($baseDonnees);
-    $tableauDonneesScores=[];
-    $i=0;
-    // renvoi du tableau associatif $baseDonnees
-    foreach ($baseDonneesScores as $ligneBd) {
-        // ajout dans le tableau associatif $tableauDonnesQuizz des différents importants du quizz afin de le récupérer dans mon jeu
-        $tableauDonneesScores[$i]=[
-            "game"=>$ligneBd["game"],
-            "score"=>$ligneBd["score"],
-            "date"=>$ligneBd["date"]
-        ];
-        $i++;
-  
-    }
-    // var_dump($tableauDonneesQuizz);
-    return $tableauDonneesScores;
+    $evenements=$requetePreparee->fetchAll(PDO::FETCH_ASSOC);
+    return $evenements;
 }
+
+ function findAllEventsByOrganisateurId(){
+    $idOrganisateur=$_SESSION['id'];
+    global $connexion_bd;
+    $requete="select * from evenements where id_organisateur = :idOrganisateur";
+    $requetePreparee=$connexion_bd->prepare($requete);
+    $requetePreparee->execute([
+        ':idOrganisateur' => $idOrganisateur,
+    ]);
+    
+    $evenements=$requetePreparee->fetchAll(PDO::FETCH_ASSOC);
+    return $evenements;
+} 
+
+function saveProfilImageFile()
+{
+    $save_directory = __DIR__ . DIRECTORY_SEPARATOR . 'facturesUBL' . DIRECTORY_SEPARATOR .    $IDComm  . DIRECTORY_SEPARATOR;
+
+    if (!file_exists($save_directory)) {
+        mkdir($save_directory, 0777, true); // Crée le répertoire s'il n'existe pas
+    }
+
+    // Chemin complet du fichier XML à enregistrer
+    $filePath = $save_directory . $filename;
+
+    // Sauvegarder le fichier XML sur le serveur
+    file_put_contents($filePath, $dom->saveXML());
+}
+
 ?>

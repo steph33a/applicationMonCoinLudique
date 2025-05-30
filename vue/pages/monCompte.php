@@ -8,10 +8,7 @@ $estConnecte = isset($_SESSION['user_id']); // ou autre variable qui dit si conn
 if (!$estConnecte) { 
     header('Location: accueil.php');
     exit();
-} else if ($role !== 'admin') {
-    header('Location: accueil.php');
-    exit();
-}
+} 
 else {
 
 
@@ -20,7 +17,7 @@ include('../composants/includes/header.php')
 ?>
 
 <main class="gestion_utilisateurs">
-    <div class="gestion_utilisateurs_title"><h1>Gestion des Utilisateurs</h1></div>
+    <div class="gestion_utilisateurs_title"><h2>Profil</h2></div>
 </main>  
 
     <?php

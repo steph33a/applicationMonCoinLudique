@@ -4,7 +4,7 @@ function connexionToBaseUtilisateurs(){
 // config.php
 $host = 'localhost';
 
-$dbname = 'mini_jeux';
+$dbname = 'moncoinludique';
 $user = 'root';
 $password = '';
 global $connexion_bd;
@@ -20,7 +20,7 @@ return $connexion_bd;
 
 $connexion_bd = connexionToBaseUtilisateurs();
 function deconnexionToBaseUtilisateurs(){
-    $connBDApplicationJeux = null;
+    $connexion_bd = null;
 }
 
 
