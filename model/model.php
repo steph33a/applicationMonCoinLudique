@@ -118,6 +118,7 @@ function champIsValid($nomChamp,$valeurChamp)
     
 function allChampsNecessaryPresents($datas,$fonctionnalite)
 {
+   
  if ($fonctionnalite=="inscription") {
     $champNecessary=["pseudo","email","motDePasse","confirmationMotDePasse"];
 
@@ -127,20 +128,23 @@ function allChampsNecessaryPresents($datas,$fonctionnalite)
     $champNecessary=["email","motDePasse"];
  }
  if ($fonctionnalite=="reponsesQuestionForRecupMotDePasse") {
-    $champNecessary=["email","reponse1","reponse2"];
+    // echo "ligne131 model";
+    $champNecessary=["email","jeuPrefereUser","chanteurPrefereUser"];
  }
  if ($fonctionnalite=="createEvent") {
     $champNecessary=["pseudo","dateEvent","heureEvent"];
  }
  
  if ($fonctionnalite=="redefinitionMotDePasse") {
-    $champNecessary=["dateEvent","heureEvent"];
+    $champNecessary=["email","motDePasse","confirmationMotDePasse"];
  }
 
     
 
   foreach ($champNecessary as $champ) {
+    // echo "champ".$champ;
         if (!isset($datas[$champ]) || empty($datas[$champ])) {
+             echo "champ ".$champ;
             return false;
         }
     }
@@ -176,7 +180,7 @@ function areValidChamps($datas)
     }
 }
 
-function verifExistInDB($datas){
+function verifExistInDb($datas){
     global $connexion_bd;
  echo "<script>console.log('verif');</script>";
     if (isset($datas["email"])&&isset($datas["pseudo"])) {
@@ -311,7 +315,7 @@ function protectData($datas){
 
 
 
-function InsertInBD($datas){
+function insertInBD($datas){
     
     global $connexion_bd;
     //  echo"in script insertinbd";
@@ -406,17 +410,37 @@ function findAllEventsByParticipantId(){
     $evenements=$requetePreparee->fetchAll(PDO::FETCH_ASSOC);
     return $evenements;
 } 
-function modificationMotDePasse(){
-    $idUtilisateur=$_SESSION['id'];
+function modificationMotDePasse($datas){
+    $email=$datas["email"];
     $motDePasse=$_POST['motDePasse'];
+    $motDePasseHash=password_hash($motDePasse,PASSWORD_DEFAULT);
+    echo $motDePasseHash;
     global $connexion_bd;
-    $requete="update utilisateurs set motDePasse = :motDePasse where id_utilisateur = :idUtilisateur";
+    $requete="update utilisateurs set password = :motDePasse where email = :email";
     $requetePreparee=$connexion_bd->prepare($requete);
     $requetePreparee->execute([
-        ':motDePasse' => $motDePasse,
-        ':idUtilisateur' => $idUtilisateur,
+        ':motDePasse' => $motDePasseHash,
+        ':email' => $email,
     ]);
-    return true;
+
+    $requete="select * from utilisateurs  where email = :email ";
+    $requetePreparee=$connexion_bd->prepare($requete);
+    $requetePreparee->execute([
+        ':email' => $email,
+    ]);
+    
+    $result=$requetePreparee->fetch(PDO::FETCH_ASSOC);
+    // var_dump($result);
+    $id_utilisateur=$result["id_utilisateur"];
+    $pseudo=$result["pseudo"];
+    $role=$result["role"];
+
+      $_SESSION['id_utilisateur']=$id_utilisateur;
+      $_SESSION['pseudo']=$pseudo;
+      $_SESSION['role']=$role;
+
+      session_write_close();
+    
 }
 function saveProfilImageFile()
 {
@@ -432,5 +456,18 @@ function saveProfilImageFile()
     // Sauvegarder le fichier XML sur le serveur
     file_put_contents($filePath, $dom->saveXML());
 }
-
+function importReponsesQuestions($id_utilisateur){
+    global $connexion_bd;
+    $requete="select * from password_recup where id_utilisateur = :id_utilisateur";
+    
+    $requetePreparee=$connexion_bd->prepare($requete);
+    $requetePreparee->execute(
+        [
+            ':id_utilisateur' => $id_utilisateur,
+        ]
+    );
+    // fetch pour récupérer le premier résultat qui sera de toute façon le seul
+    $result=$requetePreparee->fetch(PDO::FETCH_ASSOC);
+    return $result;
+}
 ?>

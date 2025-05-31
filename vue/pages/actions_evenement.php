@@ -4,7 +4,7 @@ session_start();
 $evenment = $_SESSION['evenementSelected'];
 // Exemple de rôles possibles : 'admin', 'utilisateur', null si non connecté
 $role = $_SESSION['role'] ?? null;
-$estConnecte = isset($_SESSION['user_id']); // ou autre variable qui dit si connecté
+$estConnecte = isset($_SESSION['id_utilisateur']); // ou autre variable qui dit si connecté
 if (!$estConnecte) { 
     header('Location: accueil.php');
     exit();

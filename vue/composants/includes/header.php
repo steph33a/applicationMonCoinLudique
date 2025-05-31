@@ -7,6 +7,9 @@
     <title>MonCoinLudique</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="../styles/styles.css" />
+    <script>
+     let modalToOpen = <?php echo json_encode($modal); ?>;
+    </script>
     <script src="../js/fichier.js" defer></script>
     
 </head>
@@ -29,13 +32,13 @@
                 <li><a href="#" class="openModalLink openModalLinkConnexion">Connexion</a></li>
                 
             </ul>
-            <?php }else if (($_SESSION['role'] === 'particulier') || ($$_SESSION['role'] === 'groupe')) {?>
+            <?php }else if (($_SESSION['role'] === 'particulier') || ($_SESSION['role'] === 'groupe')|| ($_SESSION['role'] === 'moderateur')) {?>
                 <ul class="menu utilisateur">
                     <li><a href="accueil.php">Accueil</a></li>
                     <!-- Visible uniquement quand on est connecté -->
                     <li><a href="monCompte.php">Mon compte</a></li>
                     <li><a href="gestion_evenements.php">Gestion<br>des événements</a></li>
-                    <li><a href="..composants/modal/deconnexion.php">Déconnexion</a></li>
+                    <li><a href="deconnexion.php">Déconnexion</a></li>
                 </ul>
         
             <?php } 
@@ -43,12 +46,12 @@
             else if ($_SESSION['role'] === 'admin') {?>
                 <ul class="menu admin">
                     <li><a href="accueil.php">Accueil</a></li>
-                    <li><a class="openModalLink openModalLinkInscription" href="#" >Inscription</a></li>
-                    <li><a class="openModalLink openModalLinkConnexion" href="#" >Connexion</a></li>
+                    <li><a class="" href="accueil.php?modal=inscription" >Inscription</a></li>
+                    <li><a class="" href="accueil.php?modal=connexion" >Connexion</a></li>
                     <li><a href="monCompte.php">Mon compte</a></li>
                     <li><a href="gestion_evenements.php">Gestion<br>des événements</a></li>
                     <li><a href="gestion_utilisateurs.php">Gestion<br>des utilisateurs</a></li>
-                    <li><a href="../composants/modal/deconnexion.php">Déconnexion</a></li>
+                    <li><a href="deconnexion.php">Déconnexion</a></li>
                 </ul>
             
             <?php } ?>

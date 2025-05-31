@@ -306,10 +306,10 @@ input{
   height:40px;
   border:1px solid #4C4C4C;
 }
-.display-block, .displayBlock{
+.displayBlock{
   display:block;
 }
-.display-none, .displayNone{
+ .displayNone{
   display:none;
 }
 #overlayPrincipalAccueil{
@@ -468,3 +468,263 @@ main {
   margin: 20px 0;
 }
 
+.imageEvenement-container{
+  position: relative;
+  width: 180px; /* 75 + 2*3 */
+  height: 180px;
+  /* border:none; */
+  border: 3px solid #704405;
+
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #fff;
+}
+#suppDetailsEvenement {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 20px;
+  align-items: flex-start;
+  max-width: 700px;
+}
+
+.photo-label {
+  cursor: pointer;
+}
+
+.imageEvenement-container {
+  position: relative;
+  width: 180px;
+  height: 180px;
+}
+
+.imageEvent-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+}
+
+.photo-add-icon {
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  background: #ffffff;
+  color: #000000;
+  font-size: 20px;
+  border: 1px solid #4c4c4c;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  text-align: center;
+  line-height: 22px;
+  font-weight: bold;
+}
+
+.photo-input {
+  display: none;
+}
+
+.field-group {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 120px;
+}
+
+.field-group label {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.formElement {
+  height: 32px;
+  border: 1px solid #4c4c4c;
+  border-radius: 5px;
+  padding: 5px;
+  box-sizing: border-box;
+}
+/* Group 2551 */
+.btn {
+  margin-top: 25px;
+  padding: 10px 20px; /* espace intérieur pour donner de la taille */
+  background-color: #6EBA46;
+  color: #FFFFFF;
+  font-size: 18px;
+  font-weight: 600;
+  font-family: 'Nunito Sans', sans-serif;
+  border: none;        /* optionnel : enlève les styles par défaut */
+  border-radius: 4px;   /* optionnel : coins arrondis */
+  cursor: pointer;      /* optionnel : main au survol */
+}
+.details-evenement {
+  width: 350px;
+  max-width: 100%;
+  padding: 20px;
+  margin: 0px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  /* border: 1px solid #ccc; */
+  /* border-radius: 8px; */
+  box-sizing: border-box;
+  font-family: 'Nunito Sans', sans-serif;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 25px;
+  color: #000;
+  margin-bottom: 6px;
+}
+
+
+/* Pour le select multiple */
+.typeSoiree {
+  height: auto;
+  min-height: 39px;
+}
+
+/* Si tu veux que les inputs aient les largeurs spécifiques */
+.recurrence, .dateEvent, .heureEvent, .titreEvent, .jeuxThemesEvent {
+  width: 100%;
+}
+
+@media (max-width: 500px) {
+  .details-evenement {
+    width: 90%;
+  }
+}
+
+ Conteneur principal */
+#informationsProfilOrganisateur {
+  width: 677px; /* largeur fixe comme avant */
+  margin: 20px auto; /* centrage horizontal avec marge verticale */
+  padding: 20px;
+  background-color: #fff; /* optionnel */
+  border: 1px solid #4C4C4C;
+  border-radius: 5px;
+  font-family: 'Nunito Sans', sans-serif;
+  color: #000;
+}
+
+/* Titre */
+#informationsProfilOrganisateur > h2 {
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 25px;
+  color: #704405;
+  margin-bottom: 10px;
+  border-bottom: 2px solid #704405;
+  padding-bottom: 5px;
+}
+
+/* Chaque ligne de champs avec flexbox */
+#informationsProfilOrganisateur > div {
+  margin-bottom: 15px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: space-between;
+}
+
+/* Pour les conteneurs internes (ex: rue + numéro) */
+#informationsProfilOrganisateur > div > div {
+  flex: 1 1 45%; /* deux éléments côte à côte à 45% largeur */
+  display: flex;
+  /* flex-direction: column; */
+}
+
+/* Label */
+#informationsProfilOrganisateur label {
+  font-weight: 600;
+  font-size: 16px;
+  margin-bottom: 5px;
+  color: #000;
+}
+
+/* Input général */
+#informationsProfilOrganisateur input.formElement {
+  box-sizing: border-box;
+  width: 100%;
+  height: 32px;
+  padding: 5px 10px;
+  font-size: 16px;
+  border: 1px solid #4C4C4C;
+  border-radius: 5px;
+  background-color: #fff;
+  color: #4C4C4C;
+}
+
+/* Inputs spécifiques larges (ex: téléphone, mail, url) */
+input.numberPhone,
+input.mail,
+input.url1,
+input.url2 {
+  max-width: 340px;
+}
+
+/* Urls container */
+#urlsEventCreateEvent {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Responsive simple (optionnel) */
+@media (max-width: 700px) {
+  #informationsProfilOrganisateur {
+    width: 95%;
+  }
+  #informationsProfilOrganisateur > div > div {
+    flex: 1 1 100%;
+  }
+}
+
+#informationsProfilOrganisateur h2 {
+  font-family: 'Nunito Sans', sans-serif;
+  font-weight: 600;
+  font-size: 18px;
+  color: #704405;
+  margin-bottom: 5px;
+}
+
+#informationsProfilOrganisateur hr {
+  border: none;
+  border-top: 2px solid #704405;
+  margin-bottom: 20px;
+  transform: rotate(0.12deg);
+}
+
+#informationsProfilOrganisateur input.formElement {
+  width: 240px;
+  height: 32px;
+  border: 1px solid #4C4C4C;
+  border-radius: 5px;
+  padding: 5px 10px;
+  font-family: 'Nunito Sans', sans-serif;
+  font-size: 16px;
+  color: #4C4C4C;
+  box-sizing: border-box;
+  background: #fff;
+}
+#suppDetailsEvenement input.formElement {
+
+  border-radius: 5px;
+  height: 32px;
+  padding: 4px 8px;
+  font-size: 16px;
+  font-family: 'Nunito Sans', sans-serif;
+  color: #4C4C4C;
+  background-color: #fff;
+}

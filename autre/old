@@ -208,3 +208,47 @@ document.getElementById("closeModalBtn").addEventListener("click", function () {
 
 
 });
+
+   
+     <!-- faire une ligne ici  -->
+    <div id="informationsProfilOrganisateur">
+        <h2 style="">Informations du profil Organisateur</h2>
+        <hr>
+        <div style="display:flex; flex-direction:row; justify-content:space-between;" id="informationsProfilOrganisateur">
+            <div>
+                <label for="rueCreateEvent">rue</label>
+                <input class="rue formElement" value="<?php if ($mode=="modificationEvenement") {echo $evenement["rueEvenement"];}?>"type="text" id="rueCreateEvent">
+            </div>
+            <div>
+                <label for="numCreateEvent">rue</label>
+                <input class="numAddresse formElement" value="<?php if ($mode=="modificationEvenement") {echo $evenement["numAdresse"];}?>" type="text" id="numCreateEvent">
+            </div>  
+        </div>
+                
+        <div style="display:flex; flex-direction:Column; justify-content:space-between;">
+            <div style="display:flex; flex-direction:row; justify-content:space-between;">
+                <label for="villeCreateEvent">ville</label>
+                <input class="ville formElement" value="<?php if ($mode=="modificationEvenement") {echo $evenement["ville"];}?>" type="text" id="villeCreateEvent">
+            </div>
+            <div style="display:flex; flex-direction:row; justify-content:space-between;">
+                    <label for="codePostalCreateEvent">code postal</label>
+                    <input class="codePostal formElement" value="<?php if ($mode=="modificationEvenement") {echo $evenement["codePostal"];}?>" type="text" id="codePostalCreateEvent">
+            </div>
+        </div>
+        <div style="display:flex; flex-direction:row; justify-content:space-between;">
+            <label for="numberPhoneCreateEvent">Tel</label>
+                <input type="text" id="numberPhoneCreateEvent" value="<?php if ($mode=="modificationEvenement") {echo $evenement["numberPhone"];}?>" class="numberPhone formElement" placeholder="numéro de GSM ou téléphone">
+        </div>
+        <div style="display:flex; flex-direction:row; justify-content:space-between;">
+            <label for="mailCreateEvent">Mail</label>
+                <input type="mail" id="mailCreateEvent" value="<?php if ($mode=="modificationEvenement") {echo $evenement["mail"];}?>" class="mail formElement" placeholder="mail de l'organisateur">
+        </div>
+        <div>
+            <label for="urlsEventCreateEvent">urls</label>
+            <div id="urlsEventCreateEvent">
+                <input value="<?php if ($mode=="modificationEvenement") {echo $evenement["url1"];}?>" type="text" id="url1CreateEvent" class="url1 formElement" placeholder="url1 de l'organisateur">
+                <input value="<?php if ($mode=="modificationEvenement") {echo $evenement["url2"];}?>" type="text" id="url2CreateEvent" class="url2 formElement" placeholder="url2 de l'organisateur">
+            </div>
+            
+        </div>
+    </div> -->
