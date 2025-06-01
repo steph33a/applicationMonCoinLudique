@@ -13,9 +13,7 @@ if (!$estConnecte) {
     exit();
 } 
 else {
-
-
-include('../composants/includes/header.php') 
+include('../composants/includes/header.php') ;
 
 ?>
 
@@ -34,11 +32,11 @@ include('../composants/includes/header.php')
 
     </div>
     <hr>
-    <div class="gestion_evenements_title"><h2>Evenements approuvés</h2></div>
-    <div class="miniEventToActionsContent">
-   <?php if (empty($evenements)): ?>
-    <p>Aucun événement approuvé pour le moment.</p>
-     <?php else: ?>
+    <div style="margin-top:75px;margin-left: 75px;" class="gestion_evenements_title"><h2>Evenements approuvés</h2></div>
+    <div style="display:block; margin: 45px auto 45px auto;"class="miniEventToActionsContent">
+        <?php if (empty($evenements)): ?>
+        <p  style="display:block; margin: 45px auto 0 auto; text-align:center;">Aucun événement approuvé pour le moment.</p>
+        <?php else: ?>
     <div class="miniEventToActionsContent">
       <?php foreach ($evenements as $evenementSelected) {
           include '../composants/includes/miniEventToActions.php';

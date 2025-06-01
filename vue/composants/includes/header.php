@@ -1,4 +1,7 @@
-
+<?php
+$modal = isset($_GET['modal']) ? $_GET['modal'] : null;
+echo "modal:" . $modal;
+?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>

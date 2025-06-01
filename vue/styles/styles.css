@@ -640,7 +640,7 @@ main {
 
 /* Pour les conteneurs internes (ex: rue + numéro) */
 #informationsProfilOrganisateur > div > div {
-  flex: 1 1 45%; /* deux éléments côte à côte à 45% largeur */
+  flex: wrap; /* deux éléments côte à côte à 45% largeur */
   display: flex;
   /* flex-direction: column; */
 }

@@ -4,8 +4,8 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 // echo "<script>console.log('arrive dans inscription ligne6');</script>";
-//  var_dump($_POST);
-//  var_dump($_SESSION);
+  var_dump($_POST);
+  var_dump($_SESSION);
 // // session_destroy();
 include_once ($_SERVER['DOCUMENT_ROOT'].'/model/db.php'); //require $_SERVER['DOCUMENT_ROOT'] /model/db.php';
 
@@ -28,7 +28,8 @@ function handleLoginAndRegistration() {
     // var_dump($_POST);
     if (allChampsNecessaryPresents($_POST,'reponsesQuestionForRecupMotDePasse')){
       // echo"ligne26 controller";
-      $datas=trimDataForResearchRecupMotDePasse($_POST);
+     
+      $datas=trimData($_POST);
       $datas=protectData($datas);
       $datas["reponse2"]=$datas["chanteurPrefereUser"];
       $datas["reponse1"]=$datas["jeuPrefereUser"];
@@ -66,7 +67,7 @@ function handleLoginAndRegistration() {
   if (isset($_POST['btnRedefinitionMotDePasse'])){
     // var_dump($_POST);
     if (allChampsNecessaryPresents($_POST,'redefinitionMotDePasse')){
-      $datas=trimDataForRedefinitionMotDePasse($_POST);
+      $datas=trimData($_POST);
       $datas=protectData($datas);
       //verif exist in db va rechercher dans la bd si l'utilisateur existe ou non suivant le mail si il existe
       $result=verifExistInDb($datas);
@@ -84,7 +85,7 @@ function handleLoginAndRegistration() {
 
   if  (isset($_POST['btnConnexion'])){
     if (allChampsNecessaryPresents($_POST,'connexion')){
-        $datas=trimDataForConnexion($_POST);
+        $datas=trimData($_POST);
         $datas=protectData($datas);
         $result=areValidChamps($datas);
           if ($result["success"]==true){
@@ -123,7 +124,17 @@ function handleLoginAndRegistration() {
 //  echo "<script>console.log('arrive dans inscription ligne42');</script>";
      if (allChampsNecessaryPresents($_POST,'inscription')){
       //  var_dump($_POST);
-        $datas=trimDataForInscription($_POST);
+      echo"ligne201";
+      var_dump($_FILES);
+      $file=$_FILES['imageProfil'];
+      var_dump($file);
+      if (isset($file)) {
+           enregistrementImageProfil();
+    
+     
+      }
+   
+        $datas=trimData($_POST);
         $datas=protectData($datas);
         $result=areValidChamps($datas);
         //  echo "<script>console.log('arrive dans inscription ligne50');</script>";
@@ -188,22 +199,73 @@ function includeView($viewName) {
 
 
 if (isset($_SESSION['id_utilisateur'])) { 
-       locationView('gestion_evenements');
-       exit();
 
-      if (isset($_SESSION['role']) && $_SESSION['role'] == 'admin') {
+
+  if (isset($_POST['btnCreationEvenement'])) {
+    echo"ligne195";
+    // echo "<script>console.log('arrive dans inscription ligne50');</script>";
+
+    var_dump($_POST);
+   
+    if (allChampsNecessaryPresents($_POST,'creationEvenement')) {
+      if (isset($_POST['typeSoiree'])) {
+        $_POST['typeSoiree'] = $_POST['typeSoiree'][0];
+      } 
+
+      echo"ligne201";
+      var_dump($_FILES);
+      $file=$_FILES['imageEvent'];
+      var_dump($file);
+      if (isset($file)) {
+        enregistrementImageEvent();
+      }
+      $datas=trimData($_POST);
+      $datas=protectData($datas);
+      $result=areValidChamps($datas);
+      //  echo "<script>console.log('arrive dans inscription ligne50');</script>";
+      if ($result["success"]==true){
+        $result=verifyExistInBDEvenement($datas);
+        if ($result["success"]==false)
+        {
+          $result=insertEvenementInBD($datas); 
+            echo "reussite";
+          // locationView('gestion_evenements');
+          exit();
+           } else {
+          $phrase=$result["phraseEchec"];
+                  //  echo $phrase;
+           }
+        }
+       
+    }
+  }
+  else if (isset($_POST['btnModificationEvenement'])) {
+    
+  }
+  else if (isset($_POST['btnSuppressionEvenement'])) {
+    
+  }
+   
+
+  else if  (isset($_SESSION['role']) && $_SESSION['role'] == 'admin') {
         // echo "ligne182";
         if (isset($_POST['btnInscription'])||isset($_POST['btnConnexion'])||isset($_POST['btnRedefinitionMotDePasse'])||isset($_POST['btnDeconnexion'])){
             //  echo "ligne185";
           handleLoginAndRegistration();
         }
+        else {
+          locationView('gestion_evenements');
+          exit();
+        }
          
-      }
+  }
   
+  else {
 
-    
-
-
+    locationView('gestion_evenements');
+      exit();
+   
+  }
    // Si l'utilisateur est connecté
     // Afficher le dashboard ou gérer les actions envoyées
 } 

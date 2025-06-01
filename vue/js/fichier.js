@@ -41,6 +41,7 @@ photoInput.addEventListener('change', function (e) {
     const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
      // Taille maximale autorisée : 2 Mo (2 * 1024 * 1024 octets)
     const maxSizeInBytes = 2 * 1024 * 1024;
+    
     let  indexInput;
 
     // Si le type du fichier n'est pas dans la liste autorisée, on alerte l'utilisateur
@@ -79,6 +80,61 @@ photoInput.addEventListener('change', function (e) {
     reader.readAsDataURL(file);
 });
 }
+let imageEventInput=document.getElementById('imageEventInput');
+
+if (imageEventInput) {
+imageEventInput.addEventListener('change', function (e) {
+
+    
+    // On récupère le premier fichier sélectionné par l'utilisateur
+    const file = e.target.files[0];
+
+    // Si aucun fichier sélectionné, on arrête la fonction
+    if (!file) return;
+
+    // Liste des types MIME autorisés (formats d'image acceptés)
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+     // Taille maximale autorisée : 2 Mo (2 * 1024 * 1024 octets)
+    const maxSizeInBytes = 2 * 1024 * 1024;
+    let  indexInput;
+
+    // Si le type du fichier n'est pas dans la liste autorisée, on alerte l'utilisateur
+    if (!allowedTypes.includes(file.type)) {
+      console.log(validChamps);
+       // Ajouter à validChamps si pas déjà dedans
+         indexInput = validChamps.indexOf("imageEvent");
+        if (indexInput !== -1) {
+          validChamps.splice(indexInput, 1);
+        }
+        alert('Veuillez sélectionner une image au format JPEG, PNG ou WEBP.');
+        e.target.value = ''; // On réinitialise le champ fichier pour forcer une nouvelle sélection
+        return; // On quitte la fonction
+    } else if (file.size > maxSizeInBytes) {
+        alert('La taille de l’image ne doit pas dépasser 2 Mo.');
+        e.target.value = ''; // Réinitialisation du champ
+        indexInput = validChamps.indexOf("imageEvent");
+        if (indexInput !== -1) {
+          validChamps.splice(indexInput, 1);
+        }
+    } else {
+       if (!validChamps.includes("imageEvent")) {
+          validChamps.push("imageEvent");
+        }
+    }
+
+    // Création d’un FileReader pour lire le fichier localement
+    const reader = new FileReader();
+
+    // Quand le fichier est lu avec succès
+    reader.onload = function (e) {
+        // On insère l'image lue (en base64) dans la balise <img> ayant la classe 'photo-preview'
+        document.querySelector('.imageEvent-preview').src = e.target.result;
+    };
+
+    // Lecture du fichier sous forme de DataURL (base64), nécessaire pour afficher un aperçu
+    reader.readAsDataURL(file);
+});}
+
 function showTextComment(classIdentification,text){
   console.log("showTextComment");
   // Cette fonction montre juste le commentaire et met le display on 
@@ -112,7 +168,7 @@ function removeTextComment(classIdentification){
 }
 function cleanChampValue(classChamp,champValue){
   console.log("classChamp",classChamp);
-  let champTocleanChampValue=["dateNaissance","numberPhone","pseudo","email","motDePasse","confirmationMotDePasse"];
+  let champTocleanChampValue=["dateNaissance","numberPhoneEvent","pseudo","email","motDePasse","confirmationMotDePasse","emailEvent","codePostalEvent","numRueEvent","nbParticipants","ageRequis"];
   if (champTocleanChampValue.includes(classChamp)) {
      champValue= champValue.trim();
   } else {
@@ -125,17 +181,24 @@ function champFormulaireIsValid(classInput,champValue) {
   console.log("classInput125 ",classInput);
   console.log("champValue126",champValue);
   // champ pour vérification des événements 
-  if ((classInput === "url1") || (classInput === "url2")|| (classInput === "rue")||(classInput === "jeuxThemesEvent") || (classInput === "titre")|| (classInput === "recurrence")) return ( champValue.length >= 3) ? true : false;;
-
+  if ((classInput === "villeEvent") || (classInput === "url1") || (classInput === "url2")|| (classInput === "rueEvent")||(classInput === "jeuxThemesEvent") || (classInput === "titre")|| (classInput === "recurrence")) return ( champValue.length >= 3) ? true : false;;
   
+  if (classInput === "typeSoiree") {
+  const valeursAutorisees = ["createur", "classique", "thematique"];
+  return valeursAutorisees.includes(champValue.trim().toLowerCase());
+}
+if (classInput === "role") {
+  const rolesAutorises = ["admin", "particulier", "groupe", "modérateur"];
+  return rolesAutorises.includes(champValue.trim().toLowerCase());
+}
   switch (classInput) {
     
-    case "numberPhone":
+    case "numberPhoneEvent":
        //vérification 10 de longueur et que des chiffres
       //fonction Si la valeur n'est pas un nombre valide, la fonction retourne true
      return ((champValue.length == 10)&&!isNaN(champValue)) ?  true : false; //champValue.length == 10 ? true : false;
 
-    case "codePostal":
+    case "codePostalEvent":
       return ((champValue.length === 4) && !isNaN(champValue)) ? true : false;
 
     case "ageRequis":
@@ -167,8 +230,10 @@ function champFormulaireIsValid(classInput,champValue) {
         return dateEvent >= aujourdHui;
 
       }
+
  
-    
+    case "emailEvent":
+      return (champValue.includes("@") && champValue.includes(".")&& champValue !== "") ? true : false;
     // champ pour l'inscription et la connexion
     case "email":
       return (champValue.includes("@") && champValue.includes(".")&& champValue !== "") ? true : false;
@@ -209,9 +274,20 @@ function commentaireAfficher(classInput,champValue) {
   if (champValue==="") {
     return "";
   }
-  if ((classInput === "url1") || (classInput === "url2")|| (classInput === "rue")||(classInput === "jeuxThemesEvent") || (classInput === "titre")|| (classInput === "recurrence")) return ( champValue.length >= 3) ? "champ correct": "champ incorrect au moins 3 caractères";
-
-
+if ((classInput === "url1") || (classInput === "url2")|| (classInput === "rue")||(classInput === "jeuxThemesEvent") || (classInput === "titre")|| (classInput === "recurrence")) return ( champValue.length >= 3) ? "champ correct": "champ incorrect au moins 3 caractères";
+if (classInput === "typeSoiree") {
+    const typesAutorises = ["createur", "classique", "thematique"];
+    return typesAutorises.includes(champValue.trim().toLowerCase())
+      ? "champ correct"
+      : "Type de soirée invalide (créateur, classique, thématique)";
+  }
+// Cas de valeurs autorisées pour role
+  if (classInput === "role") {
+    const rolesAutorises = ["admin", "particulier", "groupe", "modérateur"];
+    return rolesAutorises.includes(champValue.trim().toLowerCase())
+      ? "champ correct"
+      : "Rôle invalide (admin, particulier, groupe, moderateur)";
+  }
   // console.log("commentiare afficher idChamp",idChamp);
   switch (classInput) {
       case "numberPhone":
@@ -372,9 +448,9 @@ function appliquerStyleValidChamps(validChamps, inputs) {
       }
       else if (formulaire.id=="formulaireMotDePasseOublie") {
         listInputs=["email","jeuPrefereUser","chanteurPrefereUser"];
-      } else if (formulaire.id=="formulaireCreateEvent") {
-         listInputs = ["imageEvent","nbParticipants","ageRequis","recurrence","typeSoiree","dateEvent", "heureEvent","titreEvent", "titre","jeuxThemesEvent","rue","numAdresse",  // corrigé de numAddresse"ville","codePostal","numberPhone", "mail","url1", "url2"
-];
+      } else if (formulaire.id=="formulaireCreationEvenement") {
+       listInputs=["heureEvent","dateEvent","discussionGroupEvent","url1","url2","emailEvent","numberPhoneEvent","codePostalEvent","villeEvent","numRueEvent","rueEvent","jeuxThemesEvent","titreEvent","typeSoiree","reccurenceEvent","nbParticipants","ageRequis","imageEvent"]
+   
       }  else if (formulaire.id=="formulaireRedefinitionMotDePasse") {
         listInputs=["email","motDePasse","confirmationMotDePasse"];
       } 
@@ -391,25 +467,32 @@ function findAllIndispensablesInputs(formulaire) {
   if (formulaire.id=="formulaireInscription")  {
     listInputsIndispensables = ["pseudo","email","motDePasse","nomUtilisateur","imageProfil","confirmationMotDePasse","role"];
   } else if (formulaire.id=="formulaireConnexion")  {
-   listInputsIndispensables=["email","motDePasse"];
+   listInputsIndispensables=["email","motDePasse"]
   } else if (formulaire.id=="formulaireMotDePasseOublie") {
     listInputsIndispensables=["email","jeuPrefereUser","chanteurPrefereUser"];
-} else if (formulaire.id=="formulaireCreateEvent") {
-  listInputsIndispensables= ["mail","codePostal","ville","rue","numAdresse","heureEvent","typeSoiree","nbParticipants","imageEvent"];
+} else if (formulaire.id=="formulaireCreationEvenement") {
+  listInputsIndispensables=["emailEvent","dateEvent","heureEvent","typeSoiree","nbParticipants","imageEvent"];
+  // listInputsIndispensables= ["mail","codePostal","ville","rue","numAdresse","heureEvent","typeSoiree","nbParticipants","imageEvent"];
+  // listInputsIndispensables= ["mail","codePostal","ville","rue","numAdresse","heureEvent","typeSoiree","nbParticipants","imageEvent"];
 } else if (formulaire.id=="formulaireRedefinitionMotDePasse") {
   listInputsIndispensables=["email","motDePasse","confirmationMotDePasse"];
 }
 return listInputsIndispensables;
 }
+
 // Dans la fonction fichier.js
 let inputs = document.querySelectorAll('input, select, textarea');
   inputs.forEach(element => {
     // Chaque élément <input>, <select>, <textarea> a une propriété .form qui renvoie directement le formulaire auquel il appartient, ou null s’il n’en a pas.
-      
+      if (element.type === "file") {
+          return "";
+          // Traiter le fichier si besoin
+        } 
     console.log("element279",element);
     element.addEventListener("input", function() {
 
       let formulaire = element.form; // c’est le formulaire parent
+      console.log("formulaire",formulaire);
       // renvoie la liste des éléments input se trouvant   dans le formulaire en question (ici une liste de classes)
 
       let listInputs=findAllInputs(formulaire);
@@ -459,7 +542,7 @@ let inputs = document.querySelectorAll('input, select, textarea');
         console.log(classCommentaire);
 
         if (classCommentaire!=""){
- removeTextComment(classCommentaire);
+           removeTextComment(classCommentaire);
         }
         // Supprime le commentaire d'erreur
        
@@ -528,8 +611,12 @@ let btnConnexion=document.querySelector("#btnConnexion");
 let btnMotDePasseOublie=document.querySelector("#btnMotDePasseOubie");
 const connexion = document.getElementById("connexion");
 let mainAccueil=document.querySelector("#mainAccueil");
+if (mainAccueil) {
+  mainAccueil.classList.add("accueil");
+  
+ heightMainDepart=parseFloat(getComputedStyle(mainAccueil).height)
+}
 
-mainAccueil.classList.add("accueil");
 let formInscriptionCommentaire = document.querySelector("#formInscriptionCommentaire");
 let formConnexionCommentaire = document.querySelector("#formInscriptionCommentaire");
 let formulaireMotDePasseOublieCommentaire=document.querySelector("#formulaireMotDePasseOublieCommentaire");
@@ -540,26 +627,45 @@ let boutonCreationEvenement = document.querySelector('button[name="btnCreationEv
 let boutonConnexion = document.querySelector('button[name="btnConnexion"]');
 let formulaireConnexion=document.getElementById('formulaireConnexion');
 let formulaireMotDePasseOublie=document.getElementById('formulaireMotDePasseOublie');
-
+let divCreateEventForGroupe=document.querySelector(".divCreateEventForGroupe");
 // let listeClassInputsCreateEvent=["mail","champLibre","url","numberPhone","codePostal","ville","rue","numAdresse","heureEvent","dateEvent","typeSoiree","ageRequis","nbParticipants"];
  
      
 
 let commentaireErreur;
 let validChamps=[];
+let modalFormConnexion=document.getElementById("modalFormConnexion");
+let modalFormInscription=document.getElementById("modalFormInscription");
+// modalFormRedefinitionMotDePasse=document.getElementById("modalFormRedefinitionMotDePasse");
+let modalFormConditionsUtilisation=document.getElementById("modalFormConditionsUtilisation");
+let modalFormMotDePasseOublie=document.getElementById("modalFormMotDePasseOublie");
+let modalFormRechercheAvancee=document.getElementById("modalFormRechercheAvancee");
+let modalDetailsEvenement=document.getElementById("modalDetailsEvenement");
 
-
-document.getElementById("modalFormConnexion").classList.add("displayNone");
-document.getElementById("modalFormInscription").classList.add("displayNone");
+if (modalFormConnexion) {
+  modalFormConnexion.classList.add("displayNone");
+}
+if (modalFormInscription) {
+  modalFormInscription.classList.add("displayNone");
+}
 // document.getElementById("modalFormRedefinitionMotDePasse").classList.add("displayNone");
-document.getElementById("modalFormConditionsUtilisation").classList.add("displayNone");
-document.getElementById("modalFormMotDePasseOublie").classList.add("displayNone");
-document.getElementById("modalFormRechercheAvancee").classList.add("displayNone");
-document.getElementById("modalDetailsEvenement").classList.add("displayNone");
+if (modalFormConditionsUtilisation) { 
+
+modalFormConditionsUtilisation.classList.add("displayNone");
+}
+if (modalFormMotDePasseOublie) {
+modalFormMotDePasseOublie.classList.add("displayNone");
+}
+if (modalFormRechercheAvancee) {
+modalFormRechercheAvancee.classList.add("displayNone");
+}
+if (modalDetailsEvenement) {
+
+modalDetailsEvenement.classList.add("displayNone");
+}
 
 
 
- heightMainDepart=parseFloat(getComputedStyle(mainAccueil).height)
 
 let formulaireInscription=document.getElementById('formulaireInscription');
 
@@ -616,7 +722,7 @@ formulaireInscription.addEventListener('submit', function (e) {
     if (formulaireConnexion) {
 formulaireConnexion.addEventListener('submit', function (e) {
         let elementIndispensableConnexion=findAllIndispensablesInputs(formulaireConnexion);
-    
+       
        const champsInvalides = elementIndispensableConnexion.filter(champ => !validChamps.includes(champ));
 
         if (champsInvalides.length > 0) {
@@ -636,10 +742,15 @@ formulaireConnexion.addEventListener('submit', function (e) {
 
 if (formulaireCreationEvenement) {
 formulaireCreationEvenement.addEventListener('submit', function (e) {
-    let elementIndispensableCreateEvent=findAllIndispensablesInputs(formulaireCreationEvenement);
-        const champsInvalides = elementIndispensableCreateEvent.filter(champ => !validChamps.includes(champ));
 
-     
+      if (divCreateEventForGroupe) {
+            listInputsIndispensablesCreateEvent= ["emailEvent","numberPhoneEvent","codePostalEvent","villeEvent","rueEvent","numRueEvent","titreEvent","heureEvent","typeSoiree","nbParticipants","imageEvent"];
+        
+          } else{
+             listInputsIndispensableCreateEvent=findAllIndispensablesInputs(formulaireCreationEvenement);
+        }
+    
+     let champsInvalides = listInputsIndispensableCreateEvent.filter(champ => !validChamps.includes(champ));
 
     if (champsInvalides.length > 0) {
        e.preventDefault();

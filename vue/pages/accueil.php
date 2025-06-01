@@ -13,8 +13,8 @@ session_start();
 // var_dump($role);
 // 
 // echo "affichageFormulaireRedefinitionMotDePasse:" . $affichageFormulaireRedefinitionMotDePasse;
-$modal = isset($_GET['modal']) ? $_GET['modal'] : null;
-echo "modal:" . $modal;
+
+
 
 $affichageFormulaireRedefinitionMotDePasse = (isset($_SESSION["redefinitionMotDePasse"]) && $_SESSION["redefinitionMotDePasse"]) ? true : false;
 unset($_SESSION['redefinitionMotDePasse']);

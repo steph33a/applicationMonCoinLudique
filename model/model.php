@@ -131,8 +131,14 @@ function allChampsNecessaryPresents($datas,$fonctionnalite)
     // echo "ligne131 model";
     $champNecessary=["email","jeuPrefereUser","chanteurPrefereUser"];
  }
- if ($fonctionnalite=="createEvent") {
-    $champNecessary=["pseudo","dateEvent","heureEvent"];
+ if ($fonctionnalite=="creationEvenement") {
+    $role=$_SESSION["role"];
+    var_dump($role);
+    if (($role=="groupe") ) {
+        $champNecessary=["emailEvent","numberPhoneEvent","codePostalEvent","villeEvent","numRueEvent","rueEvent","titreEvent","typeSoiree","reccurenceEvent","nbParticipants","dateEvent","heureEvent"];
+    } else if ($role=="particulier"|| ($role=="admin")) {
+        $champNecessary=["emailEvent","dateEvent","heureEvent","typeSoiree","nbParticipants"];
+    } 
  }
  
  if ($fonctionnalite=="redefinitionMotDePasse") {
@@ -148,6 +154,7 @@ function allChampsNecessaryPresents($datas,$fonctionnalite)
             return false;
         }
     }
+  echo"ok champNecessary";
     return true;
 }
 
@@ -181,7 +188,8 @@ function areValidChamps($datas)
 }
 
 function verifExistInDb($datas){
-    global $connexion_bd;
+
+global $connexion_bd;
  echo "<script>console.log('verif');</script>";
     if (isset($datas["email"])&&isset($datas["pseudo"])) {
  echo "<script>console.log('verif');</script>";
@@ -252,46 +260,36 @@ function verifExistInDb($datas){
         }
     }
  
+// Si tu récupères cette donnée dans $datas['imageEvent'] (par exemple en fusionnant $_POST et $_FILES), alors $datas['imageEvent'] n’est pas une chaîne simple (comme 'image (9).png'), mais un tableau (avec les clés 'name', 'tmp_name', 'size', etc).
+function trimData($datas){
+  
 
-function trimDataForInscription($datas){
+    $listDataToClean=["pseudo","jeuPrefereUser","chanteurPrefereUser","villeEvent","rueEvent","titreEvent"];
+
     foreach ($datas as $key => $data) {
-        if ($key!="nom") {
+      
+        if (is_string($data)) {
+        echo "data272".$data;
             $datas[$key]=trim($data);
+
+        if (in_array($datas[$key], $listDataToClean, true)) {
+            
+            while (strpos($datas[$key], "  ") !== false) {
+               $datas[$key] = str_replace("  ", " ",$datas[$key]);
+            }
         }
+    } else if (is_array($data)) {
+            // Par exemple, rien à faire, on garde la valeur telle quelle
+            $datas[$key] = $data;
+        }
+      
         
     }
     return $datas;
 }
 
-function trimDataForConnexion($datas){
-    foreach ($datas as $key => $data) {
-        switch ($key) {
-            case 'email':
-                $datas[$key]=trim($data);
-                break;
-            // case 'motDePasse':
-            //     $datas[$key]=trim($data);
-            //     break;
-            default:
-                break;
-        }
-    }
-    return $datas;
-}
-function trimDataForResearchRecupMotDePasse($datas){
-    foreach ($datas as $key => $data) {
-        $datas[$key]=trim($data);
-    }
-    return $datas;
 
-}
-function trimDataForRedefinitionMotDePasse($datas){
-        foreach ($datas as $key => $data) {
-        $datas[$key]=trim($data);
-    }
-    return $datas;
 
-}
 
 /**
  * Sanitizes an array of data by converting special characters to HTML entities.
@@ -306,6 +304,7 @@ function trimDataForRedefinitionMotDePasse($datas){
  */
 
 function protectData($datas){
+    var_dump($datas);
      foreach ($datas as $key => $data) {
         $datas[$key]=htmlspecialchars($data);
     }
@@ -469,5 +468,174 @@ function importReponsesQuestions($id_utilisateur){
     // fetch pour récupérer le premier résultat qui sera de toute façon le seul
     $result=$requetePreparee->fetch(PDO::FETCH_ASSOC);
     return $result;
+}
+// à revoir
+function nettoyerNomFichier($filename) {
+    // enlève tous les caractères sauf lettres, chiffres, tirets, points, underscores
+    $filename = preg_replace("/[^a-zA-Z0-9\-\._]/", "_", $filename);
+    return $filename;
+}
+/*************  ✨ Windsurf Command ⭐  *************/
+/**
+ * Vérifie si le type et la taille d'un fichier image sont valides.
+ *
+ * @param string $fileType Le type MIME du fichier à vérifier (ex: image/jpeg).
+ * @param int $fileSize La taille du fichier en octets.
+ *
+ * @throws Exits le script si le type de fichier n'est pas autorisé ou si la taille dépasse 2 Mo.
+ * @return void
+ */
+
+/*******  08094d5a-a28e-482a-9aae-618739877f04  *******/
+ function  verificationFichierImage($cheminTemporaireServeur, $fileSize) {  
+    // Types MIME autorisés
+    $maxSizeInBytes = 2 * 1024 * 1024;
+    $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/webp'];
+    //  pour vérifier le type MIME du fichier plus robuste que typefile
+// fonction ouvre un gestionnaire finfo, qui permet d'analyser un fichier.
+// FILEINFO_MIME_TYPE indique qu’on veut récupérer le type MIME du fichier
+     $analyseurFichierMime = finfo_open(FILEINFO_MIME_TYPE);
+    //  $analyseurFichierMime  c'est appelé f_info en temps normal
+     $realMimeType = finfo_file($analyseurFichierMime, $cheminTemporaireServeur);
+     finfo_close($analyseurFichierMime);
+
+        // Taille max (2 Mo)
+    
+    if (!in_array($realMimeType, $allowedMimeTypes)) {
+        echo "Erreur : type de fichier non autorisé. Seules les images JPEG, PNG et WEBP sont acceptées.";
+        return false;
+    }
+  
+
+    // Vérification de la taille
+    if ($fileSize > $maxSizeInBytes) {
+        echo "Erreur : le fichier est trop volumineux. La taille maximale autorisée est de 2 Mo.";
+        return false;
+    }
+    return true;
+ }
+function enregistrementImageProfil(){
+
+    if (isset($_FILES['imageProfil']) && $_FILES['imageProfil']['error'] === UPLOAD_ERR_OK) {
+    // Récupérer les infos du fichier uploadé
+      $cheminTemporaireServeur = $_FILES['imageProfil']['tmp_name']; // fichier temporaire sur serveur
+      $fileOriginalName = nettoyerNomFichier(basename($_FILES['imageProfil']['name'])); // $_FILES['imageProfil']['name']; // nom d'origine du fichier
+      $fileSize = $_FILES['imageProfil']['size']; // taille du fichier
+    //   $fileType = $_FILES['imageProfil']['type']; 
+      $result=verificationFichierImage( $cheminTemporaireServeur , $fileSize);
+      if (!$result) {
+        return;
+      }
+      $userId = $_SESSION['id_utilisateur'];
+
+
+        $destinationDirectory = __DIR__ . '/uploads/'.$userId.'/profil/';
+        // Exemple : déplacer le fichier vers un dossier "uploads/"
+        // pour éviter les collisions de noms de fichiers en utilisant uniqid() crée un identifiant unique
+        $destinationFile = $destinationDirectory . uniqid() . '_' . basename($fileOriginalName);
+        if (!is_dir($destinationDirectory)) {
+            mkdir($destinationDirectory, 0777, true);
+        }
+        if (move_uploaded_file($cheminTemporaireServeur, $destinationFile)) {
+            echo "Le fichier a bien été uploadé : " . htmlspecialchars($fileOriginalName);
+        } else {
+            echo "Erreur lors du déplacement du fichier.";
+        }
+
+    } else {
+        echo "Aucun fichier uploadé ou erreur d'upload.";
+    }
+   
+}
+function enregistrementImageEvent(){
+
+    if (isset($_FILES['imageEvent']) && $_FILES['imageEvent']['error'] === UPLOAD_ERR_OK) {
+    // Récupérer les infos du fichier uploadé
+      $cheminTemporaireServeur = $_FILES['imageEvent']['tmp_name']; // fichier temporaire sur serveur
+    //   pour enlever les chemins dans le nom du fichier 
+      $fileOriginalName = nettoyerNomFichier(basename($_FILES['imageEvent']['name'])); //$_FILES['imageEvent']['name']; // nom d'origine du fichier
+      $fileSize = $_FILES['imageEvent']['size']; // taille du fichier
+    //   $fileType = $_FILES['imageEvent']['type']; 
+       $result=verificationFichierImage( $cheminTemporaireServeur , $fileSize);
+      if (!$result) {
+        return;
+      }
+        $userId = $_SESSION['id_utilisateur'];
+
+
+ 
+        // Exemple : déplacer le fichier vers un dossier "uploads/"
+        $destinationDirectory = __DIR__ . '/uploads/'.$userId.'/event/';
+        $destinationFile = $destinationDirectory . uniqid() . '_' . basename($fileOriginalName);
+        if (!is_dir($destinationDirectory)) {
+            mkdir($destinationDirectory, 0777, true);
+        }
+
+        if (move_uploaded_file($cheminTemporaireServeur, $destinationFile)) {
+            echo "Le fichier a bien été uploadé : " . htmlspecialchars($fileOriginalName);
+        } else {
+            echo "Erreur lors du déplacement du fichier.";
+        }
+        
+    } else {
+        echo "Aucun fichier uploadé ou erreur d'upload.";
+    }
+   
+}
+// A revoir 
+function insertEvenementInBD($datas) {
+    global $connexion_bd;
+
+    // Extraction des données depuis $datas (provenant de $_POST probablement)
+    $titre = $datas["titre"];
+    $description = $datas["description"] ?? "";
+    $date = $datas["dateEvent"];
+    $heure = $datas["heureEvent"] ?? null;
+    $lieu = $datas["villeEvent"] ?? null;
+    $typeSoiree = $datas["typeSoiree"]; // ex: 'classique', 'createur', etc.
+    $nbParticipantsMax = $datas["nbParticipantsMax"] ?? null;
+    $idOrganisateur = $datas["id_organisateur"]; // Doit venir de la session ou d’un champ caché
+
+    $dateCreation = date("Y-m-d H:i:s");
+
+    $requete = "INSERT INTO evenements (titre, description, date, heure, lieu, type_soiree, nb_participants_max, id_organisateur, date_creation)
+                VALUES (:titre, :description, :date, :heure, :lieu, :typeSoiree, :nbParticipantsMax, :idOrganisateur, :dateCreation)";
+
+    $requetePreparee = $connexion_bd->prepare($requete);
+    $requetePreparee->execute([
+        ':titre' => $titre,
+        ':description' => $description,
+        ':date' => $date,
+        ':heure' => $heure,
+        ':lieu' => $lieu,
+        ':typeSoiree' => $typeSoiree,
+        ':nbParticipantsMax' => $nbParticipantsMax,
+        ':idOrganisateur' => $idOrganisateur,
+        ':dateCreation' => $dateCreation,
+    ]);
+
+    $id_evenement = $connexion_bd->lastInsertId();
+
+    echo "<script>console.log('ID nouvel événement : $id_evenement');</script>";
+
+    return $id_evenement;
+}
+
+function verifyExistInBDEvenement() {
+     global $connexion_bd;
+     $heure = $datas["heureEvent"] ?? null;
+      $lieu = $datas["villeEvent"] ?? null;
+      $id_utilisateur= $_SESSION[$id];
+      $requete="select * from evenements where heure = :heure AND lieu = :lieu AND id_organisateur = :id_utilisateur";
+      $requetePreparee=$connexion_bd->prepare($requete);
+      $requetePreparee->execute([
+          ':heure' => $heure,
+          ':lieu' => $lieu,
+          ':id_utilisateur' => $id_utilisateur,
+      ]);
+
+      $result=$requetePreparee->fetch(PDO::FETCH_ASSOC);
+      return $result;
+
 }
 ?>
