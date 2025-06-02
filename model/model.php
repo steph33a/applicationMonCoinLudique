@@ -215,12 +215,17 @@ function champIsValid($nomChamp,$valeurChamp)
                   ];
 
                 break;
-        }       
+        }    
+         return  [
+                    "success" => true,
+                    "phraseEchec" => ""
+                  ];   
 }
     
 function allChampsNecessaryPresents($datas,$fonctionnalite)
-{
-   
+{ 
+   $champNecessary=[];
+   var_dump($fonctionnalite);
  if ($fonctionnalite=="inscription") {
     $champNecessary=["pseudo","email","motDePasse","confirmationMotDePasse"];
 
@@ -241,8 +246,10 @@ function allChampsNecessaryPresents($datas,$fonctionnalite)
     var_dump($role);
     if (($role=="groupe") ) {
         $champNecessary=["emailEvent","numberPhoneEvent","codePostalEvent","villeEvent","numRueEvent","rueEvent","titreEvent","typeSoiree","reccurenceEvent","nbParticipants","dateEvent","heureEvent"];
+        var_dump($champNecessary);
     } else if ($role=="particulier"|| ($role=="admin")) {
         $champNecessary=["emailEvent","dateEvent","heureEvent","typeSoiree","nbParticipants"];
+        var_dump($champNecessary);
     } 
  }
  
@@ -255,33 +262,69 @@ function allChampsNecessaryPresents($datas,$fonctionnalite)
   foreach ($champNecessary as $champ) {
     // echo "champ".$champ;
         if (!isset($datas[$champ]) || empty($datas[$champ])) {
-            //  echo "champ ".$champ;
-            return false;
+            
+              echo "champ 262 ".$champ;
+              return [
+        "success" => false,
+        "champNecessaryPresents" => $champNecessary
+    ];
         }
     }
-//   echo"ok champNecessary";
-    return true;
+   echo"ok champNecessary";
+    return [
+        "success" => true,
+        "champNecessaryPresents" => $champNecessary
+    ];
 }
 
 
-function areValidChamps($datas)
+function areValidChamps($datas,$allChampsNecessaryPresents)
 {
-  
+   echo "279arrive dans areValidChamps";
+    var_dump($allChampsNecessaryPresents);
     $areValidChamps=[];
     var_dump($datas);
     $phraseEchec=[]; 
     foreach ($datas as $nomChamp => $valeurChamp) {
+        if ($nomChamp === "confirmationMotDePasse") {
+            if (!isset($datas["motDePasse"]) || $valeurChamp !== $datas["motDePasse"]) {
+                return [
+                    "success" => false,
+                    "phraseEchec" => "Les deux mots de passe ne correspondent pas"
+                ];
+            }
+            // Passe au champ suivant, on ne valide pas ce champ plus loin
+            continue;
+        }
+       
+    
+       if (empty($valeurChamp)) {
+            // Si c’est un champ obligatoire => ERREUR
+            if (in_array($nomChamp, $allChampsNecessaryPresents)) {
+                $phraseEchec[] = "Le champ '$nomChamp' est obligatoire et ne peut pas être vide.";
+                $areValidChamps[] = false;
+            } else {
+                // Sinon c’est un champ optionnel => on accepte
+                $areValidChamps[] = true;
+            }
+            continue; // Passe au champ suivant
+        }
+        echo "nomChamp".$nomChamp."valeurChamp".$valeurChamp."<br>";
+
     //    echo "nomChamp".$nomChamp."valeurChamp".$valeurChamp."<br>";
         $isValidChamp=champIsValid($nomChamp,$valeurChamp);
         $areValidChamps[]=$isValidChamp["success"];
         if ($isValidChamp["success"]==false) {
             $phraseEchec[]=$isValidChamp["phraseEchec"];
+            echo "invalideChamp";
+            echo "valeurChamp".$valeurChamp."nomChamp".$nomChamp."phraseEchec".$isValidChamp["phraseEchec"];
         } 
 
     }
      $phrasesEchec=implode(", ", $phraseEchec);
      $phraseReussite="Tous les champs sont valides";
     if (in_array(false, $areValidChamps)) {
+
         return [
             "success" => false,
             "phraseEchec" => $phrasesEchec
@@ -421,8 +464,8 @@ function trimData($datas){
 
 function protectData($datas){
     var_dump($datas);
-     foreach ($datas as $key => $data) {
-        $datas[$key]=htmlspecialchars($data);
+     foreach ($datas as $key => $valeur) {
+        $datas[$key]=htmlspecialchars(isset($valeur) ? $valeur : "");
     }
     return $datas;
 }
@@ -591,7 +634,6 @@ function nettoyerNomFichier($filename) {
     $filename = preg_replace("/[^a-zA-Z0-9\-\._]/", "_", $filename);
     return $filename;
 }
-/*************  ✨ Windsurf Command ⭐  *************/
 /**
  * Vérifie si le type et la taille d'un fichier image sont valides.
  *
@@ -602,7 +644,6 @@ function nettoyerNomFichier($filename) {
  * @return void
  */
 
-/*******  08094d5a-a28e-482a-9aae-618739877f04  *******/
  function  verificationFichierImage($cheminTemporaireServeur, $fileSize) {  
     // Types MIME autorisés
     $maxSizeInBytes = 2 * 1024 * 1024;
@@ -645,7 +686,7 @@ function enregistrementImageProfil(){
       $userId = $_SESSION['id_utilisateur'];
 
 
-        $destinationDirectory = __DIR__ . '/uploads/'.$userId.'/profil/';
+        $destinationDirectory = __DIR__ .'/../vue/images/uploads/'.$userId.'/profil/';
         // Exemple : déplacer le fichier vers un dossier "uploads/"
         // pour éviter les collisions de noms de fichiers en utilisant uniqid() crée un identifiant unique
         $destinationFile = $destinationDirectory . uniqid() . '_' . basename($fileOriginalName);
@@ -653,6 +694,7 @@ function enregistrementImageProfil(){
             mkdir($destinationDirectory, 0777, true);
         }
         if (move_uploaded_file($cheminTemporaireServeur, $destinationFile)) {
+            return ["success"=>true,"destinationFile"=>$destinationFile];
             // echo "Le fichier a bien été uploadé : " . htmlspecialchars($fileOriginalName);
         } else {
             echo "Erreur lors du déplacement du fichier.";
@@ -681,7 +723,7 @@ function enregistrementImageEvent(){
 
  
         // Exemple : déplacer le fichier vers un dossier "uploads/"
-        $destinationDirectory = __DIR__ . '/uploads/'.$userId.'/event/';
+        $destinationDirectory = __DIR__ .'/../vue/images/uploads/'.$userId.'/evennement/';
         $destinationFile = $destinationDirectory . uniqid() . '_' . basename($fileOriginalName);
         if (!is_dir($destinationDirectory)) {
             mkdir($destinationDirectory, 0777, true);
@@ -739,9 +781,9 @@ function insertEvenementInBD($datas) {
 
 function verifyExistInBDEvenement() {
      global $connexion_bd;
-     $heure = $datas["heureEvent"] ?? null;
+      $heure = $datas["heureEvent"] ?? null;
       $lieu = $datas["villeEvent"] ?? null;
-      $id_utilisateur= $_SESSION[$id];
+      $id_utilisateur= $_SESSION[$id_utilisateur];
       $requete="select * from evenements where heure = :heure AND lieu = :lieu AND id_organisateur = :id_utilisateur";
       $requetePreparee=$connexion_bd->prepare($requete);
       $requetePreparee->execute([

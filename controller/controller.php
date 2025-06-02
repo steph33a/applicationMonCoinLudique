@@ -5,7 +5,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 // echo "<script>console.log('arrive dans inscription ligne6');</script>";
   // var_dump($_POST);
-  // var_dump($_SESSION);
+  var_dump($_SESSION);
 // // session_destroy();
 include_once ($_SERVER['DOCUMENT_ROOT'].'/model/db.php'); //require $_SERVER['DOCUMENT_ROOT'] /model/db.php';
 
@@ -26,7 +26,10 @@ function handleLoginAndRegistration() {
   if ( isset($_POST['btnEnvoiReponsesRecupMotDePasse'])){
     // echo"ligne23 controller";
     // var_dump($_POST);
-    if (allChampsNecessaryPresents($_POST,'reponsesQuestionForRecupMotDePasse')){
+     $result=allChampsNecessaryPresents($_POST,'reponsesQuestionForRecupMotDePasse');
+    if ($result["success"]==true){ 
+      $champNecessaryPresents=$result["champNecessaryPresents"];
+   
       // echo"ligne26 controller";
      
       $datas=trimData($_POST);
@@ -66,7 +69,9 @@ function handleLoginAndRegistration() {
   }
   if (isset($_POST['btnRedefinitionMotDePasse'])){
     // var_dump($_POST);
-    if (allChampsNecessaryPresents($_POST,'redefinitionMotDePasse')){
+      $result=allChampsNecessaryPresents($_POST,'btnRedefinitionMotDePasse');
+    if ($result["success"]==true){ 
+      $champNecessaryPresents=$result["champNecessaryPresents"];
       $datas=trimData($_POST);
       $datas=protectData($datas);
       //verif exist in db va rechercher dans la bd si l'utilisateur existe ou non suivant le mail si il existe
@@ -85,11 +90,15 @@ function handleLoginAndRegistration() {
 
   if  (isset($_POST['btnConnexion'])){
     // echo "ligne 88 controller";
-    if (allChampsNecessaryPresents($_POST,'connexion')){
+     $result=allChampsNecessaryPresents($_POST,'connexion');
+    if ($result["success"]==true){ 
+      $champNecessaryPresents=$result["champNecessaryPresents"];
+  
+   
       // echo "ligne 89 controller/n";
         $datas=trimData($_POST);
         $datas=protectData($datas);
-        $result=areValidChamps($datas);
+        $result=areValidChamps($datas,$champNecessaryPresents);
         // var_dump($result);
         // echo"lignes 93 controller";
           if ($result["success"]==true){
@@ -128,10 +137,13 @@ function handleLoginAndRegistration() {
 if (isset($_POST['btnAdminLoginAsUser']) && $_SESSION['role'] === 'admin') {
   // var_dump($_POST);
      $_SESSION['role'] = 'particulier';
-    if (allChampsNecessaryPresents($_POST,'connexionAdminAsUser')){
+       $result=allChampsNecessaryPresents($_POST,'connexionAdminAsUser');
+    if ($result["success"]==true){ 
+      $champNecessaryPresents=$result["champNecessaryPresents"];
+  
         $datas=trimData($_POST);
         $datas=protectData($datas);
-        $result=areValidChamps($datas);
+        $result=areValidChamps($datas,$champNecessaryPresents);
           if ($result["success"]==true){
 
           $result=verifExistInDb($datas);
@@ -178,24 +190,30 @@ if (isset($_POST['btnAdminLoginAsUser']) && $_SESSION['role'] === 'admin') {
         $_POST['role'] = 'particulier'; // sécurité par défaut
     }
 }
-
+   $result=allChampsNecessaryPresents($_POST,'inscription');
+    if ($result["success"]==true){ 
+      $champNecessaryPresents=$result["champNecessaryPresents"];
 // "echo inscription";
 //  echo "<script>console.log('arrive dans inscription ligne42');</script>";
-     if (allChampsNecessaryPresents($_POST,'inscription')){
+    
       //  var_dump($_POST);
       // echo"ligne201";
       // var_dump($_FILES);
       $file=$_FILES['imageProfil'];
       // var_dump($file);
       if (isset($file)) {
-           enregistrementImageProfil();
-    
+           $result=enregistrementImageProfil();
+           if ($result["success"] === false){
+             $phrase=$result["phraseEchec"];
+           } else {
+             $_POST["imageProfil"]=$result["destinationFile"];
+           }
      
       }
    
         $datas=trimData($_POST);
         $datas=protectData($datas);
-        $result=areValidChamps($datas);
+        $result=areValidChamps($datas,$champNecessaryPresents);
         //  echo "<script>console.log('arrive dans inscription ligne50');</script>";
         if ($result["success"]==true){
           $result=verifExistInDb($datas);
@@ -265,8 +283,10 @@ if (isset($_SESSION['id_utilisateur'])) {
     // echo "<script>console.log('arrive dans inscription ligne50');</script>";
 
     // var_dump($_POST);
-   
-    if (allChampsNecessaryPresents($_POST,'creationEvenement')) {
+    $result=allChampsNecessaryPresents($_POST,'creationEvenement');
+    if ($result["success"]==true){ {
+      $champNecessaryPresents=$result["champNecessaryPresents"];
+      var_dump($champNecessaryPresents);
       if (isset($_POST['typeSoiree'])) {
         $_POST['typeSoiree'] = $_POST['typeSoiree'][0];
       } 
@@ -275,12 +295,19 @@ if (isset($_SESSION['id_utilisateur'])) {
       // var_dump($_FILES);
       $file=$_FILES['imageEvent'];
       // var_dump($file);
+  
       if (isset($file)) {
-        enregistrementImageEvent();
+           $result=enregistrementImageEvent();
+           if ($result["success"] === false){
+             $phrase=$result["phraseEchec"];
+           } else {
+             $_POST["imageEvent"]=$result["destinationFile"];
+           }
+     
       }
       $datas=trimData($_POST);
       $datas=protectData($datas);
-      $result=areValidChamps($datas);
+      $result=areValidChamps($datas,$champNecessaryPresents);
       //  echo "<script>console.log('arrive dans inscription ligne50');</script>";
       if ($result["success"]==true){
         $result=verifyExistInBDEvenement($datas);
@@ -337,7 +364,7 @@ else {
 }
 
 
-
+}
 
 // function handleActionAccueil() {
 
