@@ -446,6 +446,9 @@ function appliquerStyleValidChamps(validChamps, inputs) {
       } else if (formulaire.id=="formulaireConnexion")  {
         listInputs=["email","motDePasse"];
       }
+     else if (formulaire.id=="formulaireLoginAsUser") {
+ listInputs=["pseudo"];
+  }
       else if (formulaire.id=="formulaireMotDePasseOublie") {
         listInputs=["email","jeuPrefereUser","chanteurPrefereUser"];
       } else if (formulaire.id=="formulaireCreationEvenement") {
@@ -467,8 +470,11 @@ function findAllIndispensablesInputs(formulaire) {
   if (formulaire.id=="formulaireInscription")  {
     listInputsIndispensables = ["pseudo","email","motDePasse","nomUtilisateur","imageProfil","confirmationMotDePasse","role"];
   } else if (formulaire.id=="formulaireConnexion")  {
-   listInputsIndispensables=["email","motDePasse"]
-  } else if (formulaire.id=="formulaireMotDePasseOublie") {
+   listInputsIndispensables=["email","motDePasse"];
+  } else if (formulaire.id=="formulaireLoginAsUser") {
+ listInputsIndispensables=["pseudo"];
+  }
+    else if (formulaire.id=="formulaireMotDePasseOublie") {
     listInputsIndispensables=["email","jeuPrefereUser","chanteurPrefereUser"];
 } else if (formulaire.id=="formulaireCreationEvenement") {
   listInputsIndispensables=["emailEvent","dateEvent","heureEvent","typeSoiree","nbParticipants","imageEvent"];
@@ -626,6 +632,7 @@ let formulaireCreationEvenement=document.querySelector("#formulaireCreationEvene
 let boutonCreationEvenement = document.querySelector('button[name="btnCreationEvenement"]');
 let boutonConnexion = document.querySelector('button[name="btnConnexion"]');
 let formulaireConnexion=document.getElementById('formulaireConnexion');
+let formulaireLoginAsUser=document.getElementById('formulaireLoginAsUser');
 let formulaireMotDePasseOublie=document.getElementById('formulaireMotDePasseOublie');
 let divCreateEventForGroupe=document.querySelector(".divCreateEventForGroupe");
 // let listeClassInputsCreateEvent=["mail","champLibre","url","numberPhone","codePostal","ville","rue","numAdresse","heureEvent","dateEvent","typeSoiree","ageRequis","nbParticipants"];
@@ -719,6 +726,7 @@ formulaireInscription.addEventListener('submit', function (e) {
       });
     }
 
+    
     if (formulaireConnexion) {
 formulaireConnexion.addEventListener('submit', function (e) {
         let elementIndispensableConnexion=findAllIndispensablesInputs(formulaireConnexion);
@@ -730,6 +738,27 @@ formulaireConnexion.addEventListener('submit', function (e) {
           alert("Champs obligatoires incomplets ou incorrects :\n- " + champsInvalides.join("\n- "));
           return;
         }
+
+        // Si tout est OK, on peut envoyer le formulaire
+        // formulaireConnexion.requestSubmit(boutonConnexion);
+      });
+    }
+        if (formulaireLoginAsUser) {
+          console.log("formulaireLoginAsUser");
+formulaireLoginAsUser.addEventListener('submit', function (e) {
+   console.log("submit");
+
+        let elementIndispensableConnexionAdmin=findAllIndispensablesInputs(formulaireLoginAsUser);
+       
+       const champsInvalides = elementIndispensableConnexionAdmin.filter(champ => !validChamps.includes(champ));
+        
+           
+        if (champsInvalides.length > 0) {
+           e.preventDefault();
+          alert("Champs obligatoires incomplets ou incorrects :\n- " + champsInvalides.join("\n- "));
+          return;
+        }
+        
 
         // Si tout est OK, on peut envoyer le formulaire
         // formulaireConnexion.requestSubmit(boutonConnexion);

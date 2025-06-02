@@ -4,8 +4,8 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 // echo "<script>console.log('arrive dans inscription ligne6');</script>";
-  var_dump($_POST);
-  var_dump($_SESSION);
+  // var_dump($_POST);
+  // var_dump($_SESSION);
 // // session_destroy();
 include_once ($_SERVER['DOCUMENT_ROOT'].'/model/db.php'); //require $_SERVER['DOCUMENT_ROOT'] /model/db.php';
 
@@ -14,7 +14,7 @@ require ($_SERVER['DOCUMENT_ROOT'].'/model/model.php');
 
 function handleLoginAndRegistration() {
   
-  if ( (!isset($_POST['btnInscription']))&&(!isset($_POST['btnEnvoiReponsesRecupMotDePasse']))&& (!isset($_SESSION['id']))&& (!isset($_POST['btnConnexion']))){
+  if ((!isset($_POST['btnAdminLoginAsUser']))&&(!isset($_POST['btnInscription']))&&(!isset($_POST['btnEnvoiReponsesRecupMotDePasse']))&& (!isset($_SESSION['id']))&& (!isset($_POST['btnConnexion']))){
       locationView('accueil');
       exit();
   }
@@ -84,23 +84,32 @@ function handleLoginAndRegistration() {
   }
 
   if  (isset($_POST['btnConnexion'])){
+    // echo "ligne 88 controller";
     if (allChampsNecessaryPresents($_POST,'connexion')){
+      // echo "ligne 89 controller/n";
         $datas=trimData($_POST);
         $datas=protectData($datas);
         $result=areValidChamps($datas);
+        // var_dump($result);
+        // echo"lignes 93 controller";
           if ($result["success"]==true){
+            echo"ligne 94 controller";
           $result=verifExistInDb($datas);
-          // var_dump($result);
+          //  var_dump($result);
+          //  echo"ligne97 controller";
+
             if ($result["success"]==true){
                 $userFound=$result["utilisateur"];
                 $result=verifPassword($datas,$userFound);
-                //  var_dump($result);
+                echo"lignes 97 controller";
+                  // var_dump($result);
                 if ($result["success"]==true){
+                    //  var_dump($result);
                     $_SESSION['id_utilisateur'] = $result['utilisateur']['id_utilisateur'];
                     $_SESSION['pseudo'] = $result['utilisateur']['pseudo'];
                     $_SESSION['role'] = $result['utilisateur']['role'];
                     session_write_close();
-                    locationView('gestion_evenements');
+                     locationView('gestion_evenements');
                     exit();
                 }
 
@@ -116,18 +125,68 @@ function handleLoginAndRegistration() {
           }
        }
     }
+if (isset($_POST['btnAdminLoginAsUser']) && $_SESSION['role'] === 'admin') {
+  // var_dump($_POST);
+     $_SESSION['role'] = 'particulier';
+    if (allChampsNecessaryPresents($_POST,'connexionAdminAsUser')){
+        $datas=trimData($_POST);
+        $datas=protectData($datas);
+        $result=areValidChamps($datas);
+          if ($result["success"]==true){
+
+          $result=verifExistInDb($datas);
+          //  var_dump($result);
+            if ($result["success"]==true){
+                $userFound=$result["utilisateur"];
+               
+                $_SESSION['id_utilisateur'] = $result['utilisateur']['id_utilisateur'];
+                $_SESSION['pseudo'] = $result['utilisateur']['pseudo'];
+                $_SESSION['role'] = $result['utilisateur']['role'];
+                    session_write_close();
+                     locationView('gestion_evenements');
+                    exit();
+                }
+
+              else {
+                      $phrase=$result["phraseEchec"];
+
+                      }
+              } else {
+                  $phrase=$result["phraseEchec"];
+              }
+          } else {
+              $phrase=$result["phraseEchec"];
+          }
+       }
+    
+
+
+    // Traiter la connexion en tant qu’un autre utilisateur
 
 // var_dump($_SESSION);
 // var_dump($_POST);
   if (isset($_POST['btnInscription'])){
+
+    $roleDemande  = htmlspecialchars(trim($_POST['role'] ?? 'particulier'));
+    $roleSession = $_SESSION['role'] ?? null;
+    if ($roleSession === 'admin') {
+    $_POST['role'] = $roleDemande;
+} else {
+   if ($roleDemande === 'particulier' || $roleDemande === 'groupe') {
+       $_POST['role'] = $roleDemande;
+    } else {
+        $_POST['role'] = 'particulier'; // sécurité par défaut
+    }
+}
+
 // "echo inscription";
 //  echo "<script>console.log('arrive dans inscription ligne42');</script>";
      if (allChampsNecessaryPresents($_POST,'inscription')){
       //  var_dump($_POST);
-      echo"ligne201";
-      var_dump($_FILES);
+      // echo"ligne201";
+      // var_dump($_FILES);
       $file=$_FILES['imageProfil'];
-      var_dump($file);
+      // var_dump($file);
       if (isset($file)) {
            enregistrementImageProfil();
     
@@ -147,7 +206,7 @@ function handleLoginAndRegistration() {
 
           if ($result["success"]==false){
                 $result=insertInBD($datas); 
-                echo "reussite";
+                // echo "reussite";
 
             } else {
                  $phrase=$result["data"];
@@ -158,12 +217,12 @@ function handleLoginAndRegistration() {
           $phrase=$result["phraseEchec"];
           }
 
-        var_dump($_SESSION);
+        // var_dump($_SESSION);
 
           if (isset($_SESSION['id_utilisateur'])) {
             // echo "<script>console.log('arrive dans inscription ligne72');</script>";
 
-          locationView('gestion_evenements');
+           locationView('gestion_evenements');
 
           exit();
 
@@ -202,20 +261,20 @@ if (isset($_SESSION['id_utilisateur'])) {
 
 
   if (isset($_POST['btnCreationEvenement'])) {
-    echo"ligne195";
+    // echo"ligne195";
     // echo "<script>console.log('arrive dans inscription ligne50');</script>";
 
-    var_dump($_POST);
+    // var_dump($_POST);
    
     if (allChampsNecessaryPresents($_POST,'creationEvenement')) {
       if (isset($_POST['typeSoiree'])) {
         $_POST['typeSoiree'] = $_POST['typeSoiree'][0];
       } 
 
-      echo"ligne201";
-      var_dump($_FILES);
+      // echo"ligne201";
+      // var_dump($_FILES);
       $file=$_FILES['imageEvent'];
-      var_dump($file);
+      // var_dump($file);
       if (isset($file)) {
         enregistrementImageEvent();
       }
@@ -228,8 +287,8 @@ if (isset($_SESSION['id_utilisateur'])) {
         if ($result["success"]==false)
         {
           $result=insertEvenementInBD($datas); 
-            echo "reussite";
-          // locationView('gestion_evenements');
+            // echo "reussite";
+          locationView('gestion_evenements');
           exit();
            } else {
           $phrase=$result["phraseEchec"];
@@ -249,12 +308,12 @@ if (isset($_SESSION['id_utilisateur'])) {
 
   else if  (isset($_SESSION['role']) && $_SESSION['role'] == 'admin') {
         // echo "ligne182";
-        if (isset($_POST['btnInscription'])||isset($_POST['btnConnexion'])||isset($_POST['btnRedefinitionMotDePasse'])||isset($_POST['btnDeconnexion'])){
+        if (isset($_POST['btnInscription'])||isset($_POST['btnAdminLoginAsUser'])||isset($_POST['btnRedefinitionMotDePasse'])||isset($_POST['btnDeconnexion'])){
             //  echo "ligne185";
           handleLoginAndRegistration();
         }
         else {
-          locationView('gestion_evenements');
+           locationView('gestion_evenements');
           exit();
         }
          

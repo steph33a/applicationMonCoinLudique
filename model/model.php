@@ -35,23 +35,19 @@ function isValidPassword($password) {
 
 function champIsValid($nomChamp,$valeurChamp)
 {
-    switch ($nomChamp) {
-            case 'pseudo':
-                if (strlen($valeurChamp) < 3) {
-                    return  [
-                        "success" => false,
-                        "phraseEchec" => "Le pseudo doit contenir au moins 3 caractères"
-                    ];
-                } else {
-                  return  [
-                    "success" => true,
-                    "phraseEchec" => ""
-                  ];
-                }
-                break;
-            
-            case 'nom':
-                if (strlen($valeurChamp) < 3) {
+    if (strlen($valeurChamp) > 255) {
+        return  [
+            "success" => false,
+            "phraseEchec" => "Le champ $nomChamp est trop long"
+        ];
+    }
+    //  echo "<br>"."ligne44";
+    //  echo "<br>"."nomChamp".$nomChamp."valeurChamp".$valeurChamp;
+
+    if ($nomChamp == "pseudo" || $nomChamp == "nom" || $nomChamp == "prenom" || $nomChamp == "jeuPrefereUser" || $nomChamp == "chanteurPrefereUser" || $nomChamp=="villeEvent" || $nomChamp=="rueEvent" || $nomChamp=="titreEvent" || $nomChamp=="recurrenceEvent"||$nomChamp=="jeuxThemesEvent"||$nomChamp=="discussionGroupName") {
+        if (strlen($valeurChamp) < 3) {
+            //  echo "ligne48";
+            // echo "nomChamp".$nomChamp."valeurChamp".$valeurChamp;
                     return  [
                         "success" => false,
                         "phraseEchec" => "Le nom doit contenir au moins 3 caractères"
@@ -62,24 +58,58 @@ function champIsValid($nomChamp,$valeurChamp)
                     "phraseEchec" => ""
                   ];
                 }
-                break;
+                 
+                
+    }
+ 
+    if (($nomChamp == "url1") || ($nomChamp == "url2") ){
+        $url = $valeurChamp;
+        if (filter_var($url, FILTER_VALIDATE_URL)=== false) {
+            return  [
+                                "success" => false,
+                                "phraseEchec" => "L'url n'est pas valide"
+                            ];
+        } else {
+            return  [
+                                "success" => false,
+                                "phraseEchec" => "L'url est valide'"
+                            ];
+        }
+                
+        }
+    switch ($nomChamp) {
+      
+            case 'nom':
+                //  Cette regex accepte :Lettres (y compris accentuées),Espaces,Apostrophes (ex. Léo d’Arcy), Tirets (ex. Jean-Michel)
+                  // Vérifie que ce sont uniquement des lettres (avec accents), éventuellement espaces ou tirets
+            if (!preg_match('/^[\p{L} \'-]+$/u', $valeurChamp)) {
+                return [
+                    "success" => false,
+                    "phraseEchec" => ucfirst($nomChamp) . " ne doit contenir que des lettres, espaces, apostrophes ou tirets"
+                ];
+            }
+            return [
+                "success" => true,
+                "phraseEchec" => ""
+            ];
+               
             case 'prenom':
-                if (strlen($valeurChamp) < 3) {
-                    return  [
-                        "success" => false,
-                        "phraseEchec" => "Le prenom doit contenir au moins 3 caractères"
-                    ];
-                } else {
-                  return  [
-                    "success" => true,
-                    "phraseEchec" => ""
-                  ];
-                }
-                break;
+                        // Vérifie que ce sont uniquement des lettres (avec accents), éventuellement espaces ou tirets
+            if (!preg_match('/^[\p{L} \'-]+$/u', $valeurChamp)) {
+                return [
+                    "success" => false,
+                    "phraseEchec" => ucfirst($nomChamp) . " ne doit contenir que des lettres, espaces, apostrophes ou tirets"
+                ];
+            }
+            return [
+                "success" => true,
+                "phraseEchec" => ""
+            ];
+               
             
             case 'email':
                 
-                   if (strpos($valeurChamp, '@') === false || strpos($valeurChamp, '.') === false) {
+                   if (filter_var($valeurChamp, FILTER_VALIDATE_EMAIL) === false) {
                     
                    return  [
                     "success" => false,
@@ -104,9 +134,81 @@ function champIsValid($nomChamp,$valeurChamp)
                     "phraseEchec" => ""
                   ];
                 }
-          
                 break;
-            default:
+
+            case 'typeSoiree':
+          
+                 $typesValides = ['createur', 'classique', 'thematique'];
+                    if (!in_array($valeurChamp, $typesValides)) {
+                        return [
+                            "success" => false,
+                            "phraseEchec" => "Le type de soirée doit être 'createur', 'classique' ou 'thematique'"
+                        ];
+                    }
+                    break;
+           
+            case 'nbParticipants':
+            if (!is_numeric($valeurChamp) || $valeurChamp <= 0) {
+                return [
+                    "success" => false,
+                    "phraseEchec" => "Le nombre de participants doit être un nombre positif"
+                ];
+            }
+            break;
+            case 'ageRequis':
+            if (!is_numeric($valeurChamp) || $valeurChamp < 0) {
+                return [
+                    "success" => false,
+                    "phraseEchec" => "L'age requis doit être un nombre positif"
+                ];
+            }
+
+        case 'dateEvent':
+            if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $valeurChamp)) {
+                return [
+                    "success" => false,
+                    "phraseEchec" => "Format de date invalide"
+                ];
+            }
+            break;
+
+        case 'heureEvent':
+            if (!preg_match('/^\d{2}:\d{2}$/', $valeurChamp)) {
+                return [
+                    "success" => false,
+                    "phraseEchec" => "Format d’heure invalide"
+                ];
+            }
+            break;
+
+        case 'codePostalEvent':
+            if (!preg_match('/^\d{5}$/', $valeurChamp)) {
+                return [
+                    "success" => false,
+                    "phraseEchec" => "Code postal invalide"
+                ];
+            }
+            break;
+
+        case 'numRueEvent':
+            if (!is_numeric($valeurChamp) || $valeurChamp <= 0) {
+                return [
+                    "success" => false,
+                    "phraseEchec" => "Numéro de rue invalide"
+                ];
+            }
+            break;
+
+        case 'numberPhoneEvent':
+            if (!preg_match('/^\d{10}$/', $valeurChamp)) {
+                return [
+                    "success" => false,
+                    "phraseEchec" => "Numéro de téléphone invalide"
+                ];
+            }
+            break;
+    
+        default:
               return  [
                     "success" => true,
                     "phraseEchec" => ""
@@ -126,6 +228,9 @@ function allChampsNecessaryPresents($datas,$fonctionnalite)
  }
  if ($fonctionnalite=="connexion") {
     $champNecessary=["email","motDePasse"];
+ }
+  if ($fonctionnalite=="connexionAdminAsUser") {
+    $champNecessary=["pseudo"];
  }
  if ($fonctionnalite=="reponsesQuestionForRecupMotDePasse") {
     // echo "ligne131 model";
@@ -150,21 +255,23 @@ function allChampsNecessaryPresents($datas,$fonctionnalite)
   foreach ($champNecessary as $champ) {
     // echo "champ".$champ;
         if (!isset($datas[$champ]) || empty($datas[$champ])) {
-             echo "champ ".$champ;
+            //  echo "champ ".$champ;
             return false;
         }
     }
-  echo"ok champNecessary";
+//   echo"ok champNecessary";
     return true;
 }
 
+
 function areValidChamps($datas)
 {
+  
     $areValidChamps=[];
-    
+    var_dump($datas);
     $phraseEchec=[]; 
     foreach ($datas as $nomChamp => $valeurChamp) {
-        
+    //    echo "nomChamp".$nomChamp."valeurChamp".$valeurChamp."<br>";
         $isValidChamp=champIsValid($nomChamp,$valeurChamp);
         $areValidChamps[]=$isValidChamp["success"];
         if ($isValidChamp["success"]==false) {
@@ -185,14 +292,18 @@ function areValidChamps($datas)
             "phraseReussite" => $phraseReussite
         ];
     }
-}
+    }
+   
+
 
 function verifExistInDb($datas){
 
 global $connexion_bd;
- echo "<script>console.log('verif');</script>";
+$utilisateur = null;
+//  echo "<script>console.log('verif');</script>";
+
     if (isset($datas["email"])&&isset($datas["pseudo"])) {
- echo "<script>console.log('verif');</script>";
+//  echo "<script>console.log('verif');</script>";
        $pseudo=$datas["pseudo"];
   
        $email=$datas["email"];
@@ -204,24 +315,13 @@ global $connexion_bd;
             ,
             ':pseudo' => $pseudo
         ]);
-        $utilisateurs = $requetePreparee->fetch(PDO::FETCH_ASSOC);
+        $utilisateur = $requetePreparee->fetch(PDO::FETCH_ASSOC);
 
-        if ($utilisateurs) {
-             echo "<script>console.log('verifexitedeja');</script>";
-                return  [
-                    "success" => true,
-                    "data" => "L'utilisateur existe deja"
-                ];
-        } else {
-             echo "<script>console.log('verifexistepas');</script>";
-            return  [
-                "success" => false,
-                "data" => "L'utilisateur n'existe pas"];
-        }
+       
         
     } 
 
-    if (isset($datas["email"])&&!isset($datas["pseudo"])) {
+    else if (isset($datas["email"])&&!isset($datas["pseudo"])) {
          $email=$datas["email"];
             $requete="select * from utilisateurs where email = :email";
             $requetePreparee= $connexion_bd ->prepare($requete);
@@ -230,22 +330,38 @@ global $connexion_bd;
             ':email' => $email
         ]);
         $utilisateur = $requetePreparee->fetch(PDO::FETCH_ASSOC);
-        if ($utilisateur) {
-                return  [
-                    "success" => true,
-                    "utilisateur" => $utilisateur];
-        } else {
-            return  [
-                "success" => false,
-                "utilisateur" => null];
-        }
+    
 
     }
+    else if (!isset($datas["email"])&&isset($datas["pseudo"])) {
+         $pseudo=$datas["pseudo"];
+            $requete="select * from utilisateurs where pseudo = :pseudo";
+            $requetePreparee= $connexion_bd ->prepare($requete);
+        // on exécute la requete preparee en remplacant chaque élément de la requete  par sa valeur)
+            $requetePreparee->execute([
+            ':pseudo' => $pseudo
+        ]);
+        $utilisateur = $requetePreparee->fetch(PDO::FETCH_ASSOC);
+    
+
+    }
+     if ($utilisateur) {
+            //  echo "<script>console.log('verifexitedeja');</script>";
+                return  [
+                    "success" => true,
+                    "utilisateur" => $utilisateur
+                ];
+        } else {
+            //  echo "<script>console.log('verifexistepas');</script>";
+            return  [
+                "success" => false,
+                "phraseEchec" => "L'utilisateur n'existe pas"];
+        }
 
 
 }
  function  verifPassword($datas,$userFound){
-    echo "224verifpassword";
+    // echo "224verifpassword";
     var_dump($userFound);
     var_dump($datas);
     $test=password_verify($datas["motDePasse"], $userFound["password"]);
@@ -269,7 +385,7 @@ function trimData($datas){
     foreach ($datas as $key => $data) {
       
         if (is_string($data)) {
-        echo "data272".$data;
+        // echo "data272".$data;
             $datas[$key]=trim($data);
 
         if (in_array($datas[$key], $listDataToClean, true)) {
@@ -363,14 +479,14 @@ function insertInBD($datas){
 
     // Récupération de l'ID auto-incrémenté
     $id_utilisateur = $connexion_bd->lastInsertId();
-    echo"id".$id_utilisateur;
+    // echo"id".$id_utilisateur;
    
       $_SESSION['id_utilisateur']=$id_utilisateur;
       $_SESSION['pseudo']=$pseudo;
       $_SESSION['role']=$role;
       session_write_close();
 
-    echo "<script>console.log('ID nouvel utilisateur : $id_utilisateur');</script>";
+    // echo "<script>console.log('ID nouvel utilisateur : $id_utilisateur');</script>";
     // sleep(2);
     // return true;
 }
@@ -413,7 +529,7 @@ function modificationMotDePasse($datas){
     $email=$datas["email"];
     $motDePasse=$_POST['motDePasse'];
     $motDePasseHash=password_hash($motDePasse,PASSWORD_DEFAULT);
-    echo $motDePasseHash;
+    // echo $motDePasseHash;
     global $connexion_bd;
     $requete="update utilisateurs set password = :motDePasse where email = :email";
     $requetePreparee=$connexion_bd->prepare($requete);
@@ -502,7 +618,7 @@ function nettoyerNomFichier($filename) {
         // Taille max (2 Mo)
     
     if (!in_array($realMimeType, $allowedMimeTypes)) {
-        echo "Erreur : type de fichier non autorisé. Seules les images JPEG, PNG et WEBP sont acceptées.";
+         echo "Erreur : type de fichier non autorisé. Seules les images JPEG, PNG et WEBP sont acceptées.";
         return false;
     }
   
@@ -537,7 +653,7 @@ function enregistrementImageProfil(){
             mkdir($destinationDirectory, 0777, true);
         }
         if (move_uploaded_file($cheminTemporaireServeur, $destinationFile)) {
-            echo "Le fichier a bien été uploadé : " . htmlspecialchars($fileOriginalName);
+            // echo "Le fichier a bien été uploadé : " . htmlspecialchars($fileOriginalName);
         } else {
             echo "Erreur lors du déplacement du fichier.";
         }
@@ -572,7 +688,7 @@ function enregistrementImageEvent(){
         }
 
         if (move_uploaded_file($cheminTemporaireServeur, $destinationFile)) {
-            echo "Le fichier a bien été uploadé : " . htmlspecialchars($fileOriginalName);
+            // echo "Le fichier a bien été uploadé : " . htmlspecialchars($fileOriginalName);
         } else {
             echo "Erreur lors du déplacement du fichier.";
         }
@@ -616,7 +732,7 @@ function insertEvenementInBD($datas) {
 
     $id_evenement = $connexion_bd->lastInsertId();
 
-    echo "<script>console.log('ID nouvel événement : $id_evenement');</script>";
+    // echo "<script>console.log('ID nouvel événement : $id_evenement');</script>";
 
     return $id_evenement;
 }
