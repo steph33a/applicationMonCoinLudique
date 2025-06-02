@@ -2,11 +2,11 @@
  <div style="width=620px; background-color: #F8F3EB; opacity: 0.7; border: #704405 solid 1px; display:flex; flex-direction:row; justify-content:space-between; align-items:center;" >
         
     <div style="margin-top:25px; display:flex; flex-direction:column; justify-content:space-between;   width:200px"  class="" style=" margin-top: 20px;">
-        <h3><?php  echo !empty($evenementSelected['prenomUtilisateur'])? "Evenement Public" : 'Evenement Prive'; ?></h3>
-        <h4><?php  echo $evenementSelected['styleEvenement']; ?></h4>
+        <h3><?php  echo !empty($evenementSelected['prenom-utilisateur'])? "Evenement Public" : 'Evenement Prive'; ?></h3>
+        <h4><?php  echo $evenementSelected['style_evenement']; ?></h4>
         <label style="margin-top: 25px; cursor:pointer; display:inline-block;" for="photoInput" class="photo-label">
                 <div class="photo-container">
-                    <img style="" src="<?php  echo $evenementSelected['imageEvenementSource']; ?>" alt="Photo" class="photoEvent" />
+                    <img style="" src="<?php  echo $evenementSelected['image_evenement']; ?>" alt="Photo" class="photoEvent" />
                 </div>
         </label>
     </div>
@@ -15,12 +15,12 @@
             
             <label style="margin-top: 25px; cursor:pointer; display:inline-block;" for="photoInput" class="photo-label">
                 <div class="photo-container">
-                    <img style="" src="<?php  echo $evenementSelected['imageProfilSource']; ?>" alt="Photo" class="photoProfil" />
+                    <img style="" src="<?php  echo $evenementSelected['imageProfil']; ?>" alt="Photo" class="photoProfil" />
                 </div>
             </label>
             <div>
                 <h3><?php  echo $evenementSelected['pseudo'];?></h3>
-                <h4><?php  echo "alias ".$evenementSelected['prenomUtilisateur']." ".$evenementSelected['nomUtilisateur']; ?></h4>
+                <h4><?php  echo "alias ".$evenementSelected['prenom_utilisateur']." ".$evenementSelected['nom_utilisateur']; ?></h4>
             </div>
 
         </div>
@@ -30,7 +30,7 @@
         </div>
         <div  style="display:flex; flex-direction:row; justify-content:space-between;align-items:center; width:305px;">
             <h3 class="lieu">Lieu</h3>
-            <h4><?php  echo $evenementSelected['lieuEvenement']; //echo $lieuEvenement; ?></h4>
+            <h4><?php  echo $evenementSelected['adresse_ville']; //echo $lieuEvenement; ?></h4>
         </div>
         <div  style="display:flex; flex-direction:row; justify-content:space-between;align-items:center; width:305px;">
             <h3 class="places restantes">Places restantes</label>

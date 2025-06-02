@@ -44,7 +44,7 @@ function champIsValid($nomChamp,$valeurChamp)
     //  echo "<br>"."ligne44";
     //  echo "<br>"."nomChamp".$nomChamp."valeurChamp".$valeurChamp;
 
-    if ($nomChamp == "pseudo" || $nomChamp == "nom" || $nomChamp == "prenom" || $nomChamp == "jeuPrefereUser" || $nomChamp == "chanteurPrefereUser" || $nomChamp=="villeEvent" || $nomChamp=="rueEvent" || $nomChamp=="titreEvent" || $nomChamp=="recurrenceEvent"||$nomChamp=="jeuxThemesEvent"||$nomChamp=="discussionGroupName") {
+    if ($nomChamp == "pseudo" || $nomChamp == "nom" || $nomChamp == "prenom" || $nomChamp == "jeuPrefereUser" || $nomChamp == "chanteurPrefereUser" || $nomChamp=="villeEvent" || $nomChamp=="rueEvent" || $nomChamp=="titreEvent" || $nomChamp=="recurrenceEvent"||$nomChamp=="jeuxThemesEvent"||$nomChamp=="discussionGroupName"||$nomChamp=="imageEvent"||$nomChamp=="imageProfil"){ 
         if (strlen($valeurChamp) < 3) {
             //  echo "ligne48";
             // echo "nomChamp".$nomChamp."valeurChamp".$valeurChamp;
@@ -71,12 +71,25 @@ function champIsValid($nomChamp,$valeurChamp)
                             ];
         } else {
             return  [
-                                "success" => false,
+                                "success" => true,
                                 "phraseEchec" => "L'url est valide'"
                             ];
         }
                 
         }
+    if (($nomChamp == "email")||($nomChamp=='emailEvent')){
+        if (filter_var($valeurChamp, FILTER_VALIDATE_EMAIL) === false) {
+            return  [
+                "success" => false,
+                "phraseEchec" => "L'email n'est pas valide"
+            ];
+        } else {
+            return  [
+                "success" => true,
+                "phraseEchec" => "L'email est valide'"
+            ];
+        }
+    }
     switch ($nomChamp) {
       
             case 'nom':
@@ -107,21 +120,9 @@ function champIsValid($nomChamp,$valeurChamp)
             ];
                
             
-            case 'email':
+          
                 
-                   if (filter_var($valeurChamp, FILTER_VALIDATE_EMAIL) === false) {
-                    
-                   return  [
-                    "success" => false,
-                    "phraseEchec" => "mail incorrect"
-                   ];
-                } else {
-                  return  [
-                    "success" => true,
-                    "phraseEchec" => ""
-                  ];
-                }
-                break;
+               
             case 'motDePasse':
                     if (!isValidPassword($valeurChamp)) {
                     return  [
@@ -162,6 +163,7 @@ function champIsValid($nomChamp,$valeurChamp)
                     "phraseEchec" => "L'age requis doit être un nombre positif"
                 ];
             }
+            break;
 
         case 'dateEvent':
             if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $valeurChamp)) {
@@ -225,9 +227,9 @@ function champIsValid($nomChamp,$valeurChamp)
 function allChampsNecessaryPresents($datas,$fonctionnalite)
 { 
    $champNecessary=[];
-   var_dump($fonctionnalite);
+//    var_dump($fonctionnalite);
  if ($fonctionnalite=="inscription") {
-    $champNecessary=["pseudo","email","motDePasse","confirmationMotDePasse"];
+    $champNecessary=["pseudo","email","motDePasse","confirmationMotDePasse","imageProfil"];
 
 
  }
@@ -243,13 +245,13 @@ function allChampsNecessaryPresents($datas,$fonctionnalite)
  }
  if ($fonctionnalite=="creationEvenement") {
     $role=$_SESSION["role"];
-    var_dump($role);
+    // var_dump($role);
     if (($role=="groupe") ) {
-        $champNecessary=["emailEvent","numberPhoneEvent","codePostalEvent","villeEvent","numRueEvent","rueEvent","titreEvent","typeSoiree","reccurenceEvent","nbParticipants","dateEvent","heureEvent"];
-        var_dump($champNecessary);
+        $champNecessary=["emailEvent","numberPhoneEvent","codePostalEvent","villeEvent","numRueEvent","rueEvent","titreEvent","typeSoiree","recurrenceEvent","nbParticipants","dateEvent","heureEvent","imageEvent"];
+        // var_dump($champNecessary);
     } else if ($role=="particulier"|| ($role=="admin")) {
-        $champNecessary=["emailEvent","dateEvent","heureEvent","typeSoiree","nbParticipants"];
-        var_dump($champNecessary);
+        $champNecessary=["emailEvent","dateEvent","heureEvent","typeSoiree","nbParticipants","imageEvent"];
+        // var_dump($champNecessary);
     } 
  }
  
@@ -270,7 +272,7 @@ function allChampsNecessaryPresents($datas,$fonctionnalite)
     ];
         }
     }
-   echo"ok champNecessary";
+//    echo"ok champNecessary";
     return [
         "success" => true,
         "champNecessaryPresents" => $champNecessary
@@ -280,10 +282,11 @@ function allChampsNecessaryPresents($datas,$fonctionnalite)
 
 function areValidChamps($datas,$allChampsNecessaryPresents)
 {
-   echo "279arrive dans areValidChamps";
-    var_dump($allChampsNecessaryPresents);
+
+
     $areValidChamps=[];
-    var_dump($datas);
+    // var_dump($areValidChamps);
+    // var_dump($datas);
     $phraseEchec=[]; 
     foreach ($datas as $nomChamp => $valeurChamp) {
         if ($nomChamp === "confirmationMotDePasse") {
@@ -296,7 +299,7 @@ function areValidChamps($datas,$allChampsNecessaryPresents)
             // Passe au champ suivant, on ne valide pas ce champ plus loin
             continue;
         }
-       
+    //    echo "$nomChamp $valeurChamp".$valeurChamp;
     
        if (empty($valeurChamp)) {
             // Si c’est un champ obligatoire => ERREUR
@@ -309,27 +312,40 @@ function areValidChamps($datas,$allChampsNecessaryPresents)
             }
             continue; // Passe au champ suivant
         }
-        echo "nomChamp".$nomChamp."valeurChamp".$valeurChamp."<br>";
+        // echo "313nomChamp".$nomChamp."valeurChamp".$valeurChamp."<br>";
 
     //    echo "nomChamp".$nomChamp."valeurChamp".$valeurChamp."<br>";
         $isValidChamp=champIsValid($nomChamp,$valeurChamp);
+        if ($isValidChamp==null) {
+            // echo "320nomChamp".$valeurChamp;
+    // La fonction champIsValid n’a pas renvoyé un tableau, on considère que c’est une erreur
+            return [
+                "success" => false,
+                "phraseEchec" => "Erreur interne de validation sur le champ '$nomChamp'."
+            ];
+        }
+        // echo "318".$isValidChamp["success"];
         $areValidChamps[]=$isValidChamp["success"];
+        // echo " 317";
+        // var_dump($areValidChamps);
         if ($isValidChamp["success"]==false) {
             $phraseEchec[]=$isValidChamp["phraseEchec"];
-            echo "invalideChamp";
-            echo "valeurChamp".$valeurChamp."nomChamp".$nomChamp."phraseEchec".$isValidChamp["phraseEchec"];
         } 
 
     }
-     $phrasesEchec=implode(", ", $phraseEchec);
+     
      $phraseReussite="Tous les champs sont valides";
     if (in_array(false, $areValidChamps)) {
+        $phrasesEchec=implode(", ", $phraseEchec);
 
+        // var_dump($areValidChamps);
         return [
             "success" => false,
             "phraseEchec" => $phrasesEchec
         ];
     } else {
+        
+        //  var_dump($areValidChamps);
         return [
             "success" => true,
             "phraseReussite" => $phraseReussite
@@ -404,9 +420,9 @@ $utilisateur = null;
 
 }
  function  verifPassword($datas,$userFound){
-    // echo "224verifpassword";
-    var_dump($userFound);
-    var_dump($datas);
+
+    // var_dump($userFound);
+    // var_dump($datas);
     $test=password_verify($datas["motDePasse"], $userFound["password"]);
         if ($test==true) {
             return  [
@@ -463,7 +479,7 @@ function trimData($datas){
  */
 
 function protectData($datas){
-    var_dump($datas);
+   
      foreach ($datas as $key => $valeur) {
         $datas[$key]=htmlspecialchars(isset($valeur) ? $valeur : "");
     }
@@ -533,40 +549,93 @@ function insertInBD($datas){
     // sleep(2);
     // return true;
 }
+function getEvenementsWidthEssentialInfos()
+{
+     $resultats = [];
 
+    foreach ($evenements as $evenement) {
+           $nbMax = $evenement['nbParticipants_max'];
+       $id_evenement = $evenement['id_evenement'];
+
+        // Compter les inscrits pour cet événement
+        $requete = "SELECT COUNT(*) as nbInscrits FROM inscriptions WHERE id_evenement = :id_evenement";
+        $requetePreparee = $connexion_bd->prepare($requete);
+        $requetePreparee->execute([':id_evenement' => $id_evenement]);
+        $inscriptionData = $requetePreparee->fetch(PDO::FETCH_ASSOC);
+        $nbInscrits =  $inscriptionData['nbInscrits'];
+    
+            // Récupérer les infos complètes de l'événement + utilisateur
+            $requete = "SELECT 
+                            E.id_evenement,
+                            E.style_evenement,
+                            E.heure,
+                            E.date_evenement,
+                            E.adresse_ville,
+                            E.image_evenement,
+                            E.nbParticipants_max,
+                            U.id_utilisateur,
+                            U.pseudo,
+                            U.prenom_utilisateur,
+                            U.nom_utilisateur,
+                            U.imageProfil
+                        FROM evenements E
+                        JOIN utilisateurs U ON E.id_organisateur = U.id_utilisateur
+                        WHERE E.id_evenement = :id_evenement";
+
+            $requetePreparee = $connexion_bd->prepare($requete);
+            $requetePreparee->execute([':id_evenement' => $id_evenement]);
+            $evenement = $requetePreparee->fetch(PDO::FETCH_ASSOC);
+
+            if ($evenement) {
+                // Ajouter le champ nbInscrits
+                $evenement['nbInscrits'] = $nbInscrits;
+                $resultats[] = $evenement;
+            }
+        
+    } 
+    return $resultats;
+
+}
 function selectAllEvents(){
     global $connexion_bd;
-    $requete="select * from evenements";
+     // Étape 1 : récupérer tous les événements futurs
+    $requete="select id_evenement,date_evenement,nbParticipants_max from evenements where (date_evenement > now())";
     $requetePreparee=$connexion_bd->prepare($requete);
     $requetePreparee->execute();
     $evenements=$requetePreparee->fetchAll(PDO::FETCH_ASSOC);
-    return $evenements;
+    $resultats=getEvenementsWidthEssentialInfos($evenements);
+    return $resultats;
+    
 }
 
-function findAllEventsByParticipantId(){
-    $idInscrit=$_SESSION['id'];
+function findAllEventsByParticipantId($id_inscrit){
+    
     global $connexion_bd;
-    $requete="select * from inscriptions I join evenements E on I.id_evenement = E.id_evenement where id_inscrit = :idInscrit";
+      
+    $requete="select E.id_evenement,E.date_evenement,E.nbParticipants_max,I.id_inscrit from inscriptions I join evenements E on I.id_evenement = E.id_evenement where id_inscrit = :id_inscrit and date_evenement > now() and(date_evenement > now())";
     $requetePreparee=$connexion_bd->prepare($requete);
     $requetePreparee->execute([
-        ':idInscrit' => $idInscrit,
+        ':id_inscrit' => $id_inscrit,
     ]);
     
     $evenements=$requetePreparee->fetchAll(PDO::FETCH_ASSOC);
-    return $evenements;
+     $resultats=getEvenementsWidthEssentialInfos($evenements);
+    return $resultats;
 }
 
- function findAllEventsByOrganisateurId(){
-    $idOrganisateur=$_SESSION['id'];
+ function findAllEventsByOrganisateurId($id_organisateur){
     global $connexion_bd;
-    $requete="select * from evenements where id_organisateur = :idOrganisateur";
+     $requete="select id_evenement,date_evenement,nbParticipants_max from evenements where (date_evenement > now())";
+    $requete="select id_evenement,date_evenement,nbParticipants_max,id_organisateur,id_utilisateur from evenements E join utilisateurs U on E.id_organisateur = U.id_utilisateur where id_organisateur = :id_organisateur and date_evenement > now()";
     $requetePreparee=$connexion_bd->prepare($requete);
     $requetePreparee->execute([
-        ':idOrganisateur' => $idOrganisateur,
+        ':id_organisateur' => $id_organisateur,
     ]);
     
     $evenements=$requetePreparee->fetchAll(PDO::FETCH_ASSOC);
-    return $evenements;
+       $resultats=getEvenementsWidthEssentialInfos($evenements);
+    return $resultats;
+    
 } 
 function modificationMotDePasse($datas){
     $email=$datas["email"];
@@ -730,6 +799,7 @@ function enregistrementImageEvent(){
         }
 
         if (move_uploaded_file($cheminTemporaireServeur, $destinationFile)) {
+            return ["success"=>true,"destinationFile"=>$destinationFile];
             // echo "Le fichier a bien été uploadé : " . htmlspecialchars($fileOriginalName);
         } else {
             echo "Erreur lors du déplacement du fichier.";
@@ -740,60 +810,122 @@ function enregistrementImageEvent(){
     }
    
 }
-// A revoir 
-function insertEvenementInBD($datas) {
+function insertEvenementInBD($datas, $id_utilisateur) {
     global $connexion_bd;
 
-    // Extraction des données depuis $datas (provenant de $_POST probablement)
-    $titre = $datas["titre"];
-    $description = $datas["description"] ?? "";
-    $date = $datas["dateEvent"];
-    $heure = $datas["heureEvent"] ?? null;
-    $lieu = $datas["villeEvent"] ?? null;
-    $typeSoiree = $datas["typeSoiree"]; // ex: 'classique', 'createur', etc.
-    $nbParticipantsMax = $datas["nbParticipantsMax"] ?? null;
-    $idOrganisateur = $datas["id_organisateur"]; // Doit venir de la session ou d’un champ caché
+    // Extraction des données depuis $datas
+    $nbParticipants       = $datas["nbParticipants"];
+    $ageRequis            = $datas["ageRequis"];
+    $recurrence           = $datas["recurrence"];
+    $typeSoiree           = $datas["typeSoiree"];
+    $dateEvent            = $datas["dateEvent"];
+    $heureEvent           = $datas["heureEvent"];
+    $titreEvent           = $datas["titreEvent"];
+    $jeuxThemesEvent      = $datas["jeuxThemesEvent"];
+    $rueEvent             = $datas["rueEvent"];
+    $villeEvent           = $datas["villeEvent"];
+    $codePostalEvent      = $datas["codePostalEvent"];
+    $emailEvent           = $datas["emailEvent"];
+    $numberPhoneEvent     = $datas["numberPhoneEvent"];
+    $url1                 = $datas["url1"];
+    $url2                 = $datas["url2"];
+    $discussionGroupName  = $datas["discussionGroupName"];
+    $imageEvent           = $datas["imageEvent"];
 
-    $dateCreation = date("Y-m-d H:i:s");
-
-    $requete = "INSERT INTO evenements (titre, description, date, heure, lieu, type_soiree, nb_participants_max, id_organisateur, date_creation)
-                VALUES (:titre, :description, :date, :heure, :lieu, :typeSoiree, :nbParticipantsMax, :idOrganisateur, :dateCreation)";
+    $requete = "INSERT INTO evenements (
+        id_organisateur,
+        recurrence,
+        type_soiree,
+        date_evenement,
+        heure,
+        titre_evenement,
+        image_evenement,
+        jeux_et_themes,
+        nbParticipants_max,
+        age_minimum,
+        adresse_rue,
+        adresse_ville,
+        adresse_CP,
+        email,
+        telephone,
+        url1,
+        url2,
+        groupe_de_discussion,
+        date_creation
+    ) VALUES (
+        :id_utilisateur,
+        :recurrence,
+        :typeSoiree,
+        :dateEvent,
+        :heureEvent,
+        :titreEvent,
+        :imageEvent,
+        :jeuxThemesEvent,
+        :nbParticipants,
+        :ageRequis,
+        :rueEvent,
+        :villeEvent,
+        :codePostalEvent,
+        :emailEvent,
+        :numberPhoneEvent,
+        :url1,
+        :url2,
+        :discussionGroupName,
+        NOW()
+    )";
 
     $requetePreparee = $connexion_bd->prepare($requete);
+
     $requetePreparee->execute([
-        ':titre' => $titre,
-        ':description' => $description,
-        ':date' => $date,
-        ':heure' => $heure,
-        ':lieu' => $lieu,
-        ':typeSoiree' => $typeSoiree,
-        ':nbParticipantsMax' => $nbParticipantsMax,
-        ':idOrganisateur' => $idOrganisateur,
-        ':dateCreation' => $dateCreation,
+        ':id_utilisateur'      => $id_utilisateur,
+        ':recurrence'          => $recurrence,
+        ':typeSoiree'          => $typeSoiree,
+        ':dateEvent'           => $dateEvent,
+        ':heureEvent'          => $heureEvent,
+        ':titreEvent'          => $titreEvent,
+        ':imageEvent'          => $imageEvent,
+        ':jeuxThemesEvent'     => $jeuxThemesEvent,
+        ':nbParticipants'      => $nbParticipants,
+        ':ageRequis'           => $ageRequis,
+        ':rueEvent'            => $rueEvent,
+        ':villeEvent'          => $villeEvent,
+        ':codePostalEvent'     => $codePostalEvent,
+        ':emailEvent'          => $emailEvent,
+        ':numberPhoneEvent'    => $numberPhoneEvent,
+        ':url1'                => $url1,
+        ':url2'                => $url2,
+        ':discussionGroupName' => $discussionGroupName
     ]);
 
-    $id_evenement = $connexion_bd->lastInsertId();
-
-    // echo "<script>console.log('ID nouvel événement : $id_evenement');</script>";
-
-    return $id_evenement;
+    return $connexion_bd->lastInsertId();
 }
 
-function verifyExistInBDEvenement() {
+function verifyExistInBDEvenement($datas,$id_utilisateur) {
+
      global $connexion_bd;
-      $heure = $datas["heureEvent"] ?? null;
-      $lieu = $datas["villeEvent"] ?? null;
-      $id_utilisateur= $_SESSION[$id_utilisateur];
-      $requete="select * from evenements where heure = :heure AND lieu = :lieu AND id_organisateur = :id_utilisateur";
+      $heureEvent = $datas["heureEvent"] ?? null;
+      $dateEvent= $datas["dateEvent"] ?? null;
+      $id_utilisateur= $id_utilisateur;
+     
+
+    //   echo "id_utilisateur".$id_utilisateur."heureEvent".$heureEvent."dateEvent".$dateEvent.$heureEvent;
+      $requete="select * from evenements where heure = :heureEvent AND date_evenement = :dateEvent AND id_organisateur = :id_utilisateur";
       $requetePreparee=$connexion_bd->prepare($requete);
       $requetePreparee->execute([
-          ':heure' => $heure,
-          ':lieu' => $lieu,
-          ':id_utilisateur' => $id_utilisateur,
+          ':heureEvent' => $heureEvent,
+          ':dateEvent' => $dateEvent,
+          ':id_utilisateur' => $id_utilisateur
       ]);
 
       $result=$requetePreparee->fetch(PDO::FETCH_ASSOC);
-      return $result;
+      
+    //   var_dump($result);
+      if ($result===false){
+          return ["success"=>false];
+      } else {
+          return ["success"=>true,"phraseEchec"=>"evenementdejapresent"];
+      }
+      
 
 }
 ?>

@@ -1,10 +1,12 @@
 <?php
 
+
 session_start();
 // session_destroy();
 //   var_dump($_SESSION);
 //   $_SESSION["email"] ="stephaniemarquant87@gmail.com";
  var_dump($_SESSION);
+
 
 // echo "session id :".$_SESSION['user_id'];
 // echo"session role :".$_SESSION['role'];
@@ -25,6 +27,21 @@ include('../composants/includes/header.php');
 ?>
 
 <main style="position:relative; " id="mainAccueil" class="accueil mainWithoutModal">
+    <?php if (!isset($_SESSION["list_evenements"])) {?>
+     <div id="formulaire_invisible">
+        <form id="autoSubmitForm" action="../../controller/controller.php" method="post" style="display:none;">
+            <!-- Tu peux ajouter des champs cachés ici -->
+            <input type="hidden" name="id_utilisateur" value="<?php echo $_SESSION['id_utilisateur']; ?>">
+         
+            <input type="hidden" name="researchAllEvent" value="lister_evenements"><!-- Exemple d'action -->
+        </form>
+    </div>
+    <?php
+    } else {
+        $list_evenements=$_SESSION["list_evenements"];
+        unset($_SESSION["list_evenements"]);
+    }
+   ?>
     <div id="modal_content">
         <div style=" position:relative;" class="modal-wrapper">
 
@@ -108,6 +125,32 @@ include('../composants/includes/header.php');
             </div>
 
         </div>
+        
+
+        
+    </div>
+    <?php if (($estConnecte) && ($role=="particulier" || $role=="groupe")) { ?>
+    <div style="display:block;" id="btnInsciptionEvent">
+             <form id="formulaireGoInscription" action="../../controller/controller.php" method="post" style="display:block;">
+            <!-- Tu peux ajouter des champs cachés ici -->
+             <input type="hidden" name="id_utilisateur" value="<?php echo $_SESSION['id_utilisateur']; ?>">
+          
+            <button style="margin:25px auto 0 auto; display:block;" class="btn" type="submit" name="researchAllInscriptionsForThisUser" value="voir inscriptions">
+             Voir inscriptions
+            </button> <!-- Exemple d'action -->
+            </form>
+    </div>
+
+        <?php } ?>
+       
+
+    <div style="miniEventsContainers">
+        <?php foreach ($list_evenements as $evenementSelected) {
+             include '../composants/includes/miniEvent.php';} 
+             ?>
+
+
+
     </div>
      
 </main>

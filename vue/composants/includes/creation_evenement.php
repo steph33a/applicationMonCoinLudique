@@ -38,7 +38,7 @@
         <div class="details-evenement" id="formulaireContent">
             <div class="form-group">
                 <label for="recurrenceCreateEvent">Récurrence </label>
-                <input class="recurrenceEvent formElement" type="text" name="recurrence" id="recurrenceCreateEvent" placeholder="x fois/mois"
+                <input class="recurrenceEvent formElement" type="text" name="recurrenceEvent" id="recurrenceCreateEvent" placeholder="x fois/mois"
                     value="<?php if ($mode=='modificationEvenement') echo $evenement['recurrence']; ?>">
                  <p class="recurrenceEventCommentaire"></p>
             </div>

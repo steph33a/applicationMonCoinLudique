@@ -3,15 +3,16 @@
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
+
 // echo "<script>console.log('arrive dans inscription ligne6');</script>";
   // var_dump($_POST);
-  var_dump($_SESSION);
+  // var_dump($_SESSION);
 // // session_destroy();
 include_once ($_SERVER['DOCUMENT_ROOT'].'/model/db.php'); //require $_SERVER['DOCUMENT_ROOT'] /model/db.php';
 
 require ($_SERVER['DOCUMENT_ROOT'].'/model/model.php');
 //fonctiosns helpers
-
+ 
 function handleLoginAndRegistration() {
   
   if ((!isset($_POST['btnAdminLoginAsUser']))&&(!isset($_POST['btnInscription']))&&(!isset($_POST['btnEnvoiReponsesRecupMotDePasse']))&& (!isset($_SESSION['id']))&& (!isset($_POST['btnConnexion']))){
@@ -102,7 +103,7 @@ function handleLoginAndRegistration() {
         // var_dump($result);
         // echo"lignes 93 controller";
           if ($result["success"]==true){
-            echo"ligne 94 controller";
+            // echo"ligne 94 controller";
           $result=verifExistInDb($datas);
           //  var_dump($result);
           //  echo"ligne97 controller";
@@ -110,7 +111,7 @@ function handleLoginAndRegistration() {
             if ($result["success"]==true){
                 $userFound=$result["utilisateur"];
                 $result=verifPassword($datas,$userFound);
-                echo"lignes 97 controller";
+                // echo"lignes 97 controller";
                   // var_dump($result);
                 if ($result["success"]==true){
                     //  var_dump($result);
@@ -190,6 +191,13 @@ if (isset($_POST['btnAdminLoginAsUser']) && $_SESSION['role'] === 'admin') {
         $_POST['role'] = 'particulier'; // sécurité par défaut
     }
 }
+    $file=$_FILES['imageProfil'];
+    // echo"ligne195";
+    // echo "<script>console.log('arrive dans inscription ligne50');</script>";
+    if (isset($file)) {
+             $_POST["imageProfil"]="exist";
+      }
+
    $result=allChampsNecessaryPresents($_POST,'inscription');
     if ($result["success"]==true){ 
       $champNecessaryPresents=$result["champNecessaryPresents"];
@@ -276,24 +284,57 @@ function includeView($viewName) {
 
 
 if (isset($_SESSION['id_utilisateur'])) { 
+ if (isset($_POST['researchAllEvent'])){
+$events=selectAllEvents();
 
+  $_SESSION['list_evenements'] = $events;
+  locationView('accueil');
+  exit();
+
+ }
+ if (isset($_POST['researchAllEventForThisUser'])){
+  $id_organisateur=$_SESSION['id_utilisateur'];
+   $events=findAllEventsByOrganisateurId($id_organisateur);
+  $_SESSION['list_evenements'] = $events;
+  locationView('accueil');
+  exit();
+ }
+ if (isset($_POST['researchAllInscriptionsForThisUser'])){
+  $id_inscrit=$_SESSION['id_utilisateur'];
+   $events=findAllEventsByParticipantId($id_inscrit);
+  $_SESSION['list_evenements'] = $events;
+  locationView('accueil');
+  exit();
+ }
 
   if (isset($_POST['btnCreationEvenement'])) {
+
+    $file=$_FILES['imageEvent'];
     // echo"ligne195";
     // echo "<script>console.log('arrive dans inscription ligne50');</script>";
-
+    if (isset($file)) {
+             $_POST["imageEvent"]="exist";
+      }
     // var_dump($_POST);
     $result=allChampsNecessaryPresents($_POST,'creationEvenement');
     if ($result["success"]==true){ {
       $champNecessaryPresents=$result["champNecessaryPresents"];
-      var_dump($champNecessaryPresents);
+      // var_dump($champNecessaryPresents);
       if (isset($_POST['typeSoiree'])) {
         $_POST['typeSoiree'] = $_POST['typeSoiree'][0];
       } 
 
       // echo"ligne201";
       // var_dump($_FILES);
-      $file=$_FILES['imageEvent'];
+ 
+      $datas=trimData($_POST);
+      $datas=protectData($datas);
+      // echo "ligne310";
+      // var_dump($datas);
+      $result=areValidChamps($datas,$champNecessaryPresents);
+      //  echo "<script>console.log('arrive dans inscription ligne50');</script>";
+      if ($result["success"]==true){
+             $file=$_FILES['imageEvent'];
       // var_dump($file);
   
       if (isset($file)) {
@@ -305,20 +346,18 @@ if (isset($_SESSION['id_utilisateur'])) {
            }
      
       }
-      $datas=trimData($_POST);
-      $datas=protectData($datas);
-      $result=areValidChamps($datas,$champNecessaryPresents);
-      //  echo "<script>console.log('arrive dans inscription ligne50');</script>";
-      if ($result["success"]==true){
-        $result=verifyExistInBDEvenement($datas);
+        $result=verifyExistInBDEvenement($datas,$_SESSION['id_utilisateur']);
+        // echo "328".$result["success"];
         if ($result["success"]==false)
         {
-          $result=insertEvenementInBD($datas); 
+      
+          $result=insertEvenementInBD($datas,$_SESSION['id_utilisateur']); 
             // echo "reussite";
           locationView('gestion_evenements');
           exit();
            } else {
           $phrase=$result["phraseEchec"];
+          locationView('gestion_evenements');
                   //  echo $phrase;
            }
         }

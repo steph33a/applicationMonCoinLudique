@@ -18,6 +18,21 @@ include('../composants/includes/header.php') ;
 ?>
 
 <main id="gestionEvenements"class="gestion_evenements">
+   <?php if ((!isset($_SESSION["list_evenements"]))&& (($_SESSION['role']=== 'groupe')|| ($_SESSION['role']=== 'particulier'))){?>
+        
+    <div id="formulaire_invisible">
+        <form id="autoSubmitForm" action="../../controller/controller.php" method="post" style="display:none;">
+            <!-- Tu peux ajouter des champs cachés ici -->
+         <input type="hidden" name="id_utilisateur" value="<?php echo $_SESSION['id_utilisateur']; ?>">
+        <input type="hidden" name="researchAllEventForThisUser" value="allevent"> <!-- Exemple d'action -->
+        </form>
+    </div>
+    <?php }
+   else {
+        $list_evenements=$_SESSION["list_evenements"];
+         unset($_SESSION["list_evenements"]);
+    }
+   ?>
     <div style="margin-top:75px;margin-left: 75px;" id="gestion_evenements_title" class="gestion_evenements_title"><h2>Gestion des Evenements</h2></div>
     <div style="dislay:flex; flex-direction:column; justify-content:space-between, gap:20px;" class="" id="creation_evenement">
 

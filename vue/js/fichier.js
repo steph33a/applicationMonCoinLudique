@@ -1168,7 +1168,11 @@ console.log("modalElement1021",modalElement)
 });
 
 
-
+    document.getElementById('autoSubmitForm').submit();
+ 
+// window.addEventListener('DOMContentLoaded', () => {
+//     document.getElementById('autoSubmitForm').submit();
+//   });
 
 // // Dans la fonction fichier.js
 // function attacherEcouteurs(idFormulaire,tableauInputIndispensable) {
