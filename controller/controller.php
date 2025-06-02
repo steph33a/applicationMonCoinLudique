@@ -5,8 +5,8 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 // echo "<script>console.log('arrive dans inscription ligne6');</script>";
-  // var_dump($_POST);
-  // var_dump($_SESSION);
+   var_dump($_POST);
+   var_dump($_SESSION);
 // // session_destroy();
 include_once ($_SERVER['DOCUMENT_ROOT'].'/model/db.php'); //require $_SERVER['DOCUMENT_ROOT'] /model/db.php';
 
@@ -14,7 +14,7 @@ require ($_SERVER['DOCUMENT_ROOT'].'/model/model.php');
 //fonctiosns helpers
  
 function handleLoginAndRegistration() {
-  
+  echo"ligne17";
   if ((!isset($_POST['btnAdminLoginAsUser']))&&(!isset($_POST['btnInscription']))&&(!isset($_POST['btnEnvoiReponsesRecupMotDePasse']))&& (!isset($_SESSION['id']))&& (!isset($_POST['btnConnexion']))){
       locationView('accueil');
       exit();
@@ -284,7 +284,9 @@ function includeView($viewName) {
 
 
 if (isset($_SESSION['id_utilisateur'])) { 
+
  if (isset($_POST['researchAllEvent'])){
+  echo "ligne288controller";
 $events=selectAllEvents();
 
   $_SESSION['list_evenements'] = $events;
@@ -293,6 +295,7 @@ $events=selectAllEvents();
 
  }
  if (isset($_POST['researchAllEventForThisUser'])){
+  echo "ligne297controller";
   $id_organisateur=$_SESSION['id_utilisateur'];
    $events=findAllEventsByOrganisateurId($id_organisateur);
   $_SESSION['list_evenements'] = $events;
@@ -317,7 +320,7 @@ $events=selectAllEvents();
       }
     // var_dump($_POST);
     $result=allChampsNecessaryPresents($_POST,'creationEvenement');
-    if ($result["success"]==true){ {
+    if ($result["success"]==true){ 
       $champNecessaryPresents=$result["champNecessaryPresents"];
       // var_dump($champNecessaryPresents);
       if (isset($_POST['typeSoiree'])) {
@@ -403,7 +406,7 @@ else {
 }
 
 
-}
+
 
 // function handleActionAccueil() {
 

@@ -1167,11 +1167,15 @@ console.log("modalElement1021",modalElement)
   }
 });
 
-
-    document.getElementById('autoSubmitForm').submit();
+const form = document.getElementById('autoSubmitForm');
+if (form) {
+    form.submit();
+} else {
+    console.warn("Le formulaire autoSubmitForm n'existe pas sur cette page.");
+}
  
-// window.addEventListener('DOMContentLoaded', () => {
-//     document.getElementById('autoSubmitForm').submit();
+//  window.addEventListener('DOMContentLoaded', () => {
+//      document.getElementById('autoSubmitForm').submit();
 //   });
 
 // // Dans la fonction fichier.js

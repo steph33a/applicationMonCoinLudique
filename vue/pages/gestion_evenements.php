@@ -23,8 +23,8 @@ include('../composants/includes/header.php') ;
     <div id="formulaire_invisible">
         <form id="autoSubmitForm" action="../../controller/controller.php" method="post" style="display:none;">
             <!-- Tu peux ajouter des champs cachés ici -->
-         <input type="hidden" name="id_utilisateur" value="<?php echo $_SESSION['id_utilisateur']; ?>">
-        <input type="hidden" name="researchAllEventForThisUser" value="allevent"> <!-- Exemple d'action -->
+            <input type="hidden" name="id_utilisateur" value="<?php echo $_SESSION['id_utilisateur']; ?>">
+            <input type="hidden" name="researchAllEventForThisUser" value="allevent"> <!-- Exemple d'action -->
         </form>
     </div>
     <?php }

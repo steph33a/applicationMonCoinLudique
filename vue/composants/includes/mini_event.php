@@ -26,19 +26,30 @@
         </div>
         <div style="display:flex; flex-direction:row; justify-content:space-between;align-items:center; width:305px;" >
             <h3 class="dateetHeureEvenement">Date et heure de l'evenement</h3>
-            <h4 class="valueDateHeureEvenement"><?php  echo $evenementSelected['dateEvenement']." ". $evenementSelected['heureEvenement']; //echo $dateEvenement." ". $heureEvenement; ?></h4>
+            <h4 class="valueDateHeureEvenement"><?php  echo $evenementSelected['date_evenement']." ". $evenementSelected['heure']; //echo $dateEvenement." ". $heureEvenement; ?></h4>
         </div>
         <div  style="display:flex; flex-direction:row; justify-content:space-between;align-items:center; width:305px;">
             <h3 class="lieu">Lieu</h3>
             <h4><?php  echo $evenementSelected['adresse_ville']; //echo $lieuEvenement; ?></h4>
         </div>
-        <div  style="display:flex; flex-direction:row; justify-content:space-between;align-items:center; width:305px;">
-            <h3 class="places restantes">Places restantes</label>
-            <h4 class="valuePlacesRestantes"><?php  echo $evenementSelected['placesRestantes']; //echo $placesRestantes; ?></h4>
+        <div style="display:flex; flex-direction:row; justify-content:space-between; align-items:center; width:305px;">
+            <h3 class="places_restantes">Places restantes</h3>
+            <?php
+                $nbInscrits = intval($evenementSelected['nbInscrits']);
+                $nbParticipantsMax = intval($evenementSelected['nbParticipants_max']);
+                $placesRestantes = $nbParticipantsMax - $nbInscrits;
+
+                if ($placesRestantes > 0) {
+                    echo '<h4 class="valuePlacesRestantes">' . $placesRestantes . '</h4>';
+                } else {
+                    echo '<h4 class="valuePlacesRestantes">Complet</h4>'; // Optionnel : afficher "Complet" ou rien
+                }
+            ?>
         </div>
+    </div>
        
     <form action="../controller/controller.php" method="post">
-        <input type="hidden" name="idEvenement" value="<?php echo htmlspecialchars($evenementSelected); ?>">
+        <input type="hidden" name="idEvenement" value="<?php echo htmlspecialchars($evenementSelected["id_evenement"]); ?>">
 
         <?php if ($page_contexte === 'accueil' || $page_contexte === 'actionEvenement'): ?>
             <button

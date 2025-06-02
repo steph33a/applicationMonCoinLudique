@@ -1,4 +1,4 @@
-
+ -->
     <footer style=" width:100% ; height: 80px;
 display:flex; flex-direction:row; justify-content:space-between;" >
         <div id="footerElement" style="display:flex; flex-direction:row;justify-content:space-between ."> 

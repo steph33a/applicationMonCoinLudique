@@ -250,7 +250,7 @@ function allChampsNecessaryPresents($datas,$fonctionnalite)
         $champNecessary=["emailEvent","numberPhoneEvent","codePostalEvent","villeEvent","numRueEvent","rueEvent","titreEvent","typeSoiree","recurrenceEvent","nbParticipants","dateEvent","heureEvent","imageEvent"];
         // var_dump($champNecessary);
     } else if ($role=="particulier"|| ($role=="admin")) {
-        $champNecessary=["emailEvent","dateEvent","heureEvent","typeSoiree","nbParticipants","imageEvent"];
+        $champNecessary=["emailEvent","dateEvent","heureEvent","typeSoiree","nbParticipants","villeEvent","imageEvent"];
         // var_dump($champNecessary);
     } 
  }
@@ -505,6 +505,7 @@ function insertInBD($datas){
     $motDePasseHash=password_hash($motDePasse,PASSWORD_DEFAULT);
     $role=$datas["role"];
     $pseudo=$datas["pseudo"];
+    $typeSoiree=$datas["typeSoiree"];
     if (isset($datas["dateNaissance"])) {
         $dateNaissance=$datas["dateNaissance"];
     } else {
@@ -519,7 +520,7 @@ function insertInBD($datas){
   
     // echo"mail".$mail;
   
-    $requete="insert into utilisateurs (nom_utilisateur,prenom_utilisateur,email,password,imageProfil,pseudo,dateInscription,role,statut_utilisateur,dateNaissance) values (:nomUtilisateur,:prenomUtilisateur,:email,:motDePasseHash,:imageProfil,:pseudo,:dateInscription,:role,:statut_utilisateur,:dateNaissance)";
+    $requete="insert into utilisateurs (nom_utilisateur,prenom_utilisateur,email,password,imageProfil,pseudo,dateInscription,role,statut_utilisateur,dateNaissance,style_evenement) values (:nomUtilisateur,:prenomUtilisateur,:email,:motDePasseHash,:imageProfil,:pseudo,:dateInscription,:role,:statut_utilisateur,:dateNaissance,:typeSoiree)";
     $requetePreparee=$connexion_bd->prepare($requete);
     $requetePreparee->execute([
         ':nomUtilisateur' => $nomUtilisateur,
@@ -529,6 +530,7 @@ function insertInBD($datas){
         ':motDePasseHash' => $motDePasseHash,
         ':role' => $role,
         ':pseudo' => $pseudo,
+        ':typeSoiree' => $typeSoiree,
         ':dateNaissance' => $dateNaissance,
         ':dateInscription' => date("Y-m-d H:i:s"),
         ':statut_utilisateur' => 1,
@@ -549,8 +551,9 @@ function insertInBD($datas){
     // sleep(2);
     // return true;
 }
-function getEvenementsWidthEssentialInfos()
+function getEvenementsWidthEssentialInfos($evenements)
 {
+    global $connexion_bd;
      $resultats = [];
 
     foreach ($evenements as $evenement) {
