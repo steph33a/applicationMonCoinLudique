@@ -1,7 +1,7 @@
 
 
 
- 
+  
      
         <form class="formulaire" id="formulaireRedefinitionMotDePasse" action="../../controller/controller.php" method="POST">
              <h2 style=" font-size: 36px; font-weight: 700; margin-left: auto; margin-right: auto; margin-top: 28px; font-family: 'Nunito Sans', sans-serif;">Récupération du mot de passe</h2>

@@ -6,7 +6,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
 // echo "<script>console.log('arrive dans inscription ligne6');</script>";
    var_dump($_POST);
-   var_dump($_SESSION);
+  //  var_dump($_SESSION);
 // // session_destroy();
 include_once ($_SERVER['DOCUMENT_ROOT'].'/model/db.php'); //require $_SERVER['DOCUMENT_ROOT'] /model/db.php';
 
@@ -14,10 +14,25 @@ require ($_SERVER['DOCUMENT_ROOT'].'/model/model.php');
 //fonctiosns helpers
  
 function handleLoginAndRegistration() {
-  echo"ligne17";
+   echo"ligne17";
   if ((!isset($_POST['btnAdminLoginAsUser']))&&(!isset($_POST['btnInscription']))&&(!isset($_POST['btnEnvoiReponsesRecupMotDePasse']))&& (!isset($_SESSION['id']))&& (!isset($_POST['btnConnexion']))){
-      locationView('accueil');
-      exit();
+     
+    if (isset($_POST['researchAllEvent'])){
+      echo "ligne21controller";
+      $events=selectAllEvents();
+      if (!$events) {
+          $events=["pas d'evenement"];
+        }
+        $_SESSION['list_evenements'] = $events;
+        $_SESSION["refresh"]=true;
+        locationView('accueil');
+        exit();
+
+      } else {
+        $_SESSION["refresh"]=true;
+        locationView('accueil');
+        exit();
+      }
   }
   // echo "ligne20 controller";
 //   var_dump($_POST);
@@ -54,6 +69,7 @@ function handleLoginAndRegistration() {
             // var_dump($_SESSION);
           $_SESSION['redefinitionMotDePasse']=true;
           $_SESSION['email']=$datas['email'];
+          $_SESSION["refresh"]=true;
             locationView('accueil');
           
 
@@ -80,6 +96,8 @@ function handleLoginAndRegistration() {
       // var_dump($result);
       if (is_array($result) && isset($result["success"]) && $result["success"] === true){
       modificationMotDePasse($datas); 
+      $_SESSION["refresh"]=true;
+
        locationView('gestion_evenements');
      
       }
@@ -119,6 +137,7 @@ function handleLoginAndRegistration() {
                     $_SESSION['pseudo'] = $result['utilisateur']['pseudo'];
                     $_SESSION['role'] = $result['utilisateur']['role'];
                     session_write_close();
+                    $_SESSION["refresh"]=true;
                      locationView('gestion_evenements');
                     exit();
                 }
@@ -155,6 +174,7 @@ if (isset($_POST['btnAdminLoginAsUser']) && $_SESSION['role'] === 'admin') {
                 $_SESSION['id_utilisateur'] = $result['utilisateur']['id_utilisateur'];
                 $_SESSION['pseudo'] = $result['utilisateur']['pseudo'];
                 $_SESSION['role'] = $result['utilisateur']['role'];
+                $_SESSION["refresh"]=true;
                     session_write_close();
                      locationView('gestion_evenements');
                     exit();
@@ -205,19 +225,26 @@ if (isset($_POST['btnAdminLoginAsUser']) && $_SESSION['role'] === 'admin') {
 //  echo "<script>console.log('arrive dans inscription ligne42');</script>";
     
       //  var_dump($_POST);
-      // echo"ligne201";
+      //  echo"ligne217";
       // var_dump($_FILES);
-      $file=$_FILES['imageProfil'];
-      // var_dump($file);
-      if (isset($file)) {
-           $result=enregistrementImageProfil();
+     
+   if (isset($file)) {
+           $result=verificationImageProfil();
            if ($result["success"] === false){
              $phrase=$result["phraseEchec"];
+             echo $phrase;
            } else {
-             $_POST["imageProfil"]=$result["destinationFile"];
+             $cheminTemporaireServeur=$result["cheminTemporaireServeur"];
+             $fileOriginalName=$result["fileOriginalName"];
+             $fileSize=$result["fileSize"];
+             
+            //  echo"228".$fileOriginalName;
+            //  echo"229".$cheminTemporaireServeur;
+            //  echo"230".$fileSize;
            }
      
       }
+      // echo "ligne240";
    
         $datas=trimData($_POST);
         $datas=protectData($datas);
@@ -227,11 +254,41 @@ if (isset($_POST['btnAdminLoginAsUser']) && $_SESSION['role'] === 'admin') {
           $result=verifExistInDb($datas);
             //  echo "<script>console.log('arrive dans inscription ligne53');</script>";
           //  var_dump($result);
+          // echo"true";
           
          
 
           if ($result["success"]==false){
-                $result=insertInBD($datas); 
+                $result=insertInBD($datas);
+                var_dump($result); 
+
+            if ($result["success"]==true){
+            
+                $id_utilisateur=$_SESSION['id_utilisateur'];
+
+                 $file=$_FILES['imageProfil'];
+                echo"ligne220";
+                var_dump($file);
+                if (isset($file)) {
+                    $result=enregistrementImageProfil($id_utilisateur,$cheminTemporaireServeur,$fileOriginalName);
+                    if ($result["success"] === false){
+
+                      $phrase=$result["phraseEchec"];
+                    } else {
+                      
+                      $datas["imageEvent"]=$result["webPath"];
+
+                      // echo"228".$datas["imageEvent"];
+                      sendImageProfilInBd($_SESSION['id_utilisateur'],$datas["imageEvent"]);
+                      $_SESSION["refresh"]=true;
+                      locationView('gestion_evenements');
+
+                      exit();
+
+                    }
+                    
+              
+      }
                 // echo "reussite";
 
             } else {
@@ -247,7 +304,7 @@ if (isset($_POST['btnAdminLoginAsUser']) && $_SESSION['role'] === 'admin') {
 
           if (isset($_SESSION['id_utilisateur'])) {
             // echo "<script>console.log('arrive dans inscription ligne72');</script>";
-
+$_SESSION["refresh"]=true;
            locationView('gestion_evenements');
 
           exit();
@@ -266,6 +323,7 @@ if (isset($_POST['btnAdminLoginAsUser']) && $_SESSION['role'] === 'admin') {
       //     exit();
       // }
   }
+}
 
   
 function includeView($viewName) {
@@ -286,26 +344,38 @@ function includeView($viewName) {
 if (isset($_SESSION['id_utilisateur'])) { 
 
  if (isset($_POST['researchAllEvent'])){
-  echo "ligne288controller";
+ 
 $events=selectAllEvents();
-
+ if (!$events) {
+    $events=["pas d'evenement"];
+   }
   $_SESSION['list_evenements'] = $events;
+  $_SESSION["refresh"]=true;
   locationView('accueil');
   exit();
 
  }
  if (isset($_POST['researchAllEventForThisUser'])){
-  echo "ligne297controller";
+
   $id_organisateur=$_SESSION['id_utilisateur'];
    $events=findAllEventsByOrganisateurId($id_organisateur);
-  $_SESSION['list_evenements'] = $events;
-  locationView('accueil');
+   if (!$events) {
+    $events=["pas d'evenement"];
+   }
+ 
+   $_SESSION['list_evenements'] = $events;
+   $_SESSION["refresh"]=true;
+  locationView('gestion_evenements');
   exit();
  }
  if (isset($_POST['researchAllInscriptionsForThisUser'])){
   $id_inscrit=$_SESSION['id_utilisateur'];
    $events=findAllEventsByParticipantId($id_inscrit);
+    if (!$events) {
+    $events=["pas d'evenement"];
+   }
   $_SESSION['list_evenements'] = $events;
+   $_SESSION["refresh"]=true;
   locationView('accueil');
   exit();
  }
@@ -318,7 +388,7 @@ $events=selectAllEvents();
     if (isset($file)) {
              $_POST["imageEvent"]="exist";
       }
-    // var_dump($_POST);
+    //  var_dump($_POST);
     $result=allChampsNecessaryPresents($_POST,'creationEvenement');
     if ($result["success"]==true){ 
       $champNecessaryPresents=$result["champNecessaryPresents"];
@@ -327,45 +397,73 @@ $events=selectAllEvents();
         $_POST['typeSoiree'] = $_POST['typeSoiree'][0];
       } 
 
-      // echo"ligne201";
+     echo"ligne201";
       // var_dump($_FILES);
  
       $datas=trimData($_POST);
       $datas=protectData($datas);
-      // echo "ligne310";
+       echo "ligne310";
       // var_dump($datas);
       $result=areValidChamps($datas,$champNecessaryPresents);
+      var_dump($result);
       //  echo "<script>console.log('arrive dans inscription ligne50');</script>";
       if ($result["success"]==true){
+        echo "401";
              $file=$_FILES['imageEvent'];
-      // var_dump($file);
+    //  var_dump($file);
   
       if (isset($file)) {
            $result=enregistrementImageEvent();
            if ($result["success"] === false){
              $phrase=$result["phraseEchec"];
            } else {
-             $_POST["imageEvent"]=$result["destinationFile"];
+             $datas["imageEvent"]=$result["webPath"];
            }
      
       }
+      echo "reussite";
         $result=verifyExistInBDEvenement($datas,$_SESSION['id_utilisateur']);
-        // echo "328".$result["success"];
+         echo "328".$result["success"];
         if ($result["success"]==false)
         {
       
           $result=insertEvenementInBD($datas,$_SESSION['id_utilisateur']); 
+          $_SESSION["refresh"]=true;
             // echo "reussite";
           locationView('gestion_evenements');
           exit();
            } else {
           $phrase=$result["phraseEchec"];
+          $_SESSION["refresh"]=true;
           locationView('gestion_evenements');
+           exit();
                   //  echo $phrase;
            }
         }
+        else {
+          $phrase=$result["phraseEchec"];
+          $_SESSION["refresh"]=true;
+          locationView('gestion_evenements');
+          exit();
+        }
        
     }
+  }
+  else if (isset($_POST['btnaction_evenement'])) {
+    var_dump($_POST);
+    var_dump($_SESSION);
+    $id_evenement=$_POST['id_evenement'];
+    $id_organisateur=$_SESSION['id_utilisateur'];
+    $event=findAllInfosEvent($id_organisateur,$id_evenement);
+    var_dump($event);
+   if (!$event) {
+    $event=["pas d'evenement"];
+   }
+ 
+$_SESSION['evenementSelectedSpecial'] = $event;
+   $_SESSION["refresh"]=true;
+  locationView('actions_evenement');
+  exit();
   }
   else if (isset($_POST['btnModificationEvenement'])) {
     
@@ -382,6 +480,7 @@ $events=selectAllEvents();
           handleLoginAndRegistration();
         }
         else {
+          $_SESSION["refresh"]=true;
            locationView('gestion_evenements');
           exit();
         }
@@ -389,7 +488,7 @@ $events=selectAllEvents();
   }
   
   else {
-
+$_SESSION["refresh"]=true;
     locationView('gestion_evenements');
       exit();
    

@@ -184,7 +184,7 @@ function champIsValid($nomChamp,$valeurChamp)
             break;
 
         case 'codePostalEvent':
-            if (!preg_match('/^\d{5}$/', $valeurChamp)) {
+            if (!preg_match('/^\d{4}$/', $valeurChamp)) {
                 return [
                     "success" => false,
                     "phraseEchec" => "Code postal invalide"
@@ -247,7 +247,7 @@ function allChampsNecessaryPresents($datas,$fonctionnalite)
     $role=$_SESSION["role"];
     // var_dump($role);
     if (($role=="groupe") ) {
-        $champNecessary=["emailEvent","numberPhoneEvent","codePostalEvent","villeEvent","numRueEvent","rueEvent","titreEvent","typeSoiree","recurrenceEvent","nbParticipants","dateEvent","heureEvent","imageEvent"];
+        $champNecessary=["emailEvent","numberPhoneEvent","codePostalEvent","villeEvent","numRueEvent","rueEvent","titreEvent","typeSoiree","nbParticipants","dateEvent","heureEvent","imageEvent"];
         // var_dump($champNecessary);
     } else if ($role=="particulier"|| ($role=="admin")) {
         $champNecessary=["emailEvent","dateEvent","heureEvent","typeSoiree","nbParticipants","villeEvent","imageEvent"];
@@ -265,7 +265,7 @@ function allChampsNecessaryPresents($datas,$fonctionnalite)
     // echo "champ".$champ;
         if (!isset($datas[$champ]) || empty($datas[$champ])) {
             
-              echo "champ 262 ".$champ;
+               echo "champ 262 ".$champ;
               return [
         "success" => false,
         "champNecessaryPresents" => $champNecessary
@@ -505,7 +505,7 @@ function insertInBD($datas){
     $motDePasseHash=password_hash($motDePasse,PASSWORD_DEFAULT);
     $role=$datas["role"];
     $pseudo=$datas["pseudo"];
-    $typeSoiree=$datas["typeSoiree"];
+    
     if (isset($datas["dateNaissance"])) {
         $dateNaissance=$datas["dateNaissance"];
     } else {
@@ -513,6 +513,7 @@ function insertInBD($datas){
     }
     if (isset($datas["imageProfil"])) {
         $imageProfil=$datas["imageProfil"];
+        echo"imageProfil".$imageProfil;
     } else {
         $imageProfil=null;
     }
@@ -520,7 +521,7 @@ function insertInBD($datas){
   
     // echo"mail".$mail;
   
-    $requete="insert into utilisateurs (nom_utilisateur,prenom_utilisateur,email,password,imageProfil,pseudo,dateInscription,role,statut_utilisateur,dateNaissance,style_evenement) values (:nomUtilisateur,:prenomUtilisateur,:email,:motDePasseHash,:imageProfil,:pseudo,:dateInscription,:role,:statut_utilisateur,:dateNaissance,:typeSoiree)";
+    $requete="insert into utilisateurs (nom_utilisateur,prenom_utilisateur,email,password,imageProfil,pseudo,dateInscription,role,statut_utilisateur,dateNaissance) values (:nomUtilisateur,:prenomUtilisateur,:email,:motDePasseHash,:imageProfil,:pseudo,:dateInscription,:role,:statut_utilisateur,:dateNaissance)";
     $requetePreparee=$connexion_bd->prepare($requete);
     $requetePreparee->execute([
         ':nomUtilisateur' => $nomUtilisateur,
@@ -530,7 +531,6 @@ function insertInBD($datas){
         ':motDePasseHash' => $motDePasseHash,
         ':role' => $role,
         ':pseudo' => $pseudo,
-        ':typeSoiree' => $typeSoiree,
         ':dateNaissance' => $dateNaissance,
         ':dateInscription' => date("Y-m-d H:i:s"),
         ':statut_utilisateur' => 1,
@@ -546,15 +546,19 @@ function insertInBD($datas){
       $_SESSION['pseudo']=$pseudo;
       $_SESSION['role']=$role;
       session_write_close();
+      return ["success"=>true];
 
     // echo "<script>console.log('ID nouvel utilisateur : $id_utilisateur');</script>";
     // sleep(2);
     // return true;
 }
-function getEvenementsWidthEssentialInfos($evenements)
+function getEvenementsWithEssentialInfos($evenements)
 {
     global $connexion_bd;
      $resultats = [];
+    if (!empty($evenements) && isset($evenements['id_evenement'])) {
+    $evenements = [$evenements];
+}
 
     foreach ($evenements as $evenement) {
            $nbMax = $evenement['nbParticipants_max'];
@@ -606,7 +610,7 @@ function selectAllEvents(){
     $requetePreparee=$connexion_bd->prepare($requete);
     $requetePreparee->execute();
     $evenements=$requetePreparee->fetchAll(PDO::FETCH_ASSOC);
-    $resultats=getEvenementsWidthEssentialInfos($evenements);
+    $resultats=getEvenementsWithEssentialInfos($evenements);
     return $resultats;
     
 }
@@ -622,7 +626,7 @@ function findAllEventsByParticipantId($id_inscrit){
     ]);
     
     $evenements=$requetePreparee->fetchAll(PDO::FETCH_ASSOC);
-     $resultats=getEvenementsWidthEssentialInfos($evenements);
+     $resultats=getEvenementsWithEssentialInfos($evenements);
     return $resultats;
 }
 
@@ -636,7 +640,7 @@ function findAllEventsByParticipantId($id_inscrit){
     ]);
     
     $evenements=$requetePreparee->fetchAll(PDO::FETCH_ASSOC);
-       $resultats=getEvenementsWidthEssentialInfos($evenements);
+       $resultats=getEvenementsWithEssentialInfos($evenements);
     return $resultats;
     
 } 
@@ -672,20 +676,7 @@ function modificationMotDePasse($datas){
       session_write_close();
     
 }
-function saveProfilImageFile()
-{
-    $save_directory = __DIR__ . DIRECTORY_SEPARATOR . 'facturesUBL' . DIRECTORY_SEPARATOR .    $IDComm  . DIRECTORY_SEPARATOR;
 
-    if (!file_exists($save_directory)) {
-        mkdir($save_directory, 0777, true); // Crée le répertoire s'il n'existe pas
-    }
-
-    // Chemin complet du fichier XML à enregistrer
-    $filePath = $save_directory . $filename;
-
-    // Sauvegarder le fichier XML sur le serveur
-    file_put_contents($filePath, $dom->saveXML());
-}
 function importReponsesQuestions($id_utilisateur){
     global $connexion_bd;
     $requete="select * from password_recup where id_utilisateur = :id_utilisateur";
@@ -697,8 +688,9 @@ function importReponsesQuestions($id_utilisateur){
         ]
     );
     // fetch pour récupérer le premier résultat qui sera de toute façon le seul
-    $result=$requetePreparee->fetch(PDO::FETCH_ASSOC);
-    return $result;
+    $evenements=$requetePreparee->fetch(PDO::FETCH_ASSOC);
+    $resultats=getEvenementsWithEssentialInfos($evenements);
+    return $resultats;
 }
 // à revoir
 function nettoyerNomFichier($filename) {
@@ -743,7 +735,7 @@ function nettoyerNomFichier($filename) {
     }
     return true;
  }
-function enregistrementImageProfil(){
+function verificationImageProfil(){
 
     if (isset($_FILES['imageProfil']) && $_FILES['imageProfil']['error'] === UPLOAD_ERR_OK) {
     // Récupérer les infos du fichier uploadé
@@ -753,29 +745,45 @@ function enregistrementImageProfil(){
     //   $fileType = $_FILES['imageProfil']['type']; 
       $result=verificationFichierImage( $cheminTemporaireServeur , $fileSize);
       if (!$result) {
-        return;
+        return ["success"=>false,"phraseEchec"=>"Le fichier est trop volumineux. La taille maximale autorisée est de 2 Mo."];  
+      } else {
+        return ["success"=>true,"cheminTemporaireServeur"=>$cheminTemporaireServeur,"fileOriginalName"=>$fileOriginalName,"fileSize"=>$fileSize];
       }
-      $userId = $_SESSION['id_utilisateur'];
+   
+} else {
+    echo "Erreur lors du chargement du fichier.";
+}
+}
+function enregistrementImageProfil($id_utilisateur,$cheminTemporaireServeur,$fileOriginalName){
 
-
-        $destinationDirectory = __DIR__ .'/../vue/images/uploads/'.$userId.'/profil/';
+        $destinationDirectory = __DIR__ .'/../vue/images/uploads/'.$id_utilisateur.'/imageprofil/';
+        $uniqueFileName = uniqid() . '_' . $fileOriginalName;
+        $destinationFile = $destinationDirectory . $uniqueFileName;
         // Exemple : déplacer le fichier vers un dossier "uploads/"
         // pour éviter les collisions de noms de fichiers en utilisant uniqid() crée un identifiant unique
-        $destinationFile = $destinationDirectory . uniqid() . '_' . basename($fileOriginalName);
+       
         if (!is_dir($destinationDirectory)) {
             mkdir($destinationDirectory, 0777, true);
         }
         if (move_uploaded_file($cheminTemporaireServeur, $destinationFile)) {
-            return ["success"=>true,"destinationFile"=>$destinationFile];
+            $webPath = '/moncoinludique/vue/images/uploads/' . $id_utilisateur . '/imageProfil/' . $uniqueFileName;
+            return ["success"=>true,"destinationFile"=>$destinationFile,"webPath"=>$webPath];
             // echo "Le fichier a bien été uploadé : " . htmlspecialchars($fileOriginalName);
         } else {
             echo "Erreur lors du déplacement du fichier.";
         }
 
-    } else {
-        echo "Aucun fichier uploadé ou erreur d'upload.";
-    }
+
    
+}
+function sendImageProfilInBd($id_utilisateur,$webPath){
+    global $connexion_bd;
+    $sql = "UPDATE utilisateurs SET imageProfil = :webPath WHERE id_utilisateur = :id_utilisateur";
+    $stmt = $connexion_bd->prepare($sql);
+    $stmt->bindParam(':webPath', $webPath);
+    $stmt->bindParam(':id_utilisateur', $id_utilisateur);
+    $stmt->execute();
+    
 }
 function enregistrementImageEvent(){
 
@@ -795,14 +803,17 @@ function enregistrementImageEvent(){
 
  
         // Exemple : déplacer le fichier vers un dossier "uploads/"
-        $destinationDirectory = __DIR__ .'/../vue/images/uploads/'.$userId.'/evennement/';
-        $destinationFile = $destinationDirectory . uniqid() . '_' . basename($fileOriginalName);
+        $destinationDirectory = __DIR__ .'/../vue/images/uploads/'.$userId.'/evenement/';
+        $uniqueFileName = uniqid() . '_' . $fileOriginalName;
+        $destinationFile = $destinationDirectory . $uniqueFileName;
+        
         if (!is_dir($destinationDirectory)) {
             mkdir($destinationDirectory, 0777, true);
         }
 
         if (move_uploaded_file($cheminTemporaireServeur, $destinationFile)) {
-            return ["success"=>true,"destinationFile"=>$destinationFile];
+             $webPath = '/moncoinludique/vue/images/uploads/' . $userId . '/evenement/' . $uniqueFileName;
+            return ["success"=>true,"destinationFile"=>$destinationFile,"webPath"=>$webPath];
             // echo "Le fichier a bien été uploadé : " . htmlspecialchars($fileOriginalName);
         } else {
             echo "Erreur lors du déplacement du fichier.";
@@ -813,15 +824,34 @@ function enregistrementImageEvent(){
     }
    
 }
+function findAllInfosEvent($id_organisateur,$id_evenement){
+    global $connexion_bd;
+    $sql = "SELECT * FROM evenements join utilisateurs on evenements.id_organisateur = utilisateurs.id_utilisateur where id_organisateur = :id_organisateur and id_evenement = :id_evenement";
+    $stmt = $connexion_bd->prepare($sql);
+    $stmt->execute(
+        [
+            ':id_organisateur' => $id_organisateur,
+            ':id_evenement' => $id_evenement    
+        ]
+    );
+    $evenements = $stmt->fetch(PDO::FETCH_ASSOC);
+    $resultats=getEvenementsWithEssentialInfos($evenements);
+    if (count($resultats) === 1) {
+        return $resultats[0]; // un seul élément, retourne tableau associatif
+    }
+  
+}
 function insertEvenementInBD($datas, $id_utilisateur) {
     global $connexion_bd;
+    //  var_dump ($datas);
 
     // Extraction des données depuis $datas
     $nbParticipants       = $datas["nbParticipants"];
     $ageRequis            = $datas["ageRequis"];
-    $recurrence           = $datas["recurrence"];
+    $recurrenceEvent           = $datas["recurrenceEvent"];
     $typeSoiree           = $datas["typeSoiree"];
     $dateEvent            = $datas["dateEvent"];
+ 
     $heureEvent           = $datas["heureEvent"];
     $titreEvent           = $datas["titreEvent"];
     $jeuxThemesEvent      = $datas["jeuxThemesEvent"];
@@ -838,7 +868,7 @@ function insertEvenementInBD($datas, $id_utilisateur) {
     $requete = "INSERT INTO evenements (
         id_organisateur,
         recurrence,
-        type_soiree,
+        style_evenement,
         date_evenement,
         heure,
         titre_evenement,
@@ -881,7 +911,7 @@ function insertEvenementInBD($datas, $id_utilisateur) {
 
     $requetePreparee->execute([
         ':id_utilisateur'      => $id_utilisateur,
-        ':recurrence'          => $recurrence,
+        ':recurrence'          => $recurrenceEvent,
         ':typeSoiree'          => $typeSoiree,
         ':dateEvent'           => $dateEvent,
         ':heureEvent'          => $heureEvent,
@@ -931,4 +961,19 @@ function verifyExistInBDEvenement($datas,$id_utilisateur) {
       
 
 }
+
+// function saveProfilImageFile()
+// {
+//     $save_directory = __DIR__ . DIRECTORY_SEPARATOR . 'facturesUBL' . DIRECTORY_SEPARATOR .    $IDComm  . DIRECTORY_SEPARATOR;
+
+//     if (!file_exists($save_directory)) {
+//         mkdir($save_directory, 0777, true); // Crée le répertoire s'il n'existe pas
+//     }
+
+//     // Chemin complet du fichier XML à enregistrer
+//     $filePath = $save_directory . $filename;
+
+//     // Sauvegarder le fichier XML sur le serveur
+//     file_put_contents($filePath, $dom->saveXML());
+// }
 ?>

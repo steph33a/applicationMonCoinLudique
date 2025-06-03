@@ -641,34 +641,34 @@ let divCreateEventForGroupe=document.querySelector(".divCreateEventForGroupe");
 
 let commentaireErreur;
 let validChamps=[];
-let modalFormConnexion=document.getElementById("modalFormConnexion");
-let modalFormInscription=document.getElementById("modalFormInscription");
-// modalFormRedefinitionMotDePasse=document.getElementById("modalFormRedefinitionMotDePasse");
-let modalFormConditionsUtilisation=document.getElementById("modalFormConditionsUtilisation");
-let modalFormMotDePasseOublie=document.getElementById("modalFormMotDePasseOublie");
-let modalFormRechercheAvancee=document.getElementById("modalFormRechercheAvancee");
-let modalDetailsEvenement=document.getElementById("modalDetailsEvenement");
+let overlayConnexion=document.getElementById("overlayConnexion");
+let overlayInscription=document.getElementById("overlayInscription");
+// let overlayRedefinitionMotDePasse=document.getElementById("overlayRedefinitionMotDePasse");
+let overlayConditionsUtilisation=document.getElementById("overlayConditionsUtilisation");
+let overlayMotDePasseOublie=document.getElementById("overlayMotDePasseOublie");
+let overlayRechercheAvancee=document.getElementById("overlayRechercheAvancee");
+let overlayDetailsEvenement=document.getElementById("overlayDetailsEvenement");
 
-if (modalFormConnexion) {
-  modalFormConnexion.classList.add("displayNone");
+if (overlayConnexion) {
+  overlayConnexion.classList.add("displayNone");
 }
-if (modalFormInscription) {
-  modalFormInscription.classList.add("displayNone");
+if (overlayInscription) {
+  overlayInscription.classList.add("displayNone");
 }
-// document.getElementById("modalFormRedefinitionMotDePasse").classList.add("displayNone");
-if (modalFormConditionsUtilisation) { 
+// document.getElementById("overlayRedefinitionMotDePasse").classList.add("displayNone");
+if (overlayConditionsUtilisation) { 
 
-modalFormConditionsUtilisation.classList.add("displayNone");
+overlayConditionsUtilisation.classList.add("displayNone");
 }
-if (modalFormMotDePasseOublie) {
-modalFormMotDePasseOublie.classList.add("displayNone");
+if (overlayMotDePasseOublie) {
+overlayMotDePasseOublie.classList.add("displayNone");
 }
-if (modalFormRechercheAvancee) {
-modalFormRechercheAvancee.classList.add("displayNone");
+if (overlayRechercheAvancee) {
+overlayRechercheAvancee.classList.add("displayNone");
 }
-if (modalDetailsEvenement) {
+if (overlayDetailsEvenement) {
 
-modalDetailsEvenement.classList.add("displayNone");
+overlayDetailsEvenement.classList.add("displayNone");
 }
 
 
@@ -904,134 +904,81 @@ function afficherFormulaireCreationEvenement(){
   
 }
 
-
-
-document.querySelectorAll(".openModalLinkConnexion").forEach(element => {
-
-  element.addEventListener("click", function (e) {
-      console.log("connexion");
-    e.preventDefault(); // empêche le lien de naviguer ailleurs
-
-    // Cacher tous les modals
-    document.querySelectorAll('.modal').forEach(modal => {
-      if (modal.classList.contains('displayBlock')) {
-        modal.classList.add('displayNone');
-        modal.classList.remove('displayBlock');
-      }
-    
-    });
-  
-    modalFormConnexion=document.getElementById("modalFormConnexion");
-    // Afficher le modal de connexion
-    modalFormConnexion.classList.remove("displayNone");
-    modalFormConnexion.classList.add("displayBlock");
-    formulaireConnexion=document.getElementById("formulaireConnexion");
-// setTimeout(() => {
-//   attacherEcouteurs("formulaireConnexion", elementIndispensableConnexion);
-// }, 5);
-
-    // attacherEcouteurs("modalFormConnexion",elementIndispensableConnexion);
-    // Modifier les classes du body et du main
-    // body.classList.add("accueilWithoutModalAndResearch");
-    // mainAccueil.classList.add("accueil");
-    // mainAccueil.classList.remove("accueilDuringOpeningModal");
-
-    // Recalculer la hauteur du footer
-    adjustModalSpacers();
-    validChamps = [];
+function fermerTousLesModals() {
+  document.getElementById("globalOverlay").classList.add("displayNone");
+  document.querySelectorAll(".modal").forEach(modal => {
+    modal.classList.add("displayNone");
   });
-});
-
-document.querySelectorAll(".openModalLinkInscription").forEach(element => {
-  element.addEventListener("click", function (e) {
-    e.preventDefault(); // empêche le lien de naviguer ailleurs
-
-    // Cacher tous les modals
-    document.querySelectorAll('.modal').forEach(modal => {
-           if (modal.classList.contains('displayBlock')) {
-        modal.classList.add('displayNone');
-        modal.classList.remove('displayBlock');
-      }
-    
-
-    });
-    modalFormInscription=document.getElementById("modalFormInscription");
-    // Afficher le modal de connexion
-   
-    // Afficher le modal de connexion
-    modalFormInscription.classList.remove("displayNone");
-    modalFormInscription.classList.add("displayBlock");
-    
-    //  attacherEcouteurs("modalFormInscription",elementIndispensableInscription);
-
-    // Modifier les classes du body et du main
-    // body.classList.remove("accueilWithoutModalAndResearch");
-    // mainAccueil.classList.remove("accueil");
-    // mainAccueil.classList.add("accueilDuringOpeningModal");
-
-    // Recalculer la hauteur du footer
-    adjustModalSpacers();
-    validChamps = [];
-  });
-});
-
-let openModalLinkMotDePasseOublie=document.getElementById("openModalLinkMotDePasseOublie")
-if (openModalLinkMotDePasseOublie) {
-  openModalLinkMotDePasseOublie.addEventListener("click", function (e) {
-   
-  e.preventDefault(); // empêche le lien de naviguer ailleurs
-  document.querySelectorAll('.modal').forEach(modal => {
-         if (modal.classList.contains('displayBlock')) {
-        modal.classList.add('displayNone');
-        modal.classList.remove('displayBlock');
-      }
-    
-      document.getElementById("modalFormMotDePasseOublie").classList.add("displayBlock");
-  document.getElementById("modalFormMotDePasseOublie").classList.remove("displayNone");
-  // attacherEcouteurs();
-  validChamps = [];
-    //   body.classList.add("accueilWithoutModalAndResearch");
-    // mainAccueil.classList.add("accueil");
-    // mainAccueil.classList.remove("accueilDuringOpeningModal");
-    adjustModalSpacers();
- 
-});
-});
 }
 
-let openModalConditionsUtilisation=document.getElementById("openModalConditionsUtilisation");
+function ouvrirModal(idModal) {
+  fermerTousLesModals();
+  document.getElementById("globalOverlay").classList.remove("displayNone");
+  const modal = document.getElementById(idModal);
+  if (modal) {
+    modal.classList.remove("displayNone");
+  }
+}
 
+// Ajout des écouteurs
+document.querySelectorAll(".openModalLinkConnexion").forEach(el =>
+  el.addEventListener("click", e => {
+    e.preventDefault();
+    ouvrirModal("modalFormConnexion");
+  })
+);
 
-if (openModalConditionsUtilisation) {
-openModalConditionsUtilisation.addEventListener("click", function (e) {
-  e.preventDefault(); // empêche le lien de naviguer ailleurs
-  document.querySelectorAll('.modal').forEach(modal => {
-         if (modal.classList.contains('displayBlock')) {
-        modal.classList.add('displayNone');
-        modal.classList.remove('displayBlock');
-      }
+document.querySelectorAll(".openModalLinkInscription").forEach(el =>
+  el.addEventListener("click", e => {
+    e.preventDefault();
+    ouvrirModal("modalFormInscription");
+  })
+);
 
+const openModalLinkMotDePasseOublie = document.getElementById("openModalLinkMotDePasseOublie");
+if (openModalLinkMotDePasseOublie) {
+  openModalLinkMotDePasseOublie.addEventListener("click", e => {
+    e.preventDefault();
+    ouvrirModal("modalFormMotDePasseOublie");
+  });
+}
+
+// Fermer quand on clique sur X
+document.querySelectorAll(".closeModal").forEach(el =>
+  el.addEventListener("click", () => fermerTousLesModals())
+);
+
+// Fermer si clic sur l'overlay (extérieur de la modale)
+const globalOverlay = document.getElementById("globalOverlay");
+if (globalOverlay) {
+  globalOverlay.addEventListener("click", () => fermerTousLesModals());
+}
+
+// Ne pas fermer si clic à l'intérieur de la modale
+document.querySelectorAll(".modal").forEach(modal => {
+  modal.addEventListener("click", event => {
+    event.stopPropagation();
+  });
 });
-   body.classList.remove("accueilWithoutModalAndResearch");
-  document.getElementById("modalConditionsUtilisation").classList.add("displayBlock");
-  // attacherEcouteurs();
-  
-    // body.classList.add("accueilWithoutModalAndResearch");
-    // mainAccueil.classList.add("accueil");
-    // mainAccueil.classList.remove("accueilDuringOpeningModal");
-     adjustModalSpacers();
-});}
+
+// const openModalRedefinitionMotDePasse = document.getElementById("openModalRedefinitionMotDePasse");
+// if (openModalRedefinitionMotDePasse) {
+//   openModalRedefinitionMotDePasse.addEventListener("click", e => {
+//     e.preventDefault();
+//     ouvrirModal("overlayRedefinitionMotDePasse");
+//   });
+// }
 
 // document.getElementById("closeModalBtn").addEventListener("click", function () {
 
-//     document.getElementById("modalFormConnexion").classList.add("displayBlock");
-//     document.getElementById("modalFormConnexion").classList.remove("displayNone");
+//     document.getElementById("overlayConnexion").classList.add("displayBlock");
+//     document.getElementById("overlayConnexion").classList.remove("displayNone");
 
 
 // });
 
 // window.addEventListener("click", function (e) {
-//   const modal = document.getElementById("modalForm");
+//   const modal = document.getElementById("overlay");
 //   if (e.target === modal) {
 //     modal.style.display = "none";
 //   }
@@ -1055,7 +1002,7 @@ function adjustModalSpacers() {
 
 // Appeler au chargement
 
-const allModals = document.querySelectorAll('.modal');
+const allModals = document.querySelectorAll('.overlay');
 
   adjustModalSpacers();
 
@@ -1085,9 +1032,9 @@ if (allModals) {
 
 function afficherFormulaireCreationEvenement() {
 
-  if (document.getElementById("content_modalFormCreationEvenement").classList.contains("displayNone")) {
-    document.getElementById("content_modalFormCreationEvenement").classList.add("displayBlock");
-    document.getElementById("content_modalFormCreationEvenement").classList.remove("displayNone");
+  if (document.getElementById("content_overlayCreationEvenement").classList.contains("displayNone")) {
+    document.getElementById("content_overlayCreationEvenement").classList.add("displayBlock");
+    document.getElementById("content_overlayCreationEvenement").classList.remove("displayNone");
   }
 
 
@@ -1123,9 +1070,9 @@ document.querySelectorAll(".closeModal").forEach(btn => {
 
 window.addEventListener('DOMContentLoaded', () => {
   // Dès que le DOM est complètement chargé, on lance cette fonction
- console.log ("986")
+ console.log ("1066")
   if (modalToOpen) {  // Si la variable modalToOpen contient une valeur non vide 
-     console.log ("988")
+     console.log ("1068")
     //  ferme toutes les modalsvisibles.
     // On cherche toutes les modals qui ont la classe CSS 'displayBlock' (visible)
     document.querySelectorAll('.modal .displayBlock').forEach(modal => {
@@ -1134,45 +1081,75 @@ window.addEventListener('DOMContentLoaded', () => {
       // On ajoute la classe 'displayNone' pour cacher la modal via CSS
       modal.classList.add('displayNone');
     });
-    console.log ("997")
-
+    // let overlay=document.querySelector('.overlay')
+    // if ((overlay) && (overlay.classList.contains('displayNone')))
+    //   {
+    //     overlay.classList.add('displayBlock');
+    //     overlay.classList.remove('displayNone');
+    //   }
+    console.log ("1077");
+console.log("modalElement998",modalToOpen);
     // On construit l'id de la modal à ouvrir à partir de modalToOpen
     // Exemple : modalToOpen = "inscription"
-    // => "modalForm" + "I" + "nscription" = "modalFormInscription"
+    // => "overlay" + "I" + "nscription" = "overlayInscription"
     switch (modalToOpen) {
       case "inscription":
-        modalToOpen = "modalFormInscription";
+        
+        ouvrirModal("modalFormInscription");
         break;
       case "connexion":
-        modalToOpen = "modalFormConnexion";
+        ouvrirModal("modalFormConnexion");
+        break;
+      case "redefinitionMotDePasse":
+        ouvrirModal("modalFormRedefinitionMotDePasse");
         break;
       
     }
-    const modalElement = document.getElementById(modalToOpen);
-console.log("modalElement1021",modalElement)
-    if (modalElement) { // Si l'élément avec cet ID existe dans le DOM
-      // On retire la classe 'displayNone' pour la rendre visible
-      if (modalElement.classList.contains('displayNone')) {
-        modalElement.classList.remove('displayNone');
-      }
-      if (modalElement.classList.contains('displayBlock')) {
-        modalElement.classList.remove('displayBlock');
-      }
+    
      
 
       // On peut également ajouter une classe au <body> pour modifier le style global de la page,
       // par exemple empêcher le scroll du fond ou appliquer un style spécifique quand une modal est ouverte.
       // document.body.classList.add('accueilWithoutModalAndResearch');
     }
-  }
+  
 });
 
 const form = document.getElementById('autoSubmitForm');
 if (form) {
+   console.log("1104form",form);
     form.submit();
 } else {
     console.warn("Le formulaire autoSubmitForm n'existe pas sur cette page.");
 }
+window.addEventListener('DOMContentLoaded', () => {
+  const form = document.getElementById('autoSubmitForm');
+  if (form) {
+    form.submit();
+  } else {
+    console.warn("Le formulaire autoSubmitForm n'existe pas sur cette page.");
+  }
+});
+// function getUrlParameter(name) {
+//   name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+//   const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+//   const results = regex.exec(window.location.search);
+//   return results === null ? null : decodeURIComponent(results[1].replace(/\+/g, ' '));
+// }
+
+// window.addEventListener('load', () => {
+//   const refreshParam = getUrlParameter('refresh');
+//   const form = document.getElementById('autoSubmitForm');
+
+//   if (form && refreshParam !== '1') {
+//     // On ajoute refresh=1 dans l'URL de l'action pour éviter la boucle
+//     const url = new URL(form.action, window.location.origin);
+//     url.searchParams.set('refresh', '1');
+//     form.action = url.toString();
+
+//     form.submit();
+//   }
+// });
  
 //  window.addEventListener('DOMContentLoaded', () => {
 //      document.getElementById('autoSubmitForm').submit();

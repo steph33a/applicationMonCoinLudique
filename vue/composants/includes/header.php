@@ -1,6 +1,30 @@
 <?php
-$modal = isset($_GET['modal']) ? $_GET['modal'] : null;
-echo "modal:" . $modal;
+$affichageFormulaireRedefinitionMotDePasse = (isset($_SESSION["redefinitionMotDePasse"]) && $_SESSION["redefinitionMotDePasse"]) ? true : false;
+if ($affichageFormulaireRedefinitionMotDePasse==true) {
+    unset($_SESSION['redefinitionMotDePasse']);
+}
+
+
+// echo "modal4:" . $_SESSION['modal'] ;
+if ($affichageFormulaireRedefinitionMotDePasse==true) {
+    $_SESSION['modal'] = 'redefinitionMotDePasse';
+    // echo "ligne6";
+} else {
+// echo "affichageFormulaireRedefinitionMotDePasse:" . $affichageFormulaireRedefinitionMotDePasse;
+if (isset($_GET['modal'])) {
+    // echo "ligne10";
+    $_SESSION['modal'] = $_GET['modal'];
+     
+}
+}
+// var_dump($_SESSION['modal']);
+if (isset($_SESSION['modal'])) {
+$modal = $_SESSION['modal'];
+// echo "modal18:" . $modal ;
+ echo "modal:" . $modal;
+}
+
+
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -48,7 +72,7 @@ echo "modal:" . $modal;
 
             else if ($_SESSION['role'] === 'admin') {?>
                 <ul class="menu admin">
-                    <li><a href="accueil.php">Accueil</a></li>
+                    <li><a href="accueil.php?modal=">Accueil</a></li>
                     <li><a class="" href="accueil.php?modal=inscription" >Inscription</a></li>
                     <li><a class="" href="accueil.php?modal=connexion" >Connexion</a></li>
                     <li><a href="monCompte.php">Mon compte</a></li>

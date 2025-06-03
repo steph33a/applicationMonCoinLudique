@@ -88,7 +88,7 @@
                 </div>
                 
                 
-                <div style="display:flex; flex-direction:row; justify-content:space-between;width:305px; margin-bottom:75px;">
+                <div style="display:flex; flex-direction:row; justify-content:space-between;width:305px; margin-bottom:25px;">
                     <button style="width:114px; height:40px;background-color: #6EBA46; color: #FFFFFF; font-size:18px; font-weight: 600; font-family: 'Nunito Sans', sans-serif;"type="submit" name="btnInscription" value="valider" id="btnInscription">valider</button>
                     <!-- réinitialise tous les champs du formulaire à leurs valeurs initiales (celles présentes au chargement de la page ou par défaut dans l'attribut value). -->
 
