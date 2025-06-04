@@ -41,10 +41,15 @@ include('../composants/includes/header.php');
 
 <main style="display:flex; flex-direction:column;gap:20px; width:100%; justify-content:center; align-items:center">
     <div style="display:flex;min_height:337px; position:relative; " id="mainAccueil" class="accueil mainWithoutModal">
-        <?php if (empty($list_evenements) && (isset($_SESSION['refresh']) ? $_SESSION['refresh'] : '') !== true) {?>
+      <?php   $refreshCondition = empty($list_evenements) && (!isset($_SESSION['refresh']) || $_SESSION['refresh'] !== true);
+    
+   
+
+    if ($refreshCondition) { ?>
         <div id="formulaire_invisible">
             <form id="autoSubmitForm" action="../../controller/controller.php" method="post" style="display:none;">
                 <!-- Tu peux ajouter des champs cachés ici -->
+                <input type="hidden" name="page_contexte" value="accueil">
                 <input type="hidden" name="id_utilisateur" value="<?php echo $_SESSION['id_utilisateur']; ?>">
             
                 <input type="hidden" name="researchAllEvent" value="lister_evenements"><!-- Exemple d'action -->

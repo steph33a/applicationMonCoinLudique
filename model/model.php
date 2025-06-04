@@ -1147,7 +1147,7 @@ function verifyExistInBDEvenement($datas,$id_utilisateur) {
 }
  function selectAllInfosUtilisateurById($id_utilisateur){
      global $connexion_bd;
-     $requete="select imageProfil,pseudo,nom_utilisateur,prenom_utilisateur,email,role,reponse1,reponse2 from utilisateurs join password_recup on utilisateurs.id_utilisateur=password_recup.id_utilisateur where id_utilisateur = :id_utilisateur";
+     $requete="select imageProfil,pseudo,nom_utilisateur,prenom_utilisateur,email,role,reponse1,reponse2 from utilisateurs U join password_recup P on U.id_utilisateur=P.id_utilisateur where U.id_utilisateur = :id_utilisateur";
      $requetePreparee=$connexion_bd->prepare($requete);
      $requetePreparee->execute([
          ':id_utilisateur' => $id_utilisateur

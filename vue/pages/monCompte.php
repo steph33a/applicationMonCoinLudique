@@ -1,6 +1,6 @@
 <?php
 session_start();
-var_dump($_SESSION);
+// var_dump($_SESSION);
 $utilisateur = [];
 // var_dump($_SESSION['list_evenements']);
 if (isset($_SESSION['utilisateur']) && is_array($_SESSION['utilisateur'])) {
@@ -24,11 +24,11 @@ $role="";
         $image_profil = $utilisateur['imageProfil'];
         $pseudo = $utilisateur['pseudo'];
         $email = $utilisateur['email'];
-        $prenom_utilisateur = $utilisateur['prenomUtilisateur'];
-        $nom_utilisateur = $utilisateur['nomUtilisateur'];
+        $prenom_utilisateur = $utilisateur['prenom_utilisateur'];
+        $nom_utilisateur = $utilisateur['nom_utilisateur'];
        
-        $reponse1 = $utilisateur['question1'];
-        $reponse2 = $utilisateur['question2'];
+        $reponse1 = $utilisateur['reponse1'];
+        $reponse2 = $utilisateur['reponse2'];
         $role = $utilisateur['role'];
     }
 // Exemple de rôles possibles : 'admin', 'utilisateur', null si non connecté
@@ -93,3 +93,4 @@ include('../composants/includes/header.php')
     include('../composants/includes/footer.php');
 }
 ?>
+

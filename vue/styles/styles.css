@@ -876,3 +876,88 @@ input.url2 {
     border-radius: 50%;
     object-fit: cover;
 }
+
+main.gestion_utilisateurs {
+  padding: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.gestion_utilisateurs_title h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+h3 {
+  font-size: 1.5rem;
+  margin: 2rem 0 1rem;
+  font-weight: 600;
+  color: #333;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  background-color: #fff;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+form label {
+  font-weight: 600;
+  font-size: 1rem;
+  color: #000000;
+}
+
+form input[type="text"],
+form input[type="email"],
+form input[type="password"] {
+  height: 40px;
+  padding: 0 1rem;
+  border: 1px solid #4C4C4C;
+  border-radius: 5px;
+  background-color: #ffffff;
+  font-size: 1rem;
+}
+
+form input::placeholder {
+  color: #aaa;
+}
+
+input.jeuPrefereUser,
+input.chanteurPrefereUser {
+  width: 100%;
+}
+
+form btn,
+form button,
+input[type="submit"],
+button[type="submit"] {
+  background-color: #6EBA46;
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 700;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  width: fit-content;
+  align-self: flex-end;
+  transition: background-color 0.2s;
+}
+
+form btn:hover,
+form button:hover,
+input[type="submit"]:hover {
+  background-color: #5aa53a;
+}
+
+form btn:active,
+form button:active,
+input[type="submit"]:active {
+  background-color: #4C4C4C;
+}

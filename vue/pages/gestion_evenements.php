@@ -3,7 +3,18 @@ session_start();
 // var_dump($_SESSION);
 // echo"rentre dans gestion_evenements";
 // sleep(3000);
+$role = $_SESSION['role'] ?? null;
 $page_contexte = 'gestion_evenements';
+$eventsVisible = "eventPersonnel";
+if ($role == "admin") {
+    if (!isset($_SESSION['affichage'])) {
+        $eventsVisible= "eventPersonnel";
+        // Ton code ici
+    } else {
+        $eventsVisible = $_SESSION['affichage'];
+    }
+}
+
 // echo "session id :".$_SESSION['id_utilisateur'];
 // echo"session role :".$_SESSION['role'];
 //  echo $_GET['refresh'];
@@ -19,7 +30,7 @@ if ((isset($_SESSION["refresh"])&& $_SESSION["refresh"] === true)) {
 }
 
 // Exemple de rôles possibles : 'admin', 'utilisateur', null si non connecté
-$role = $_SESSION['role'] ?? null;
+
 // $evenements = $_SESSION['evenements'] ?? [];
 $estConnecte = isset($_SESSION['id_utilisateur']); // ou autre variable qui dit si connecté
 if (!$estConnecte) { 
@@ -32,21 +43,43 @@ include('../composants/includes/header.php') ;
 ?>
 
 <main id="gestionEvenements"class="gestion_evenements">
-        
-    <?php if (empty($list_evenements) && (isset($_SESSION['refresh']) ? $_SESSION['refresh'] : '') !== true) {    echo"refresh";?>
+     <?php
+    $refreshCondition = empty($list_evenements) && (!isset($_SESSION['refresh']) || $_SESSION['refresh'] !== true);
+    
+   
+
+    if ($refreshCondition) { ?>
      
         <div id="formulaire_invisible">
             <form id="autoSubmitForm" action="../../controller/controller.php" method="post" style="display:none;">
+                
+                <?php if ($eventsVisible == "eventPersonnel") {?> 
+                <input type="hidden" name="page_contexte" value="gestion_evenements">
                 <input type="hidden" name="id_utilisateur" value="<?php echo htmlspecialchars($_SESSION['id_utilisateur']); ?>">
-                <input type="hidden" name="researchAllEventForThisUser" value="allevent">
+                <input type="hidden" name="researchAllEventForThisUser" value="alleventForThisUser">
+                <?php } else { ?>
+                <input type="hidden" name="researchAllEvent" value="allevent">
+                <?php } ?>
             </form>
         </div>
 
     <?php ;
-    } else {
+    } else{
             $_SESSION['refresh'] = false;
         }
    ?>
+    <div>
+        <form action="../../controller/controller.php" method="post">
+                <input type="hidden" name="page_contexte" value="gestion_evenements">
+                <button class="btn" style="display:block;margin: 45px auto 0 auto;" name="researchAllEvent" id="btn_rechercheAllEvent32">gérer ses événements d'admin</button>
+        </form>
+    </div>
+    <div>
+        <form action="../../controller/controller.php" method="post">
+                <input type="hidden" name="page_contexte" value="gestion_evenements">
+                <button class="btn" style="display:block;margin: 45px auto 0 auto;" name="researchAllEventForThisUser" id="btn_rechercheAllEvent34">gérer les événements de tous les utilisateurs</button>
+        </form>
+    </div>
     <div style="margin-top:75px;margin-left: 75px;" id="gestion_evenements_title" class="gestion_evenements_title"><h2>Gestion des Evenements</h2></div>
     <div style="dislay:flex; flex-direction:column; justify-content:space-between, gap:20px;" class="" id="creation_evenement">
 

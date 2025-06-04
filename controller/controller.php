@@ -27,6 +27,8 @@ function handleLoginAndRegistration() {
         $_SESSION["refresh"]=true;
         locationView('accueil');
         exit();
+   
+      
 
       } else {
         $_SESSION["refresh"]=true;
@@ -398,8 +400,14 @@ $events=selectAllEvents();
    }
   $_SESSION['list_evenements'] = $events;
   $_SESSION["refresh"]=true;
-  locationView('accueil');
-  exit();
+       if ($_POST['page_contexte']=="accueil") { 
+            locationView('accueil');
+        exit();
+        } else if ($_POST['page_contexte']=="gestion_evenements") {
+            locationView('gestion_evenements');
+        exit();
+        }
+  
 
  }
  if (isset($_POST['researchAllEventForThisUser'])){
@@ -412,8 +420,15 @@ $events=selectAllEvents();
  
    $_SESSION['list_evenements'] = $events;
    $_SESSION["refresh"]=true;
-  locationView('gestion_evenements');
-  exit();
+        if ($_POST['page_contexte']=="accueil") { 
+            locationView('accueil');
+        exit();
+        } else if ($_POST['page_contexte']=="gestion_evenements") {
+            locationView('gestion_evenements');
+        exit();
+        }
+ 
+
  }
  if (isset($_POST['researchAllInscriptionsForThisUser'])){
   $id_inscrit=$_SESSION['id_utilisateur'];
