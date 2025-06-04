@@ -6,6 +6,7 @@ $page_contexte = 'actions_evenement';
 if (isset($_SESSION["evenementSelectedSpecial"])) {
 
     $evenementSelected = $_SESSION['evenementSelectedSpecial'];
+    var_dump($evenementSelected);
 }
 if ((isset($_SESSION["refresh"])&& $_SESSION["refresh"] === true)) {
     unset($_SESSION['evenementSelectedSpecial']);

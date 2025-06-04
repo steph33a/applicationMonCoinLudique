@@ -512,20 +512,23 @@ $events=selectAllEvents();
     }
   }
   else if (isset($_POST['btnaction_evenement'])) {
-    var_dump($_POST);
-    var_dump($_SESSION);
+    // var_dump($_POST);
+    // var_dump($_SESSION);
     $id_evenement=$_POST['id_evenement'];
     $id_organisateur=$_SESSION['id_utilisateur'];
     $event=findAllInfosEvent($id_organisateur,$id_evenement);
-    var_dump($event);
+    // var_dump($event);
    if (!$event) {
+    echo "pas d'evenement";
     $event=["pas d'evenement"];
+     locationView('actions_evenement');
+   exit();
    }
  
 $_SESSION['evenementSelectedSpecial'] = $event;
    $_SESSION["refresh"]=true;
-  locationView('actions_evenement');
-  exit();
+   locationView('actions_evenement');
+   exit();
   }
   else if (isset($_POST['btnModificationEvenement'])) {
     
@@ -550,9 +553,9 @@ $_SESSION['evenementSelectedSpecial'] = $event;
   }
   
   else {
-$_SESSION["refresh"]=true;
-    locationView('gestion_evenements');
-      exit();
+// $_SESSION["refresh"]=true;
+//     locationView('gestion_evenements');
+      // exit();
    
   }
    // Si l'utilisateur est connecté

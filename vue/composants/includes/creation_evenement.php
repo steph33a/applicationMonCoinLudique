@@ -2,6 +2,7 @@
     <div style="display:flex; flex-direction:column; justify-content:space-between;   width:700px">
         <div style="margin-top:25px; display:flex; flex-direction:row; justify-content:space-between; gap:20px;  width:700px" id="suppDetailsEvenement" class="" style=" margin-top: 20px;">
             <div style ="display:flex; flex-direction:column; justify-content:space-between; gap:20px;align-items:center; width:305px;" id="choixProfil">
+                <?php if ($mode=='modificationEvenement') { echo"ligne5";var_dump($evenementSelected);} ?>
                 <label for="imageEventInput" class="photo-label">
                     <div class="imageEvenement-container">
                         <img src="../images/avatar.png" alt="Photo" class="imageEvent-preview" />
@@ -16,7 +17,7 @@
                 <div class="field-group">
                     <label for="nbParticipantsCreateEvent">Nombre de places *</label>
                     <input type="number" min="0" max="50"
-                    class="nbParticipants formElement" value="<?php if ($mode=='modificationEvenement') {echo $evenementSelected['nbParticipants'];} ?>" type="text" name="nbParticipants" required
+                    class="nbParticipants formElement" value="<?php  if ($mode=='modificationEvenement') { ; echo $evenementSelected['nbParticipants'];} ?>" type="text" name="nbParticipants" required
                     id="nbParticipantsCreateEvent" placeholder="Nb"
                     />
                     <p class="nbParticipantsCommentaire"></p>

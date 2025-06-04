@@ -3,7 +3,7 @@
     
     <div class="left-column" style="width:190px; margin-top:0px; display:flex; flex-direction:column; justify-content:space-between;">
         <h3><?php echo !empty($evenementSelected['prenom-utilisateur']) ? "Evenement Public" : 'Evenement Privé'; ?></h3>
-        <h4><?php echo $evenementSelected['style_evenement']; ?></h4>
+        <h4><?php echo $evenementSelected['type_soiree']; ?></h4>
 
         <?php
         if (!function_exists('cleanImagePath')) {
@@ -68,7 +68,7 @@
             </div>
         </div>
          <div style="width:320px; display:flex; flex-direction:row; justify-content:flex-end; align-items:center;" class="boutonContainer" style="margin: 0 10px;">
-            <form action="../../controller/controller.php" method="post">
+            <form action="../../controller/controller.php" method="post" class="formActionMiniEvenement">
                 <input type="hidden" name="id_evenement" readonly value="<?php echo ($evenementSelected['id_evenement']); ?>">
 
                 <?php if ($page_contexte === 'accueil' || $page_contexte === 'actionEvenement'): ?>

@@ -1,6 +1,6 @@
 <?php
 session_start();
-// var_dump($_SESSION);
+ var_dump($_SESSION);
 // echo"rentre dans gestion_evenements";
 // sleep(3000);
 $role = $_SESSION['role'] ?? null;
@@ -42,7 +42,7 @@ include('../composants/includes/header.php') ;
 }
 ?>
 
-<main id="gestionEvenements"class="gestion_evenements">
+<main  style="display:flex; flex-direction:column; justify-content:space-between, align-items:center; gap:20px;" id="gestionEvenements"class="gestion_evenements">
      <?php
     $refreshCondition = empty($list_evenements) && (!isset($_SESSION['refresh']) || $_SESSION['refresh'] !== true);
     
@@ -71,20 +71,21 @@ include('../composants/includes/header.php') ;
     <div>
         <form action="../../controller/controller.php" method="post">
                 <input type="hidden" name="page_contexte" value="gestion_evenements">
-                <button class="btn" style="display:block;margin: 45px auto 0 auto;" name="researchAllEvent" id="btn_rechercheAllEvent32">gérer ses événements d'admin</button>
+                <button class="btn" style="display:block;margin: 45px auto 0 auto;" name="researchAllEvent" id="btn_rechercheAllEvent32">gérer tous les événements</button>
         </form>
     </div>
     <div>
         <form action="../../controller/controller.php" method="post">
                 <input type="hidden" name="page_contexte" value="gestion_evenements">
-                <button class="btn" style="display:block;margin: 45px auto 0 auto;" name="researchAllEventForThisUser" id="btn_rechercheAllEvent34">gérer les événements de tous les utilisateurs</button>
+                 <input type="hidden" name="id_utilisateur" value="<?php echo htmlspecialchars($_SESSION['id_utilisateur']); ?>">
+                <button class="btn" style="display:block;margin: 45px auto 0 auto;" name="researchAllEventForThisUser" id="btn_rechercheAllEvent34">gérer ses événements d'admin</button>
         </form>
     </div>
     <div style="margin-top:75px;margin-left: 75px;" id="gestion_evenements_title" class="gestion_evenements_title"><h2>Gestion des Evenements</h2></div>
     <div style="dislay:flex; flex-direction:column; justify-content:space-between, gap:20px;" class="" id="creation_evenement">
 
         <button class="btn" style="display:block;margin: 45px auto 0 auto;" onclick="afficherFormulaireCreationEvenement()" id="btn_creation_evenement">créer un nouvel evenement</button>
-        <div style="display:block;" id="content_modalFormCreationEvenemen">
+        <div style="display:block; display:flex; flex-direction:column; justify-content:space-between, gap:20px;" id="content_modalFormCreationEvenemen">
            
             <?php  $mode="creationEvenement";
               include '../composants/includes/creation_evenement.php'; ?>
@@ -99,7 +100,7 @@ include('../composants/includes/header.php') ;
         <?php if (empty($list_evenements)){ ?>
         <p  style="display:block; margin: 45px auto 0 auto; text-align:center;">Aucun événement approuvé pour le moment.</p>
         <?php }else{ ?>
-    <div style="display:block;" class="miniEventToActionsContent">
+    <div style="display:block;" class="miniEventToActionsContent" id="miniEventToActionsContent">
         
       <?php
             if (is_array($list_evenements)) {

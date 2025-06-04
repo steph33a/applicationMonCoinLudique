@@ -736,6 +736,87 @@ function insertInBD($datas){
     // sleep(2);
     // return true;
 }
+function getEvenementsWithAllInfos($evenements)
+{
+    global $connexion_bd;
+     $resultats = [];
+    if (!empty($evenements) && isset($evenements['id_evenement'])) {
+    $evenements = [$evenements];
+}
+
+    foreach ($evenements as $evenement) {
+           $nbMax = $evenement['nbParticipants_max'];
+       $id_evenement = $evenement['id_evenement'];
+
+        // Compter les inscrits pour cet événement
+        $requete = "SELECT COUNT(*) as nbInscrits FROM inscriptions WHERE id_evenement = :id_evenement";
+        $requetePreparee = $connexion_bd->prepare($requete);
+        $requetePreparee->execute([':id_evenement' => $id_evenement]);
+        $inscriptionData = $requetePreparee->fetch(PDO::FETCH_ASSOC);
+        $nbInscrits =  $inscriptionData['nbInscrits'];
+    
+            // Récupérer les infos complètes de l'événement + utilisateur
+            $requete = "SELECT 
+
+                            E.id_evenement,
+                            E.recurrence,
+                            E.heure,
+                            E.date_evenement,
+                            E.titre_evenement,
+                            E.image_evenement,
+                            E.jeux_et_themes,
+                            E.nbParticipants_max,
+                            E.age_minimum,
+                            E.adresse_rue,
+                            E.adresse_CP,
+                            E.adresse_ville,
+                            E.url1,
+                            E.url2,
+                            E.telephone,
+                            E.email,
+                            E.groupe_de_discussion,
+                            E.type_soiree,
+                            E.nbParticipants_max,
+                            U.id_utilisateur,
+                            U.pseudo,
+                            U.prenom_utilisateur,
+                            U.nom_utilisateur,
+                            U.imageProfil
+                        FROM evenements E
+                        JOIN utilisateurs U ON E.id_organisateur = U.id_utilisateur
+                        WHERE E.id_evenement = :id_evenement";
+
+            $requetePreparee = $connexion_bd->prepare($requete);
+            $requetePreparee->execute([':id_evenement' => $id_evenement]);
+            $evenement = $requetePreparee->fetch(PDO::FETCH_ASSOC);
+            var_dump($evenement);
+
+            if ($evenement) {
+                // Ajouter le champ nbInscrits
+                $evenement['nbInscrits'] = $nbInscrits;
+                $resultats[] = $evenement;
+                // var_dump($resultats);
+                if ($evenement['nbInscrits'] > 0) {
+                    // Récupérer les inscrits
+                $requete = "SELECT U.id_utilisateur, U.pseudo, U.prenom_utilisateur, U.nom_utilisateur
+                        FROM inscriptions I
+                        JOIN utilisateurs U ON I.id_inscrit = U.id_utilisateur
+                        WHERE I.id_evenement = :id_evenement";
+                        $requetePreparee = $connexion_bd->prepare($requete);
+                        $requetePreparee->execute([':id_evenement' => $id_evenement]);
+                        $inscrits = $requetePreparee->fetchAll
+                    (PDO::FETCH_ASSOC);
+                        $evenement['inscrits'] = $inscrits;
+                $resultats[] = $evenement;
+                var_dump($resultats);
+
+            }
+        
+            } 
+        }
+    return $resultats;
+
+}
 function getEvenementsWithEssentialInfos($evenements)
 {
     global $connexion_bd;
@@ -758,7 +839,7 @@ function getEvenementsWithEssentialInfos($evenements)
             // Récupérer les infos complètes de l'événement + utilisateur
             $requete = "SELECT 
                             E.id_evenement,
-                            E.style_evenement,
+                            E.type_soiree,
                             E.heure,
                             E.date_evenement,
                             E.adresse_ville,
@@ -1010,7 +1091,8 @@ function enregistrementImageEvent(){
 }
 function findAllInfosEvent($id_organisateur,$id_evenement){
     global $connexion_bd;
-    $sql = "SELECT * FROM evenements join utilisateurs on evenements.id_organisateur = utilisateurs.id_utilisateur where id_organisateur = :id_organisateur and id_evenement = :id_evenement";
+    echo $id_evenement." ".$id_organisateur;
+    $sql = "SELECT * FROM evenements E join utilisateurs U on E.id_organisateur = U.id_utilisateur where E.id_organisateur = :id_organisateur and E.id_evenement = :id_evenement";
     $stmt = $connexion_bd->prepare($sql);
     $stmt->execute(
         [
@@ -1019,7 +1101,8 @@ function findAllInfosEvent($id_organisateur,$id_evenement){
         ]
     );
     $evenements = $stmt->fetch(PDO::FETCH_ASSOC);
-    $resultats=getEvenementsWithEssentialInfos($evenements);
+    // var_dump($evenements);
+    $resultats=getEvenementsWithAllInfos($evenements);
     if (count($resultats) === 1) {
         return $resultats[0]; // un seul élément, retourne tableau associatif
     }
