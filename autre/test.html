@@ -258,3 +258,75 @@ $evenementSelected['imageProfil']=cleanImagePath($evenementSelected['imageProfil
         </form>
     </div>  
 </div>
+function areValidChamps($datas,$allChampsNecessaryPresents)
+{
+
+
+    $areValidChamps=[];
+    // var_dump($areValidChamps);
+    // var_dump($datas);
+    $phraseEchec=[]; 
+    foreach ($datas as $nomChamp => $valeurChamp) {
+        if ($nomChamp === "confirmationMotDePasse") {
+            if (!isset($datas["motDePasse"]) || $valeurChamp !== $datas["motDePasse"]) {
+                return [
+                    "success" => false,
+                    "phraseEchec" => "Les deux mots de passe ne correspondent pas"
+                ];
+            }
+            // Passe au champ suivant, on ne valide pas ce champ plus loin
+            continue;
+        }
+    //    echo "$nomChamp $valeurChamp".$valeurChamp;
+    
+       if (empty($valeurChamp)) {
+            // Si c’est un champ obligatoire => ERREUR
+            if (in_array($nomChamp, $allChampsNecessaryPresents)) {
+                $phraseEchec[] = "Le champ '$nomChamp' est obligatoire et ne peut pas être vide.";
+                $areValidChamps[] = false;
+            } else {
+                // Sinon c’est un champ optionnel => on accepte
+                $areValidChamps[] = true;
+            }
+            continue; // Passe au champ suivant
+        }
+        // echo "313nomChamp".$nomChamp."valeurChamp".$valeurChamp."<br>";
+
+    //    echo "nomChamp".$nomChamp."valeurChamp".$valeurChamp."<br>";
+        $isValidChamp=champIsValid($nomChamp,$valeurChamp);
+        if ($isValidChamp==null) {
+            // echo "320nomChamp".$valeurChamp;
+    // La fonction champIsValid n’a pas renvoyé un tableau, on considère que c’est une erreur
+            return [
+                "success" => false,
+                "phraseEchec" => "Erreur interne de validation sur le champ '$nomChamp'."
+            ];
+        }
+        // echo "318".$isValidChamp["success"];
+        $areValidChamps[]=$isValidChamp["success"];
+        // echo " 317";
+        // var_dump($areValidChamps);
+        if ($isValidChamp["success"]==false) {
+            $phraseEchec[]=$isValidChamp["phraseEchec"];
+        } 
+
+    }
+     
+     $phraseReussite="Tous les champs sont valides";
+    if (in_array(false, $areValidChamps)) {
+        $phrasesEchec=implode(", ", $phraseEchec);
+
+        // var_dump($areValidChamps);
+        return [
+            "success" => false,
+            "phraseEchec" => $phrasesEchec
+        ];
+    } else {
+        
+        //  var_dump($areValidChamps);
+        return [
+            "success" => true,
+            "phraseReussite" => $phraseReussite
+        ];
+    }
+    }

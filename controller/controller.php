@@ -343,6 +343,53 @@ function includeView($viewName) {
 
 if (isset($_SESSION['id_utilisateur'])) { 
 
+ if (isset($_POST['btnResearchAllProfilInfosForThisUser'])) {
+
+  $id_utilisateur=$_SESSION['id_utilisateur'];
+  $utilisateur=selectAllInfosUtilisateurById($id_utilisateur);
+  $_SESSION['utilisateur'] = $utilisateur;
+  $_SESSION["refresh"]=true;
+  locationView('monCompte');
+  exit();
+ }
+
+ if (isset($_POST['actionModifierParametresCompte'])) {
+
+  $id_utilisateur=$_SESSION['id_utilisateur'];
+  
+  $parametresComptes=trimData($_POST);
+  $parametresComptes=protectData($parametresComptes);
+  $result=parametresCompteCorrects($parametresComptes);
+  if ($result["success"]==true){
+    
+    $result=getChampsDifférentsParRapportBD($parametresComptes,$id_utilisateur);
+      if ($result["success"]==true){
+        $champsToUpdate=$result["champsToUpdate"];
+
+        $result=whichCategoryForInsertionInBD($id_utilisateur,$champsToUpdate);
+        $result=updateInBdUtilisateur($id_utilisateur,$result["champsUtilisateur"]);
+        $result=updateInBdProfil($id_utilisateur,$result["champsPasswordRecup"]);
+
+        
+        // $nomsChamps = array_keys($result["champs"]);
+        
+
+      } else {
+        $phrase=$result["phraseEchec"];
+        echo $phrase;
+      }
+  } else {
+    $phrase=$result["phraseEchec"];
+    echo $phrase;
+  }
+
+ 
+  
+  $_SESSION['utilisateur'] = $utilisateur;
+  $_SESSION["refresh"]=true;
+  locationView('monCompte');
+  exit();
+ }
  if (isset($_POST['researchAllEvent'])){
  
 $events=selectAllEvents();

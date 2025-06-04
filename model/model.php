@@ -279,81 +279,265 @@ function allChampsNecessaryPresents($datas,$fonctionnalite)
     ];
 }
 
-
-function areValidChamps($datas,$allChampsNecessaryPresents)
+function areValidChamps($datas, $allChampsNecessaryPresents)
 {
+    $resultats = [];
 
-
-    $areValidChamps=[];
-    // var_dump($areValidChamps);
-    // var_dump($datas);
-    $phraseEchec=[]; 
     foreach ($datas as $nomChamp => $valeurChamp) {
+
+        // Cas spécial : confirmation mot de passe
         if ($nomChamp === "confirmationMotDePasse") {
             if (!isset($datas["motDePasse"]) || $valeurChamp !== $datas["motDePasse"]) {
-                return [
+                $resultats["confirmationMotDePasse"] = [
                     "success" => false,
                     "phraseEchec" => "Les deux mots de passe ne correspondent pas"
                 ];
+            } else {
+                $resultats["confirmationMotDePasse"] = ["success" => true];
             }
-            // Passe au champ suivant, on ne valide pas ce champ plus loin
             continue;
         }
-    //    echo "$nomChamp $valeurChamp".$valeurChamp;
-    
-       if (empty($valeurChamp)) {
-            // Si c’est un champ obligatoire => ERREUR
-            if (in_array($nomChamp, $allChampsNecessaryPresents)) {
-                $phraseEchec[] = "Le champ '$nomChamp' est obligatoire et ne peut pas être vide.";
-                $areValidChamps[] = false;
-            } else {
-                // Sinon c’est un champ optionnel => on accepte
-                $areValidChamps[] = true;
-            }
-            continue; // Passe au champ suivant
-        }
-        // echo "313nomChamp".$nomChamp."valeurChamp".$valeurChamp."<br>";
 
-    //    echo "nomChamp".$nomChamp."valeurChamp".$valeurChamp."<br>";
-        $isValidChamp=champIsValid($nomChamp,$valeurChamp);
-        if ($isValidChamp==null) {
-            // echo "320nomChamp".$valeurChamp;
-    // La fonction champIsValid n’a pas renvoyé un tableau, on considère que c’est une erreur
-            return [
+        // Champ vide
+        if (empty($valeurChamp)) {
+            if (in_array($nomChamp, $allChampsNecessaryPresents)) {
+                $resultats[$nomChamp] = [
+                    "success" => false,
+                    "phraseEchec" => "Le champ '$nomChamp' est obligatoire et ne peut pas être vide."
+                ];
+            } else {
+                $resultats[$nomChamp] = ["success" => true];
+            }
+            continue;
+        }
+
+        // Vérification personnalisée
+        $isValidChamp = champIsValid($nomChamp, $valeurChamp);
+
+        if (!is_array($isValidChamp)) {
+            $resultats[$nomChamp] = [
                 "success" => false,
                 "phraseEchec" => "Erreur interne de validation sur le champ '$nomChamp'."
             ];
+            continue;
         }
-        // echo "318".$isValidChamp["success"];
-        $areValidChamps[]=$isValidChamp["success"];
-        // echo " 317";
-        // var_dump($areValidChamps);
-        if ($isValidChamp["success"]==false) {
-            $phraseEchec[]=$isValidChamp["phraseEchec"];
+
+        $resultats[$nomChamp] = $isValidChamp["success"]
+            ? ["success" => true]
+            : ["success" => false, "phraseEchec" => $isValidChamp["phraseEchec"]];
+    }
+
+    // Résumé global
+    // Cette fonction PHP extrait la colonne "success" de chaque élément (qui doit être un tableau associatif) dans le tableau $resultats.
+    $successGlobal = !in_array(false, array_column($resultats, "success"));
+
+    return [
+        "success" => $successGlobal,
+        "details" => $resultats
+    ];
+}
+
+
+function parametresCompteCorrects($datas){
+    $champs=[];
+    foreach ($datas as $nomChamp => $valeurChamp) {
+        if  ($nomChamp === "motDePasse") {
+           if (!isset($valeurChamp) || empty($valeurChamp)) {
+                $champs["motDePasse"] = ["success" => false, "phraseEchec" => "Le mot de passe ne peut pas etre vide"];
+                continue;
+           }
+
+            if (!isset($datas["confirmationMotDePasse"]) || $valeurChamp !== $datas["confirmationMotDePasse"] ) {
+                 $champs["confirmationMotDePasse"]=["success" => false, "phraseEchec" => "Le mot de passe et la confirmation de mot de passe ne correspondent pas"];
+                            // Passe au champ suivant, on ne valide pas ce champ plus loin
+                continue;
+            }
+
+             }
+
+            $isValidChamp=champIsValid($nomChamp,$valeurChamp);
+            if ($isValidChamp["success"]==false) {
+                $champs[$nomChamp]=["success" => false, "phraseEchec" => $isValidChamp["phraseEchec"]];
+                
+           } else {
+                $champs[$nomChamp]=["success" => true];
+                continue;
+           }
+        }
+ $successGlobal = !in_array(false, array_column($champs, "success"));
+   return [
+        "success" => $successGlobal,
+        "champs" => $champs
+    ];
+       
+}
+
+function getChampsDifférentsParRapportBD($datas, $id_utilisateur) {
+    // Ajouter le mot de passe hashé aux données à comparer
+    
+
+    // Tableau de correspondance : champ formulaire => champ base de données
+    $champsAComparer = [
+        'email' => 'email',
+        'pseudo' => 'pseudo',
+        'nomUtilisateur' => 'nom_utilisateur',
+        'prenomUtilisateur' => 'prenom_utilisateur',
+        'motDePasseHash' => 'password', // Spécial : hash du mot de passe
+        'jeuPrefereUser' => 'reponse1',
+        'chanteurPrefereUser' => 'reponse2'
+    ];
+
+    // Connexion à la base de données
+    global $connexion_bd;
+    $requete = "SELECT email, pseudo, nom_utilisateur, prenom_utilisateur, password, imageProfil, reponse1, reponse2 
+                FROM utilisateurs 
+                JOIN password_recup ON utilisateurs.id_utilisateur = password_recup.id_utilisateur 
+                WHERE utilisateurs.id_utilisateur = :id_utilisateur";
+    $requetePreparee = $connexion_bd->prepare($requete);
+    $requetePreparee->execute([':id_utilisateur' => $id_utilisateur]);
+    $userBD = $requetePreparee->fetch(PDO::FETCH_ASSOC);
+
+    if (!$userBD) {
+        return ["success" => false, "message" => "Utilisateur introuvable"];
+    }
+
+    // Comparaison des champs
+    $champsdifferents = [];
+    foreach ($champsAComparer as $champFormulaire => $champBD) {
+        if ($champFormulaire === 'motDePasse') {
+            // Comparaison spéciale pour le mot de passe
+            if (!empty($datas['motDePasse']) &&
+                !password_verify($datas['motDePasse'], $userBD[$champBD])) {
+                    $champsdifferents['motDePasseHash']= password_hash($datas['motDePasse'], PASSWORD_DEFAULT);
+
+            }
+        } else {
+            if (isset($datas[$champFormulaire]) && $datas[$champFormulaire] !== $userBD[$champBD]) {
+                $champsdifferents[$champFormulaire] = $datas[$champFormulaire];
+
+            }
+        }
+    }
+
+    return [
+        "success" => true,
+        "nbparametresDifferents" => count($champsdifferents) > 0,
+        "champsToUpdate" => $champsdifferents
+    ];
+}
+
+
+function whichCategoryForInsertionInBD($id_utilisateur, $champsToUpdate) {
+    global $connexion_bd;
+    $champsUtilisateursFormulaire = [
+        'nomUtilisateur', 'prenomUtilisateur',
+        'email', 'pseudo', 'password' // exemple
+        // ajoute ici tous les autres champs valides pour la table utilisateurs
+    ];
+       $champsPasswordRecupFormulaire = [
+        'motDePasseHash', 'jeuPrefereUser', 'chanteurPrefereUser'
+    ];
+
+     $champsUtilisateurs = [];
+    $champsPasswordRecup = [];
+    foreach ($champsToUpdate as $champ => $valeur) {
+        if (in_array($champ, $champsUtilisateursFormulaire)) {
+            $champsUtilisateurs[$champ] = $valeur;
         } 
-
+        if (in_array($champ, $champsPasswordRecupFormulaire)) {
+            $champsPasswordRecup[$champ] = $valeur;
+        } 
     }
-     
-     $phraseReussite="Tous les champs sont valides";
-    if (in_array(false, $areValidChamps)) {
-        $phrasesEchec=implode(", ", $phraseEchec);
-
-        // var_dump($areValidChamps);
-        return [
-            "success" => false,
-            "phraseEchec" => $phrasesEchec
-        ];
-    } else {
-        
-        //  var_dump($areValidChamps);
-        return [
-            "success" => true,
-            "phraseReussite" => $phraseReussite
-        ];
-    }
-    }
+    return [
+        "champsUtilisateur" => $champsUtilisateurs,
+        "champsPasswordRecup" => $champsPasswordRecup
+    ];
    
+}   
 
+function updateInBdUtilisateur($id_utilisateur, $champsUtilisateurs) {
+    global $connexion_bd;
+
+    if (empty($champsUtilisateurs)) {
+        return ["success" => true, "message" => "Aucun champ à mettre à jour pour utilisateurs"];
+    }
+
+    // Correspondance champs formulaire -> colonnes BD
+    $mapping = [
+        'nomUtilisateur' => 'nom_utilisateur',
+        'prenomUtilisateur' => 'prenom_utilisateur',
+        'email' => 'email',
+        'pseudo' => 'pseudo',
+        'motDePasseHash' => 'password'
+    ];
+
+    $sets = [];
+    $params = [':id_utilisateur' => $id_utilisateur];
+
+    foreach ($champsUtilisateurs as $champ => $valeur) {
+        if (isset($mapping[$champ])) {
+            // Prépare la partie SET de la requête SQL : nom_colonne = :paramètre
+        // Exemple : "nom_utilisateur = :nomUtilisateur"
+        // $mapping[$champ] récupère par exemple nom_utilisateur, prenom_utilisateur, email, pseudo, password
+            $sets[] = $mapping[$champ] . " = :" . $champ;
+            $params[":" . $champ] = $valeur;
+        }
+    }
+
+    if (empty($sets)) {
+        return ["success" => true, "message" => "Aucun champ valide pour mise à jour utilisateurs"];
+    }
+    // implode pour  joindre les éléments d’un tableau en une seule chaîne de caractères
+
+    $sql = "UPDATE utilisateurs SET " . implode(", ", $sets) . " WHERE id_utilisateur = :id_utilisateur";
+
+    try {
+        $stmt = $connexion_bd->prepare($sql);
+        $stmt->execute($params);
+        return ["success" => true, "message" => "Mise à jour utilisateurs réussie"];
+    } catch (PDOException $e) {
+        return ["success" => false, "message" => "Erreur mise à jour utilisateurs : " . $e->getMessage()];
+    }
+}
+function updateInBdProfil($id_utilisateur, $champsPasswordRecup) {
+    global $connexion_bd;
+
+    if (empty($champsPasswordRecup)) {
+        return ["success" => true, "message" => "Aucun champ à mettre à jour pour profil"];
+    }
+
+    // Correspondance champs formulaire -> colonnes BD dans password_recup
+    $mapping = [
+        'id_utilisateur' => 'id_utilisateur',
+        'jeuPrefereUser' => 'reponse1',
+        'chanteurPrefereUser' => 'reponse2'
+    ];
+
+    $sets = [];
+    $params = [':id_utilisateur' => $id_utilisateur];
+
+    foreach ($champsPasswordRecup as $champ => $valeur) {
+        if (isset($mapping[$champ])) {
+            // Pour motDePasse, la valeur est déjà hashée
+            $sets[] = $mapping[$champ] . " = :" . $champ;
+            $params[":" . $champ] = $valeur;
+        }
+    }
+
+    if (empty($sets)) {
+        return ["success" => true, "message" => "Aucun champ valide pour mise à jour profil"];
+    }
+
+    $sql = "UPDATE password_recup SET " . implode(", ", $sets) . " WHERE id_utilisateur = :id_utilisateur";
+
+    try {
+        $stmt = $connexion_bd->prepare($sql);
+        $stmt->execute($params);
+        return ["success" => true, "message" => "Mise à jour profil réussie"];
+    } catch (PDOException $e) {
+        return ["success" => false, "message" => "Erreur mise à jour profil : " . $e->getMessage()];
+    }
+}
 
 function verifExistInDb($datas){
 
@@ -961,7 +1145,16 @@ function verifyExistInBDEvenement($datas,$id_utilisateur) {
       
 
 }
-
+ function selectAllInfosUtilisateurById($id_utilisateur){
+     global $connexion_bd;
+     $requete="select imageProfil,pseudo,nom_utilisateur,prenom_utilisateur,email,role,reponse1,reponse2 from utilisateurs join password_recup on utilisateurs.id_utilisateur=password_recup.id_utilisateur where id_utilisateur = :id_utilisateur";
+     $requetePreparee=$connexion_bd->prepare($requete);
+     $requetePreparee->execute([
+         ':id_utilisateur' => $id_utilisateur
+     ]);
+     $result=$requetePreparee->fetch(PDO::FETCH_ASSOC);
+     return $result;
+ }
 // function saveProfilImageFile()
 // {
 //     $save_directory = __DIR__ . DIRECTORY_SEPARATOR . 'facturesUBL' . DIRECTORY_SEPARATOR .    $IDComm  . DIRECTORY_SEPARATOR;
