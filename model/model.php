@@ -730,7 +730,7 @@ function insertInBD($datas){
       $_SESSION['pseudo']=$pseudo;
       $_SESSION['role']=$role;
       session_write_close();
-      return ["success"=>true];
+      return ["id_utilisateur"=>$id_utilisateur,"success"=>true];
 
     // echo "<script>console.log('ID nouvel utilisateur : $id_utilisateur');</script>";
     // sleep(2);
@@ -1252,4 +1252,12 @@ function verifyExistInBDEvenement($datas,$id_utilisateur) {
 //     // Sauvegarder le fichier XML sur le serveur
 //     file_put_contents($filePath, $dom->saveXML());
 // }
+function selectAllInfosUtilisateurs(){
+    global $connexion_bd;
+    $requete="select * from utilisateurs";
+    $requetePreparee=$connexion_bd->prepare($requete);
+    $requetePreparee->execute();
+    $result=$requetePreparee->fetchAll(PDO::FETCH_ASSOC);
+    return $result;
+}
 ?>
