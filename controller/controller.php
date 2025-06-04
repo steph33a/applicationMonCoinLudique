@@ -4,7 +4,8 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 // echo "<script>console.log('arrive dans inscription ligne6');</script>";
-var_dump($_POST);
+// var_dump($_POST);
+// var_dump($_SESSION);
 //  var_dump($_SESSION);
 // // session_destroy();
 include_once ($_SERVER['DOCUMENT_ROOT'].'/model/db.php'); //require $_SERVER['DOCUMENT_ROOT'] /model/db.php';
@@ -288,60 +289,8 @@ function includeView($viewName) {
     exit();
 }
 
-if (!isset($_SESSION['id_utilisateur'])) {
-    handleLoginAndRegistration();
-    exit();
-}
 
-$action = $_POST['action'] ?? null;
 
-switch ($action) {
-    case 'btnResearchAllProfilInfosForThisUser':
-        handleResearchUserProfile();
-        break;
-
-    case 'btnResearchAllInfosOfAllUsers':
-        handleResearchAllUsers();
-        break;
-
-    case 'actionModifierParametresCompte':
-        handleAccountSettingsUpdate();
-        break;
-
-    case 'researchAllEvent':
-        handleResearchAllEvents();
-        break;
-
-    case 'researchAllEventForThisUser':
-        handleResearchEventsByUser();
-        break;
-
-    case 'researchAllInscriptionsForThisUser':
-        handleResearchUserInscriptions();
-        break;
-
-    case 'btnCreationEvenement':
-        handleEventCreation();
-        break;
-
-    case 'btnaction_evenement':
-        handleEventActionView();
-        break;
-
-    case 'btnModificationEvenement':
-        handleEventModification();
-        break;
-
-    case 'btnSuppressionEvenement':
-        handleEventDeletion();
-        break;
-
-    default:
-        handleDefaultOrAdminFallback();
-        break;
-}
-
-exit();
 
 /**
  * Fonctions pour gérer chaque action
@@ -373,16 +322,20 @@ function handleResearchAllUsers() {
         handleLoginAndRegistration();
         exit();
     }
+    if (!isset($_SESSION['role']) || $_SESSION['role'] != 'admin') {
+        handleLoginAndRegistration();
+        exit();
+    }
 
     $list_utilisateurs = selectAllInfosUtilisateurs();
     $_SESSION['list_utilisateurs'] = $list_utilisateurs;
     $_SESSION["refresh"] = true;
 
     // Si besoin, décommenter et adapter pour redirection
-    // if ($_POST['page_contexte'] === 'gestion_utilisateurs') {
-    //    locationView('gestion_utilisateurs');
-    //    exit();
-    // }
+     if ($_POST['page_contexte'] === 'gestion_utilisateurs') {
+       locationView('gestion_utilisateurs');
+        exit();
+     }
 }
 
  
@@ -593,14 +546,63 @@ function handleDefaultOrAdminFallback() {
         if (isset($_POST['btnInscription']) || isset($_POST['btnAdminLoginAsUser']) || isset($_POST['btnRedefinitionMotDePasse']) || isset($_POST['btnDeconnexion'])) {
             handleLoginAndRegistration();
         } else {
+          // echo" ligne596 controller";
             $_SESSION["refresh"] = true;
             locationView('gestion_evenements');
-            exit();
+          exit();
         }
     } else {
         handleLoginAndRegistration();
         exit();
     }
 }
+function handleUserDeletion() {
+    // Idem pour la suppression, gérer la suppression d'un utilisateur ici
+    $id_utilisateur = $_POST['id_utilisateur'] ?? null;
+    if (!$id_utilisateur) {
+        echo "Utilisateur non spécifié";
+        locationView('gestion_utilisateurs');
+        exit();
+    }
+    deleteAllInscriptionsByUser($id_utilisateur);
+    deleteAllEventsByOrganisateur($id_utilisateur);
+    deleteUser($id_utilisateur);
+    locationView('gestion_utilisateurs');
+    exit();
+}
+if (!isset($_SESSION['id_utilisateur'])) {
+    handleLoginAndRegistration();
+    exit();
+}
+// Liste des boutons et fonctions associées
+$actions = [
+    'btnResearchAllProfilInfosForThisUser' => 'handleResearchUserProfile',
+    'btnResearchAllInfosOfAllUsers' => 'handleResearchAllUsers',
+    'actionModifierParametresCompte' => 'handleAccountSettingsUpdate',
+    'researchAllEvent' => 'handleResearchAllEvents',
+    'researchAllEventForThisUser' => 'handleResearchEventsByUser',
+    'researchAllInscriptionsForThisUser' => 'handleResearchUserInscriptions',
+    'btnCreationEvenement' => 'handleEventCreation',
+    'btnaction_evenement' => 'handleEventActionView',
+    'btnModificationEvenement' => 'handleEventModification',
+    'btnSuppressionEvenement' => 'handleEventDeletion',
+    'btnDeleteUser' => 'handleUserDeletion',
+];
+
+// Parcours des boutons attendus pour détecter celui qui a été soumis
+$actionFound = false;
+foreach ($actions as $btnName => $functionName) {
+    if (isset($_POST[$btnName])) {
+        $functionName();
+        $actionFound = true;
+        break; // on arrête dès qu'on a trouvé un bouton cliqué
+    }
+}
+
+if (!$actionFound) {
+    handleDefaultOrAdminFallback();
+}
+
+exit();
 
 ?>

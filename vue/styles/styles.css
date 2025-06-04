@@ -878,8 +878,8 @@ input.url2 {
 }
 
 main.gestion_utilisateurs {
-  padding: 2rem;
-  /* max-width: 800px; */
+  padding: 1rem;
+ max-width: 1000px;
   margin: 0 auto;
 }
 
@@ -1007,7 +1007,7 @@ body {
 
 .user-table th,
 .user-table td {
-  padding: 1rem;
+  padding: 0.5rem;
   text-align: left;
   font-size: 18px;
   font-weight: 600;

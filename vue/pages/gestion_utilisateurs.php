@@ -1,7 +1,7 @@
 <?php
 session_start();
 $list_utilisateurs = [];
-var_dump($_SESSION);
+// var_dump($_SESSION);
 // var_dump($_SESSION['list_evenements']);
 if (isset($_SESSION['list_utilisateurs']) && is_array($_SESSION['list_utilisateurs'])) {
     $list_utilisateurs = $_SESSION['list_utilisateurs'];
@@ -63,16 +63,16 @@ include('../composants/includes/header.php')
                 </tr>
             </thead>
             <tbody>
-                <tr>
+                <tr style="text-align:center, height:50px">
                 <?php foreach ($list_utilisateurs as $utilisateur) {
                     ?> 
-                    <td>$utilisateur['pseudo']</td>
-                    <td>$utilisateur['email']</td>
-                    <td>$utilisateur['role']</td>
-                    <td>$utilisateur['dateInscription']</td>
+                    <td><?php echo $utilisateur['pseudo']?></td>
+                    <td><?php echo $utilisateur['email']?></td>
+                    <td><?php echo $utilisateur['role']?></td>
+                    <td><?php echo $utilisateur['dateInscription']?></td>
                     <td>Actif</td>
                     <td class="actions">
-                        <form action="../../controller/controller.php" method="post">
+                        <form style="display:flex; flex-direction:row; gap:10px;" action="../../controller/controller.php" method="post">
                             <input type="hidden" name="id_utilisateur" value="$utilisateur['id_utilisateur']">
                             <button type="submit" name="btnResearchAllProfilInfosForThisUser" title="Modifier">✏️</button>
                             <button type ="submit" name="btnDeleteUser" title="Supprimer">🗑️</button>

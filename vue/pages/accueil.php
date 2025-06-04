@@ -52,7 +52,7 @@ include('../composants/includes/header.php');
                 <input type="hidden" name="page_contexte" value="accueil">
                 <input type="hidden" name="id_utilisateur" value="<?php echo $_SESSION['id_utilisateur']; ?>">
             
-                <input type="hidden" name="researchAllEvent" value="lister_evenements"><!-- Exemple d'action -->
+                <input type="hidden" name="researchAllEvent" value="researchAllEvent"><!-- Exemple d'action -->
             </form>
         </div>
         <?php 

@@ -1260,4 +1260,29 @@ function selectAllInfosUtilisateurs(){
     $result=$requetePreparee->fetchAll(PDO::FETCH_ASSOC);
     return $result;
 }
+function deleteAllIscriptionsByUser($id_inscrit){
+    global $connexion_bd;
+    $requete="delete from inscriptions where id_inscrit = :id_inscrit";
+    $requetePreparee=$connexion_bd->prepare($requete);
+    $requetePreparee->execute([
+        ':id_inscrit' => $_SESSION['id_utilisateur']
+    ]);
+}
+function deleteAllEventsByOrganisateur($id_organisateur){
+    
+    global $connexion_bd;
+    $requete="delete * from evenements E join inscriptions I on E.id_organisateur=I.id_inscrit where id_organisateur = :id_organisateur";
+    $requetePreparee=$connexion_bd->prepare($requete);
+    $requetePreparee->execute([
+        ':id_organisateur' => $id_organisateur]
+    );
+}
+function deleteUser(){
+    global $connexion_bd;
+    $requete="delete * from utilisateurs where id_utilisateur = :id_utilisateur";
+    $requetePreparee=$connexion_bd->prepare($requete);
+    $requetePreparee->execute([
+        ':id_utilisateur' => $_SESSION['id_utilisateur']
+    ]);
+}
 ?>
