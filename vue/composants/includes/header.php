@@ -11,17 +11,15 @@ if ($affichageFormulaireRedefinitionMotDePasse==true) {
     // echo "ligne6";
 } else {
 // echo "affichageFormulaireRedefinitionMotDePasse:" . $affichageFormulaireRedefinitionMotDePasse;
-if (isset($_GET['modal'])) {
-    // echo "ligne10";
-    $_SESSION['modal'] = $_GET['modal'];
-     
+
 }
-}
-// var_dump($_SESSION['modal']);
+
+$modal=null;
+//  var_dump($_SESSION['modal']);
 if (isset($_SESSION['modal'])) {
 $modal = $_SESSION['modal'];
-// echo "modal18:" . $modal ;
- echo "modal:" . $modal;
+echo"modal:" . $modal ;
+
 }
 
 

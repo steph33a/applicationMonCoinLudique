@@ -74,7 +74,7 @@
                 <?php if ($page_contexte === 'accueil' || $page_contexte === 'actionEvenement'): ?>
                     <button
                         type="submit"
-                        name="action"
+                        name="btnVoirEvenement"
                         value="voir_details"
                         class="btnVoirEvenement"
                         style="width:114px; height:40px; background-color:#6EBA46; color:#FFF; font-size:18px; font-weight:600;"

@@ -910,3 +910,26 @@ $_SESSION['evenementSelectedSpecial'] = $event;
   }
 
 ?>
+
+    <?php
+    $refreshCondition = empty($list_evenements) && (!isset($_SESSION['refresh']) || $_SESSION['refresh'] !== true);
+    
+   
+
+    if ($refreshCondition) { ?>
+     
+        <div id="formulaire_invisible">
+            <form id="autoSubmitForm" action="../../controller/controller.php" method="post" style="display:none;">
+            
+                <input type="hidden" name="page_contexte" value="actions_evenements">
+                <input type="hidden" name="id_evenement" value="<?php echo htmlspecialchars($evenementSelected['id_evenement']); ?>">
+                <input type="hidden" name="researchAllDataForThisEvent" value="alleventForThisUser">
+                
+            </form>
+        </div>
+
+    <?php ;
+    } else{
+            $_SESSION['refresh'] = false;
+        }
+   ?>

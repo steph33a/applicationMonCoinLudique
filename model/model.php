@@ -254,7 +254,17 @@ function allChampsNecessaryPresents($datas,$fonctionnalite)
         // var_dump($champNecessary);
     } 
  }
- 
+  if ($fonctionnalite=="modificationEvenement") {
+    $role=$_SESSION["role"];
+    // var_dump($role);
+    if (($role=="groupe") ) {
+        $champNecessary=["emailEvent","numberPhoneEvent","codePostalEvent","villeEvent","numRueEvent","rueEvent","titreEvent","typeSoiree","nbParticipants","dateEvent","heureEvent"];
+        // var_dump($champNecessary);
+    } else if ($role=="particulier"|| ($role=="admin")) {
+        $champNecessary=["emailEvent","dateEvent","heureEvent","typeSoiree","nbParticipants","villeEvent"];
+        // var_dump($champNecessary);
+    } 
+ }
  if ($fonctionnalite=="redefinitionMotDePasse") {
     $champNecessary=["email","motDePasse","confirmationMotDePasse"];
  }
@@ -265,7 +275,7 @@ function allChampsNecessaryPresents($datas,$fonctionnalite)
     // echo "champ".$champ;
         if (!isset($datas[$champ]) || empty($datas[$champ])) {
             
-               echo "champ 262 ".$champ;
+            //    echo "champ 262 ".$champ;
               return [
         "success" => false,
         "champNecessaryPresents" => $champNecessary
@@ -336,43 +346,156 @@ function areValidChamps($datas, $allChampsNecessaryPresents)
         "details" => $resultats
     ];
 }
+function updateInBdEventUtilisateur($id_organisateur, $id_evenement,$champsToUpdate) {
+    global $connexion_bd;
 
+    if (empty($champsToUpdate)) {
+        return ["success" => true, "message" => "Aucun champ à mettre à jour pour utilisateurs"];
+    }
 
-function parametresCompteCorrects($datas){
-    $champs=[];
+    // Correspondance champs formulaire -> colonnes BD
+    $mapping = [
+        'nbParticipants' => 'nb_participants_max',
+        'ageRequis'=> 'age_minimum',
+        'recurrenceEvent' => 'recurrence',
+        'typeSoiree' => 'type_soiree',
+        'dateEvent' => 'date_evenement',
+        'heureEvent' => 'heure',
+        'titreEvent' => 'titre_evenement',
+        'jeuxThemesEvent' => 'jeux_et_themes', // Spécial : hash du mot de passe
+        'rueEvent' => 'adresse_rue',
+        'numeroEvent' => 'adresse_numero',
+        'villeEvent' => 'adresse_ville',
+        'codePostalEvent' => 'adresse_CP',
+        'emailEvent' => 'email',
+        'numberPhoneEvent' => 'telephone',
+        'url1' => 'url1',
+        'url2' => 'url2',
+        'discussionGroupName' => 'groupe_de_discussion',
+    ];
+
+    $sets = [];
+    $params = [
+        ':id_organisateur' => $id_organisateur,
+        ':id_evenement' => $id_evenement
+    ];
+
+    foreach ($champsToUpdate as $champ => $valeur) {
+        if (isset($mapping[$champ])) {
+            // Prépare la partie SET de la requête SQL : nom_colonne = :paramètre
+        // Exemple : "nom_utilisateur = :nomUtilisateur"
+        // $mapping[$champ] récupère par exemple nom_utilisateur, prenom_utilisateur, email, pseudo, password
+            $sets[] = $mapping[$champ] . " = :" . $champ;
+            $params[":" . $champ] = $valeur;
+        }
+    }
+
+    if (empty($sets)) {
+        return ["success" => true, "message" => "Aucun champ valide pour mise à jour utilisateurs"];
+    }
+    // implode pour  joindre les éléments d’un tableau en une seule chaîne de caractères
+
+    $sql = "UPDATE evenements SET " . implode(", ", $sets) . " WHERE id_organisateur = :id_organisateur and id_evenement = :id_evenement";
+
+    try {
+        $stmt = $connexion_bd->prepare($sql);
+        $stmt->execute($params);
+        return ["success" => true, "message" => "Mise à jour utilisateurs réussie"];
+    } catch (PDOException $e) {
+        return ["success" => false, "message" => "Erreur mise à jour utilisateurs : " . $e->getMessage()];
+    }
+    
+    
+}
+function parametresCompteCorrects($datas) {
+    $champs = [];
+
     foreach ($datas as $nomChamp => $valeurChamp) {
-        if  ($nomChamp === "motDePasse") {
-           if (!isset($valeurChamp) || empty($valeurChamp)) {
-                $champs["motDePasse"] = ["success" => false, "phraseEchec" => "Le mot de passe ne peut pas etre vide"];
-                continue;
-           }
+        // Gestion spéciale pour mot de passe (puisque non vide grâce au unset préalable)
+        if ($nomChamp === "motDePasse") {
+            $motDePasse = trim($valeurChamp);
+            $confirmation = isset($datas["confirmationMotDePasse"]) ? trim($datas["confirmationMotDePasse"]) : "";
 
-            if (!isset($datas["confirmationMotDePasse"]) || $valeurChamp !== $datas["confirmationMotDePasse"] ) {
-                 $champs["confirmationMotDePasse"]=["success" => false, "phraseEchec" => "Le mot de passe et la confirmation de mot de passe ne correspondent pas"];
-                            // Passe au champ suivant, on ne valide pas ce champ plus loin
-                continue;
+            if ($confirmation === "") {
+                $champs["confirmationMotDePasse"] = [
+                    "success" => false,
+                    "phraseEchec" => "Veuillez confirmer le mot de passe."
+                ];
+            } elseif ($motDePasse !== $confirmation) {
+                $champs["confirmationMotDePasse"] = [
+                    "success" => false,
+                    "phraseEchec" => "Le mot de passe et la confirmation ne correspondent pas."
+                ];
+            }
+            
+
+            $isValidChamp = champIsValid($nomChamp, $motDePasse);
+            if ($isValidChamp["success"] === false) {
+                $champs["motDePasse"] = [
+                    "success" => false,
+                    "phraseEchec" => $isValidChamp["phraseEchec"]
+                ];
+            } else {
+                $champs["motDePasse"] = ["success" => true];
             }
 
-             }
-
-            $isValidChamp=champIsValid($nomChamp,$valeurChamp);
-            if ($isValidChamp["success"]==false) {
-                $champs[$nomChamp]=["success" => false, "phraseEchec" => $isValidChamp["phraseEchec"]];
-                
-           } else {
-                $champs[$nomChamp]=["success" => true];
-                continue;
-           }
+            continue;
         }
- $successGlobal = !in_array(false, array_column($champs, "success"));
-   return [
+
+        // Validation des autres champs
+        $isValidChamp = champIsValid($nomChamp, $valeurChamp);
+        if ($isValidChamp["success"] === false) {
+            $champs[$nomChamp] = [
+                "success" => false,
+                "phraseEchec" => $isValidChamp["phraseEchec"]
+            ];
+        } else {
+            $champs[$nomChamp] = ["success" => true];
+        }
+    }
+
+    $successGlobal = !in_array(false, array_column($champs, "success"));
+
+    return [
         "success" => $successGlobal,
         "champs" => $champs
     ];
-       
 }
 
-function getChampsDifférentsParRapportBD($datas, $id_utilisateur) {
+function parametresEventCorrects($id_utilisateur,$id_evenement,$datasEvent) {
+    $champs = [];
+
+    foreach ($datasEvent as $nomChamp => $valeurChamp) {
+        // Gestion spéciale pour mot de passe (puisque non vide grâce au unset préalable)
+   
+        // Validation des autres champs
+        $isValidChamp = champIsValid($nomChamp, $valeurChamp);
+        if ($isValidChamp["success"] === false) {
+            $champs[$nomChamp] = [
+                "success" => false,
+                "phraseEchec" => $isValidChamp["phraseEchec"]
+            ];
+        } else {
+            $champs[$nomChamp] = ["success" => true];
+        }
+    }
+
+    $successGlobal = !in_array(false, array_column($champs, "success"));
+
+    return [
+        "success" => $successGlobal,
+        "champs" => $champs
+    ];
+}
+function enleverChampsVides($datasEvent) {
+    foreach ($datasEvent as $nomChamp => $valeurChamp) {
+        if (empty($valeurChamp)) {
+            unset($datasEvent[$nomChamp]);
+        }
+    }
+    return $datasEvent;
+}
+function getChampsDifferentsParRapportBD($datas, $id_utilisateur) {
     // Ajouter le mot de passe hashé aux données à comparer
     
 
@@ -382,7 +505,7 @@ function getChampsDifférentsParRapportBD($datas, $id_utilisateur) {
         'pseudo' => 'pseudo',
         'nomUtilisateur' => 'nom_utilisateur',
         'prenomUtilisateur' => 'prenom_utilisateur',
-        'motDePasseHash' => 'password', // Spécial : hash du mot de passe
+        'motDePasse' => 'password', // Spécial : hash du mot de passe
         'jeuPrefereUser' => 'reponse1',
         'chanteurPrefereUser' => 'reponse2'
     ];
@@ -391,12 +514,11 @@ function getChampsDifférentsParRapportBD($datas, $id_utilisateur) {
     global $connexion_bd;
     $requete = "SELECT email, pseudo, nom_utilisateur, prenom_utilisateur, password, imageProfil, reponse1, reponse2 
                 FROM utilisateurs 
-                JOIN password_recup ON utilisateurs.id_utilisateur = password_recup.id_utilisateur 
+                LEFT JOIN password_recup ON utilisateurs.id_utilisateur = password_recup.id_utilisateur 
                 WHERE utilisateurs.id_utilisateur = :id_utilisateur";
     $requetePreparee = $connexion_bd->prepare($requete);
     $requetePreparee->execute([':id_utilisateur' => $id_utilisateur]);
     $userBD = $requetePreparee->fetch(PDO::FETCH_ASSOC);
-
     if (!$userBD) {
         return ["success" => false, "message" => "Utilisateur introuvable"];
     }
@@ -408,7 +530,7 @@ function getChampsDifférentsParRapportBD($datas, $id_utilisateur) {
             // Comparaison spéciale pour le mot de passe
             if (!empty($datas['motDePasse']) &&
                 !password_verify($datas['motDePasse'], $userBD[$champBD])) {
-                    $champsdifferents['motDePasseHash']= password_hash($datas['motDePasse'], PASSWORD_DEFAULT);
+                    $champsdifferents['motDePasse']= password_hash($datas['motDePasse'], PASSWORD_DEFAULT);
 
             }
         } else {
@@ -418,12 +540,87 @@ function getChampsDifférentsParRapportBD($datas, $id_utilisateur) {
             }
         }
     }
+    if (count($champsdifferents) > 0) {
+        return [
+            "success" => true,
+            
+            "champsToUpdate" => $champsdifferents
+        ];
+    } else {
+        return [
+            "success" => false,
+           
+            
+        ];
+    }
 
-    return [
-        "success" => true,
-        "nbparametresDifferents" => count($champsdifferents) > 0,
-        "champsToUpdate" => $champsdifferents
+   
+}
+function getChampsDifferentsParRapportBDEvent($id_organisateur, $id_evenement, $datas) {
+    // Remplacement de l'ID événement depuis les datas si nécessaire
+    $id_evenement = $datas['id_evenement'];
+
+    // Correspondance champ formulaire => champ en base
+    $champsAComparer = [
+        'nbParticipants' => 'nbParticipants_max', // corriger ici aussi !
+        'ageRequis'=> 'age_minimum',
+        'recurrenceEvent' => 'recurrence',
+        'typeSoiree' => 'type_soiree',
+        'dateEvent' => 'date_evenement',
+        'heureEvent' => 'heure',
+        'titreEvent' => 'titre_evenement',
+        'jeuxThemesEvent' => 'jeux_et_themes',
+        'rueEvent' => 'adresse_rue',
+        'numeroEvent' => 'adresse_numero',
+        'villeEvent' => 'adresse_ville',
+        'codePostalEvent' => 'adresse_CP',
+        'emailEvent' => 'email',
+        'numberPhoneEvent' => 'telephone',
+        'url1' => 'url1',
+        'url2' => 'url2',
+        'discussionGroupName' => 'groupe_de_discussion',
     ];
+
+    // Connexion à la base de données
+    global $connexion_bd;
+    $requete = "SELECT * FROM evenements WHERE id_organisateur = :id_organisateur AND id_evenement = :id_evenement";
+    $requetePreparee = $connexion_bd->prepare($requete);
+    $requetePreparee->execute([
+        ':id_organisateur' => $id_organisateur,
+        ':id_evenement' => $id_evenement
+    ]);
+    $eventBD = $requetePreparee->fetch(PDO::FETCH_ASSOC);
+
+    if (!$eventBD) {
+        return ["success" => false, "message" => "event introuvable"];
+    }
+
+    // Comparaison des champs
+    $champsdifferents = [];
+
+    foreach ($champsAComparer as $champFormulaire => $champBD) {
+        if (isset($datas[$champFormulaire])) {
+            $valForm = trim((string)$datas[$champFormulaire]);
+            $valBD = trim((string)$eventBD[$champBD]);
+
+            if ($valForm !== $valBD) {
+                $champsdifferents[$champFormulaire] = $valForm;
+            }
+        }
+    }
+
+    // Retourner le résultat après la boucle
+    if (count($champsdifferents) > 0) {
+        return [
+            "success" => true,
+            "champsToUpdate" => $champsdifferents
+        ];
+    } else {
+        return [
+            "success" => false,
+            "message" => "Aucun champ modifié"
+        ];
+    }
 }
 
 
@@ -443,6 +640,7 @@ function whichCategoryForInsertionInBD($id_utilisateur, $champsToUpdate) {
     foreach ($champsToUpdate as $champ => $valeur) {
         if (in_array($champ, $champsUtilisateursFormulaire)) {
             $champsUtilisateurs[$champ] = $valeur;
+            
         } 
         if (in_array($champ, $champsPasswordRecupFormulaire)) {
             $champsPasswordRecup[$champ] = $valeur;
@@ -454,6 +652,38 @@ function whichCategoryForInsertionInBD($id_utilisateur, $champsToUpdate) {
     ];
    
 }   
+function createRecupMotDePasse($id_utilisateur){
+    global $connexion_bd;
+    $requete = "INSERT INTO password_recup (id_utilisateur, reponse1, reponse2) VALUES (:id_utilisateur, :reponse1, :reponse2)";
+    $requetePreparee = $connexion_bd->prepare($requete);
+    $requetePreparee->execute([
+        ':id_utilisateur' => $id_utilisateur,
+        ':reponse1' => "",
+        ':reponse2' => ""
+    ]);
+}
+function verifyIfPasswordRecupExists($id_utilisateur) {
+    global $connexion_bd;
+
+    $requete = "SELECT * FROM password_recup WHERE id_utilisateur = :id_utilisateur";
+    $requetePreparee = $connexion_bd->prepare($requete);
+    $requetePreparee->execute([
+        ':id_utilisateur' => $id_utilisateur
+    ]);
+
+    $resultat = $requetePreparee->fetch(PDO::FETCH_ASSOC);
+
+    if ($resultat) {
+        return [
+            "success" => true,
+            "data" => $resultat
+        ];
+    } else {
+        return [
+            "success" => false
+        ];
+    }
+}
 
 function updateInBdUtilisateur($id_utilisateur, $champsUtilisateurs) {
     global $connexion_bd;
@@ -736,18 +966,9 @@ function insertInBD($datas){
     // sleep(2);
     // return true;
 }
-function getEvenementsWithAllInfos($evenements)
-{
-    global $connexion_bd;
-     $resultats = [];
-    if (!empty($evenements) && isset($evenements['id_evenement'])) {
-    $evenements = [$evenements];
-}
-
-    foreach ($evenements as $evenement) {
-           $nbMax = $evenement['nbParticipants_max'];
-       $id_evenement = $evenement['id_evenement'];
-
+function selectAllInfosEvenementById($id_evenement){
+ global $connexion_bd;
+  
         // Compter les inscrits pour cet événement
         $requete = "SELECT COUNT(*) as nbInscrits FROM inscriptions WHERE id_evenement = :id_evenement";
         $requetePreparee = $connexion_bd->prepare($requete);
@@ -767,6 +988,7 @@ function getEvenementsWithAllInfos($evenements)
                             E.jeux_et_themes,
                             E.nbParticipants_max,
                             E.age_minimum,
+                            E.adresse_numero,
                             E.adresse_rue,
                             E.adresse_CP,
                             E.adresse_ville,
@@ -789,7 +1011,7 @@ function getEvenementsWithAllInfos($evenements)
             $requetePreparee = $connexion_bd->prepare($requete);
             $requetePreparee->execute([':id_evenement' => $id_evenement]);
             $evenement = $requetePreparee->fetch(PDO::FETCH_ASSOC);
-            var_dump($evenement);
+            // var_dump($evenement);
 
             if ($evenement) {
                 // Ajouter le champ nbInscrits
@@ -804,19 +1026,36 @@ function getEvenementsWithAllInfos($evenements)
                         WHERE I.id_evenement = :id_evenement";
                         $requetePreparee = $connexion_bd->prepare($requete);
                         $requetePreparee->execute([':id_evenement' => $id_evenement]);
-                        $inscrits = $requetePreparee->fetchAll
+                        $inscrits = $requetePreparee->fetchAll;
                     (PDO::FETCH_ASSOC);
                         $evenement['inscrits'] = $inscrits;
-                $resultats[] = $evenement;
-                var_dump($resultats);
+                
+                // var_dump($resultats);
 
             }
-        
-            } 
         }
-    return $resultats;
-
+        return $evenement;
 }
+function getEvenementsWithAllInfos($evenements)
+{
+    global $connexion_bd;
+     $resultats = [];
+    if (!empty($evenements) && isset($evenements['id_evenement'])) {
+    $evenements = [$evenements];
+}
+
+    foreach ($evenements as $evenement) {
+
+           $nbMax = $evenement['nbParticipants_max'];
+       $id_evenement = $evenement['id_evenement'];
+       $evenement=selectAllInfosEvenementById($id_evenement);
+       $resultats[] = $evenement;
+
+
+            } 
+              return $resultats;
+ }
+
 function getEvenementsWithEssentialInfos($evenements)
 {
     global $connexion_bd;
@@ -1091,7 +1330,7 @@ function enregistrementImageEvent(){
 }
 function findAllInfosEvent($id_organisateur,$id_evenement){
     global $connexion_bd;
-    echo $id_evenement." ".$id_organisateur;
+    // echo $id_evenement." ".$id_organisateur;
     $sql = "SELECT * FROM evenements E join utilisateurs U on E.id_organisateur = U.id_utilisateur where E.id_organisateur = :id_organisateur and E.id_evenement = :id_evenement";
     $stmt = $connexion_bd->prepare($sql);
     $stmt->execute(
@@ -1122,6 +1361,7 @@ function insertEvenementInBD($datas, $id_utilisateur) {
     $heureEvent           = $datas["heureEvent"];
     $titreEvent           = $datas["titreEvent"];
     $jeuxThemesEvent      = $datas["jeuxThemesEvent"];
+    $numRueEvent          = $datas["numRueEvent"];
     $rueEvent             = $datas["rueEvent"];
     $villeEvent           = $datas["villeEvent"];
     $codePostalEvent      = $datas["codePostalEvent"];
@@ -1135,7 +1375,7 @@ function insertEvenementInBD($datas, $id_utilisateur) {
     $requete = "INSERT INTO evenements (
         id_organisateur,
         recurrence,
-        style_evenement,
+        type_soiree,
         date_evenement,
         heure,
         titre_evenement,
@@ -1145,6 +1385,7 @@ function insertEvenementInBD($datas, $id_utilisateur) {
         age_minimum,
         adresse_rue,
         adresse_ville,
+        adresse_numero,
         adresse_CP,
         email,
         telephone,
@@ -1165,6 +1406,7 @@ function insertEvenementInBD($datas, $id_utilisateur) {
         :ageRequis,
         :rueEvent,
         :villeEvent,
+        :numRueEvent,
         :codePostalEvent,
         :emailEvent,
         :numberPhoneEvent,
@@ -1187,6 +1429,7 @@ function insertEvenementInBD($datas, $id_utilisateur) {
         ':jeuxThemesEvent'     => $jeuxThemesEvent,
         ':nbParticipants'      => $nbParticipants,
         ':ageRequis'           => $ageRequis,
+        ':numRueEvent'         => $numRueEvent,
         ':rueEvent'            => $rueEvent,
         ':villeEvent'          => $villeEvent,
         ':codePostalEvent'     => $codePostalEvent,
@@ -1230,7 +1473,7 @@ function verifyExistInBDEvenement($datas,$id_utilisateur) {
 }
  function selectAllInfosUtilisateurById($id_utilisateur){
      global $connexion_bd;
-     $requete="select imageProfil,pseudo,nom_utilisateur,prenom_utilisateur,email,role,reponse1,reponse2 from utilisateurs U join password_recup P on U.id_utilisateur=P.id_utilisateur where U.id_utilisateur = :id_utilisateur";
+     $requete="select U.id_utilisateur,imageProfil,pseudo,nom_utilisateur,prenom_utilisateur,email,role,dateInscription,statut_utilisateur,reponse1,reponse2,dateNaissance from utilisateurs U left join password_recup P on U.id_utilisateur=P.id_utilisateur where U.id_utilisateur = :id_utilisateur";
      $requetePreparee=$connexion_bd->prepare($requete);
      $requetePreparee->execute([
          ':id_utilisateur' => $id_utilisateur
@@ -1254,10 +1497,11 @@ function verifyExistInBDEvenement($datas,$id_utilisateur) {
 // }
 function selectAllInfosUtilisateurs(){
     global $connexion_bd;
-    $requete="select * from utilisateurs";
+    $requete="select U.id_utilisateur,nom_utilisateur,prenom_utilisateur,pseudo,imageProfil,email,dateInscription,role,statut_utilisateur,dateNaissance,reponse1,reponse2 from utilisateurs U left join password_recup P on U.id_utilisateur=P.id_utilisateur";
     $requetePreparee=$connexion_bd->prepare($requete);
     $requetePreparee->execute();
     $result=$requetePreparee->fetchAll(PDO::FETCH_ASSOC);
+    
     return $result;
 }
 function deleteAllIscriptionsByUser($id_inscrit){
@@ -1265,24 +1509,49 @@ function deleteAllIscriptionsByUser($id_inscrit){
     $requete="delete from inscriptions where id_inscrit = :id_inscrit";
     $requetePreparee=$connexion_bd->prepare($requete);
     $requetePreparee->execute([
-        ':id_inscrit' => $_SESSION['id_utilisateur']
+        ':id_inscrit' => $id_inscrit
     ]);
 }
 function deleteAllEventsByOrganisateur($id_organisateur){
-    
     global $connexion_bd;
-    $requete="delete * from evenements E join inscriptions I on E.id_organisateur=I.id_inscrit where id_organisateur = :id_organisateur";
-    $requetePreparee=$connexion_bd->prepare($requete);
-    $requetePreparee->execute([
-        ':id_organisateur' => $id_organisateur]
-    );
+
+    // Supprimer d'abord les inscriptions liées à ses événements
+    $requete1 = "DELETE FROM inscriptions WHERE id_evenement IN (
+        SELECT id_evenement FROM evenements WHERE id_organisateur = :id_organisateur
+    )";
+    $stmt1 = $connexion_bd->prepare($requete1);
+    $stmt1->execute([':id_organisateur' => $id_organisateur]);
+
+    // Ensuite supprimer les événements
+    $requete2 = "DELETE FROM evenements WHERE id_organisateur = :id_organisateur";
+    $stmt2 = $connexion_bd->prepare($requete2);
+    $stmt2->execute([':id_organisateur' => $id_organisateur]);
 }
-function deleteUser(){
+function deleteThisEvent($id_evenement){
     global $connexion_bd;
-    $requete="delete * from utilisateurs where id_utilisateur = :id_utilisateur";
+
+    // Supprimer les inscriptions liées à cet événement
+    $requete1 = "DELETE FROM inscriptions WHERE id_evenement = :id_evenement";
+    $stmt1 = $connexion_bd->prepare($requete1);
+    $stmt1->execute([':id_evenement' => $id_evenement]);
+
+    // Supprimer l'événement
+    $requete2 = "DELETE FROM evenements WHERE id_evenement = :id_evenement";
+    $stmt2 = $connexion_bd->prepare($requete2);
+    $stmt2->execute([':id_evenement' => $id_evenement]);
+}
+function deleteUser($id_utilisateur){
+    global $connexion_bd;
+    $requete="delete from utilisateurs where id_utilisateur = :id_utilisateur";
     $requetePreparee=$connexion_bd->prepare($requete);
     $requetePreparee->execute([
-        ':id_utilisateur' => $_SESSION['id_utilisateur']
+        ':id_utilisateur' => $id_utilisateur
     ]);
+}
+function deletePasswordRecupByUser($id_utilisateur) {
+    global $connexion_bd;
+    $requete = "DELETE FROM password_recup WHERE id_utilisateur = :id_utilisateur";
+    $requetePreparee = $connexion_bd->prepare($requete);
+    $requetePreparee->execute([':id_utilisateur' => $id_utilisateur]);
 }
 ?>

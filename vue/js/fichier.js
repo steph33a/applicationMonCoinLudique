@@ -325,7 +325,6 @@ if (classInput === "typeSoiree") {
     case "heureEvent":
       {
         if (champValue === "") return "L'heure est obligatoire.";
-        if (isNaN(champValue)) return "L'heure doit contenir uniquement des chiffres.";
         const regexHeure = /^([01]\d|2[0-3]):[0-5]\d$/;
         if (!regexHeure.test(champValue)) return "L'heure doit avoir le format HH:MM.";
         
@@ -478,93 +477,92 @@ function findAllIndispensablesInputs(formulaire) {
     listInputsIndispensables=["email","jeuPrefereUser","chanteurPrefereUser"];
 } else if (formulaire.id=="formulaireCreationEvenement") {
   listInputsIndispensables=["emailEvent","dateEvent","heureEvent","typeSoiree","nbParticipants","imageEvent"];
+} else if (formulaire.id=="formulaireModificationEvenement") {
+listInputsIndispensables=["emailEvent","dateEvent","heureEvent","typeSoiree","nbParticipants"];
+}  // listInputsIndispensables= ["mail","codePostal","ville","rue","numAdresse","heureEvent","typeSoiree","nbParticipants","imageEvent"];
   // listInputsIndispensables= ["mail","codePostal","ville","rue","numAdresse","heureEvent","typeSoiree","nbParticipants","imageEvent"];
-  // listInputsIndispensables= ["mail","codePostal","ville","rue","numAdresse","heureEvent","typeSoiree","nbParticipants","imageEvent"];
-} else if (formulaire.id=="formulaireRedefinitionMotDePasse") {
+ else if (formulaire.id=="formulaireRedefinitionMotDePasse") {
   listInputsIndispensables=["email","motDePasse","confirmationMotDePasse"];
 }
 return listInputsIndispensables;
 }
+let validChamps = [];
+ // Définition de la fonction en dehors de la boucle
+function validateField(element) {
+  let formulaire = element.form;
+  console.log("formulaire", formulaire);
 
-// Dans la fonction fichier.js
+  let listInputs = findAllInputs(formulaire);
+  let tableauIndispensablesInputs = findAllIndispensablesInputs(formulaire);
+
+  console.log(formulaire ? formulaire.id : 'Pas dans un formulaire');
+  console.log("listInputs", listInputs);
+
+  let classInput = Array.from(element.classList).find(cls => listInputs.includes(cls));
+  if (!classInput) return;
+
+  console.log("classInput279", classInput);
+
+  let champValue = formulaire.querySelector("." + classInput).value;
+
+  champValue = cleanChampValue(classInput, champValue);
+  console.log("champValue287", champValue);
+
+  let classCommentaire = classInput + "Commentaire";
+  let success = champFormulaireIsValid(classInput, champValue);
+
+  console.log("success289", success);
+
+  if (champValue === "" && !tableauIndispensablesInputs.includes(classInput)) {
+    console.log("success429", success);
+    success = true;
+  }
+
+  if (classInput === "confirmationMotDePasse") {
+    let motDePasse = formulaire.querySelector(".motDePasse").value;
+    let confirmationMotDePasse = formulaire.querySelector(".confirmationMotDePasse").value;
+    success = (motDePasse === confirmationMotDePasse);
+    console.log("success289", success);
+  }
+
+  if (!success) {
+    let commentaireErreur = commentaireAfficher(classInput, champValue);
+    showTextComment(classCommentaire, commentaireErreur);
+
+    let indexInput = validChamps.indexOf(classInput);
+    if (indexInput !== -1) {
+      validChamps.splice(indexInput, 1);
+    }
+
+  } else {
+    console.log(classCommentaire);
+
+    if (classCommentaire !== "") {
+      removeTextComment(classCommentaire);
+    }
+
+    if (!validChamps.includes(classInput)) {
+      validChamps.push(classInput);
+    }
+  }
+
+  appliquerStyleValidChamps(validChamps, inputs);
+}
+
+
+// Dans ta boucle :
 let inputs = document.querySelectorAll('input, select, textarea');
-  inputs.forEach(element => {
-    // Chaque élément <input>, <select>, <textarea> a une propriété .form qui renvoie directement le formulaire auquel il appartient, ou null s’il n’en a pas.
-      if (element.type === "file") {
-          return "";
-          // Traiter le fichier si besoin
-        } 
-    console.log("element279",element);
-    element.addEventListener("input", function() {
+inputs.forEach(element => {
+  if (element.type === "file") {
+    return ""; // Ignore les input file
+  }
 
-      let formulaire = element.form; // c’est le formulaire parent
-      console.log("formulaire",formulaire);
-      // renvoie la liste des éléments input se trouvant   dans le formulaire en question (ici une liste de classes)
+  // Validation au chargement
+  validateField(element);
 
-      let listInputs=findAllInputs(formulaire);
-      let tableauIndispensablesInputs=findAllIndispensablesInputs(formulaire);
-      console.log(formulaire ? formulaire.id : 'Pas dans un formulaire');
-      console.log("listInputs",listInputs);
-      // recherche la classe de l'input parmis les clases des inputs à formater et pour voir après si il y a une correspondance avec les champs obligatoires
-      let classInput = Array.from(element.classList).find(cls => listInputs.includes(cls));
-      if (!classInput) return; // On sort si pas de classe correspondante
-      console.log("classInput279",classInput); 
-      let champValue=formulaire.querySelector("."+classInput).value;
-      
-
-      champValue = cleanChampValue(classInput,champValue);
-      console.log("champValue287",champValue);
-      let classCommentaire = classInput + "Commentaire";
-      let success = champFormulaireIsValid(classInput, champValue);
-
-      console.log("success289",success);
-
-      if (champValue === "" && !tableauIndispensablesInputs.includes(classInput)) {
-        console.log("success429",success);
-        success = true;
-      }
-      if (classInput === "confirmationMotDePasse") {
-        let motDePasse = formulaire.querySelector(".motDePasse").value;
-        let confirmationMotDePasse = formulaire.querySelector(".confirmationMotDePasse").value;
-        if (motDePasse === confirmationMotDePasse) {
-          success = true;
-           console.log("success289",success);
-        } else {
-          success = false;
-        }
-      }
-      if (!success) {
-        // Affiche le commentaire d'erreur
-        let commentaireErreur = commentaireAfficher(classInput, champValue);
-        showTextComment(classCommentaire, commentaireErreur);
-
-        // Retirer de validChamps si présent
-        let indexInput = validChamps.indexOf(classInput);
-        if (indexInput !== -1) {
-          validChamps.splice(indexInput, 1);
-        }
-
-      } else {
-        console.log(classCommentaire);
-
-        if (classCommentaire!=""){
-           removeTextComment(classCommentaire);
-        }
-        // Supprime le commentaire d'erreur
-       
-
-        // Ajouter à validChamps si pas déjà dedans
-        if (!validChamps.includes(classInput)) {
-          validChamps.push(classInput);
-        }
-      }
-      // Mise à jour des styles CSS en fonction de validChamps
-      appliquerStyleValidChamps(validChamps, inputs);
-
-    });
-  });
-
-
+  // Validation à chaque modification
+  element.addEventListener("input", () => validateField(element));
+});
 
   function toggleFormSections() {
     
@@ -640,7 +638,7 @@ let divCreateEventForGroupe=document.querySelector(".divCreateEventForGroupe");
      
 
 let commentaireErreur;
-let validChamps=[];
+
 let overlayConnexion=document.getElementById("overlayConnexion");
 let overlayInscription=document.getElementById("overlayInscription");
 // let overlayRedefinitionMotDePasse=document.getElementById("overlayRedefinitionMotDePasse");
@@ -770,14 +768,28 @@ formulaireLoginAsUser.addEventListener('submit', function (e) {
 
 
 if (formulaireCreationEvenement) {
+const mode = formulaireCreationEvenement.getAttribute('data-mode');
+console.log(mode);
 formulaireCreationEvenement.addEventListener('submit', function (e) {
 
+     if (mode==="creationEvenement") {
+        console.log("776formulaireCreationEvenement");
       if (divCreateEventForGroupe) {
             listInputsIndispensablesCreateEvent= ["emailEvent","numberPhoneEvent","codePostalEvent","villeEvent","rueEvent","numRueEvent","titreEvent","heureEvent","typeSoiree","nbParticipants","imageEvent"];
         
           } else{
              listInputsIndispensableCreateEvent=findAllIndispensablesInputs(formulaireCreationEvenement);
         }
+      } else if (mode==="modificationEvenement") {
+          console.log("formulairemodifEvenement");
+        console.log("781modificationEvenement");
+        if (divCreateEventForGroupe) {
+            listInputsIndispensablesCreateEvent= ["emailEvent","numberPhoneEvent","codePostalEvent","villeEvent","rueEvent","numRueEvent","titreEvent","heureEvent","typeSoiree","nbParticipants"];
+        
+          } else{
+             listInputsIndispensableCreateEvent=findAllIndispensablesInputs(formulaireModificationEvenement);
+        }
+      }
     
      let champsInvalides = listInputsIndispensableCreateEvent.filter(champ => !validChamps.includes(champ));
 
@@ -790,6 +802,7 @@ formulaireCreationEvenement.addEventListener('submit', function (e) {
         // formulaireCreationEvenement.requestSubmit(boutonCreationEvenement);
       });
     }
+
 
 if (formulaireRedefinitionMotDePasse) {
       formulaireRedefinitionMotDePasse.addEventListener('submit', function (e) {
@@ -1070,7 +1083,7 @@ document.querySelectorAll(".closeModal").forEach(btn => {
 
 window.addEventListener('DOMContentLoaded', () => {
   // Dès que le DOM est complètement chargé, on lance cette fonction
- console.log ("1066")
+
   if (modalToOpen) {  // Si la variable modalToOpen contient une valeur non vide 
      console.log ("1068")
     //  ferme toutes les modalsvisibles.
@@ -1103,6 +1116,12 @@ console.log("modalElement998",modalToOpen);
       case "redefinitionMotDePasse":
         ouvrirModal("modalFormRedefinitionMotDePasse");
         break;
+      case "modalFormGestionUtilisateurInformationsUtilisateur":
+        ouvrirModal("modalFormGestionUtilisateurInformationsUtilisateur");
+        break;
+      case "visionEvenementAndInscription":
+        ouvrirModal("modalFormVisionEvenementAndInscription");
+        break;
       
     }
     
@@ -1114,22 +1133,34 @@ console.log("modalElement998",modalToOpen);
     }
   
 });
-
-const form = document.getElementById('autoSubmitForm');
+window.addEventListener('DOMContentLoaded', () => {
+  const form = document.getElementById('autoSubmitForm');
 if (form) {
    console.log("1104form",form);
     form.submit();
 } else {
     console.warn("Le formulaire autoSubmitForm n'existe pas sur cette page.");
 }
+});
+
 window.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('autoSubmitForm');
   if (form) {
+    console.log("Auto submit form déclenché");
     form.submit();
   } else {
     console.warn("Le formulaire autoSubmitForm n'existe pas sur cette page.");
   }
 });
+function afficherFormulaireModificationEvenement() {
+    const div = document.getElementById('modificationEvenementContent');
+    if (div) {
+        div.style.display = 'block';
+        // Tu peux aussi scroller vers le formulaire :
+        // la page va automatiquement défiler vers l’élément div, de manière fluide (doucement).
+        div.scrollIntoView({ behavior: 'smooth' });
+    }
+}
 // function getUrlParameter(name) {
 //   name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
 //   const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');

@@ -52,6 +52,7 @@ include('../composants/includes/header.php')
             <form id="autoSubmitForm" action="../../controller/controller.php" method="post" style="display:none;">
                 <!-- Tu peux ajouter des champs cachés ici -->
                 <input type="hidden" name="id_utilisateur" value="<?php echo $_SESSION['id_utilisateur']; ?>">
+                <input type="hidden" name="page_contexte" value="monCompte">
             
                 <input type="hidden" name="btnResearchAllProfilInfosForThisUser" value="lister_evenements"><!-- Exemple d'action -->
             </form>
@@ -66,7 +67,8 @@ include('../composants/includes/header.php')
     <div class="gestion_utilisateurs_title"><h2>Profil</h2></div>
     <h3>Paramètre du compte</h3>
 
-    <form action="../controller/controller.php" method="post">
+    <form action="../../controller/controller.php" method="post">
+        <input type="hidden" name="page_contexte" value="monCompte">
         <label for="pseudo">Pseudo</label>
         <input type="text" name="pseudo" id="pseudo" value="<?php echo $pseudo; ?>">
         <label for="email">Email</label>
@@ -85,7 +87,7 @@ include('../composants/includes/header.php')
         <label for="question2">Répondre à la question2 quel est votre chanteur préféré ?</label>
         <input class="chanteurPrefereUser" type="text" name="chanteurPrefereUser" id="reponse2" value="<?php echo $reponse2; ?>">
         <input type="hidden" name="id_utilisateur" value="<?php echo $_SESSION['id_utilisateur']; ?>">
-        <btn type="submit" name="actionModifierParametresCompte" value="modifierCompte">Modifier le compte</btn>
+        <button class="btn" type="submit" name="actionModifierParametresCompte" value="modifierCompte">Modifier le compte</button>
     </form>
 </main>  
 

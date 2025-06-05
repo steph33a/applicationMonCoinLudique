@@ -1,98 +1,121 @@
-<div style="width:700px; background-color: #F8F3EB; opacity: 0.7; border: #704405 solid 1px; display:flex; flex-direction:column; justify-content:space-between; align-items:center;" class="affichage" id="affichageEvenement">
+<div id="eventSelected" class="eventSelectedSpecial event-card">
+    <?php $eventTypePublic = !empty($evenementSelectedSpecial['prenom-utilisateur']); ?>
 
-    <div style="margin-top:25px; display:flex; flex-direction:row; justify-content:space-between; width:305px;" id="choix">
-       
-        <div style="display:flex; flex-direction:row; justify-content:space-between; align-items:center; width:305px;" id="choixProfil">
-            <div style="margin-top:25px; cursor:default; display:inline-block;" class="photo-container">
-                <img src="../images/avatar.png" alt="Photo de l'événement" class="photo-preview" style="max-width:100px; max-height:100px;" />
-            </div>
-
-            <div style="margin-top: 25px; text-align:left;">
-                <strong>Nombre de places :</strong>
-                <p id="affNbParticipants" style="margin:0;">[Nombre de places]</p>
-            </div>
-
-            <div style="margin-top: 25px; text-align:left;">
-                <strong>Âge requis :</strong>
-                <p id="affAgeRequis" style="margin:0;">[Âge requis]</p>
-            </div>
+    <!-- Colonne gauche : Image événement + Liens -->
+    <div class="left-column">
+        <!-- Image de l'événement -->
+        <div class="photo-container">
+            <img src="<?php echo cleanImagePath($evenementSelectedSpecial['image_evenement']); ?>" alt="Photo de l'événement" class="photoEvent" />
         </div>
 
-        <div>
-            <div>
-                <strong>Récurrence :</strong>
-                <p id="affRecurrence">[Récurrence]</p>
+        <!-- Lien 1 s'il existe -->
+        <?php if (!empty($evenementSelectedSpecial['url'])): ?>
+            <div class="event-link">
+                <a href="<?php echo $evenementSelectedSpecial['url']; ?>" target="_blank">Lien 1</a>
             </div>
-           
-            <div>
-                <strong>Type de soirée :</strong>
-                <ul id="affTypesSoiree" style="margin:0; padding-left: 20px;">
-                    <li>Soirée créateur</li>
-                    <li>Soirée jeu classique</li>
-                    <li>Soirée Thématique</li>
-                    <!-- Remplacer ou filtrer selon les types sélectionnés -->
-                </ul>
-            </div>
+        <?php endif; ?>
 
-            <div>
-                <strong>Date :</strong>
-                <p id="affDateEvent">[Date]</p>
+        <!-- Lien 2 s'il existe -->
+        <?php if (!empty($evenementSelectedSpecial['url2'])): ?>
+            <div class="event-link">
+                <a href="<?php echo $evenementSelectedSpecial['url2']; ?>" target="_blank">Lien 2</a>
             </div>
-
-            <div>
-                <strong>Heure :</strong>
-                <p id="affHeureEvent">[Heure]</p>
-            </div>
-
-            <div>
-                <strong>Titre :</strong>
-                <p id="affTitreEvent">[Titre]</p>
-            </div>
-
-            <div>
-                <strong>Jeux et thèmes :</strong>
-                <p id="affJeuxThemesEvent">[Jeux et thèmes]</p>
-            </div>
-        </div>
+        <?php endif; ?>
     </div>
 
-    <div style="margin-top: 20px; width: 100%;">
-        <h2>Informations du profil Organisateur</h2>
-        <hr>
-
-        <div style="display:flex; flex-direction:row; justify-content:space-between;">
-            <strong>Rue et n° :</strong>
-            <p id="affAdresse" style="margin:0;">[Adresse]</p>
+    <!-- Colonne droite : Infos événement -->
+    <div class="right-column">
+        <!-- Type d'événement -->
+        <div class="event-info">
+            <h3><?php echo $eventTypePublic ? "Événement Public" : "Événement Privé"; ?></h3>
+            <h4><?php echo $evenementSelectedSpecial['type_soiree']; ?></h4>
         </div>
-        
-        <div style="display:flex; flex-direction:column; justify-content:space-between;">
-            <div style="display:flex; flex-direction:row; justify-content:space-between;">
-                <strong>Ville :</strong>
-                <p id="affVille" style="margin:0;">[Ville]</p>
+
+        <!-- Infos Hôte -->
+        <div class="host-section">
+            <div class="host-info">
+                <h3><?php echo $evenementSelectedSpecial['pseudo']; ?></h3>
+                <h4>alias <?php echo $evenementSelectedSpecial['prenom_utilisateur'] . " " . $evenementSelectedSpecial['nom_utilisateur']; ?></h4>
             </div>
-            <div style="display:flex; flex-direction:row; justify-content:space-between;">
-                 <strong>Code postal :</strong>
-                 <p id="affCodePostal" style="margin:0;">[Code postal]</p>
+            <div class="photoProfil-container">
+                <img src="<?php echo cleanImagePath($evenementSelectedSpecial['imageProfil']); ?>" alt="Photo de profil" class="photoProfil" />
             </div>
         </div>
 
-        <div style="display:flex; flex-direction:row; justify-content:space-between;">
-            <strong>Téléphone :</strong>
-            <p id="affTel" style="margin:0;">[Numéro de téléphone]</p>
+        <!-- Coordonnées événement -->
+        <div class="event-info">
+            <div class="info-row">
+                <span class="info-label">Date & Heure :</span>
+                <span class="info-value"><?php echo $evenementSelectedSpecial['date_evenement'] . " à " . $evenementSelected['heure']; ?></span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Adresse :</span>
+                <span class="info-value"><?php echo $evenementSelected['numRue'] . ", " . $evenementSelected['rue']; ?></span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Ville :</span>
+                <span class="info-value"><?php echo $evenementSelected['adresse_ville'] . " (" . $evenementSelected['codepostal'] . ")"; ?></span>
+            </div>
         </div>
 
-        <div style="display:flex; flex-direction:row; justify-content:space-between;">
-            <strong>Mail :</strong>
-            <p id="affMail" style="margin:0;">[Adresse email]</p>
+        <!-- Infos complémentaires -->
+        <div class="event-info">
+            <div class="info-row">
+                <span class="info-label">Jeux :</span>
+                <span class="info-value"><?php echo $evenementSelected['jeux']; ?></span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Thèmes :</span>
+                <span class="info-value"><?php echo $evenementSelected['themes']; ?></span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Places restantes :</span>
+                <span class="info-value">
+                    <?php
+                        $nbInscrits = intval($evenementSelected['nbInscrits']);
+                        $nbParticipantsMax = intval($evenementSelected['nbParticipants_max']);
+                        $placesRestantes = $nbParticipantsMax - $nbInscrits;
+                        echo $placesRestantes > 0 ? $placesRestantes : 'Complet';
+                    ?>
+                    / <?php echo $nbParticipantsMax; ?>
+                </span>
+            </div>
+
+            <?php if (!empty($evenementSelected['numberPhoneEvent'])): ?>
+                <div class="info-row">
+                    <span class="info-label">Téléphone :</span>
+                    <span class="info-value"><?php echo $evenementSelected['numberPhoneEvent']; ?></span>
+                </div>
+            <?php endif; ?>
+
+            <?php if (!empty($evenementSelected['emailEvent'])): ?>
+                <div class="info-row">
+                    <span class="info-label">Email :</span>
+                    <span class="info-value"><?php echo $evenementSelected['emailEvent']; ?></span>
+                </div>
+            <?php endif; ?>
+
+            <?php if (!empty($evenementSelected['recurrenceEvent'])): ?>
+                <div class="info-row">
+                    <span class="info-label">Groupe de discussion :</span>
+                    <span class="info-value"><?php echo $evenementSelected['recurrenceEvent']; ?></span>
+                </div>
+            <?php endif; ?>
         </div>
 
-        <div>
-            <strong>URLs :</strong>
-            <ul id="affUrls" style="margin:0; padding-left:20px;">
-                <li><a href="[url1]" target="_blank" rel="noopener noreferrer">[url1]</a></li>
-                <li><a href="[url2]" target="_blank" rel="noopener noreferrer">[url2]</a></li>
-            </ul>
+        <!-- Bouton inscription -->
+        <div class="boutonContainer">
+            <form action="../../controller/controller.php" method="post" class="formActionInscription">
+                <input type="hidden" name="id_evenement" value="<?php echo $evenementSelected['id_evenement']; ?>">
+                <input type="number" name="nbInscrits" placeholder="0" min="0" max="5">
+                <input type="hidden" name="id_utilisateur" value="<?php echo $_SESSION['id_utilisateur']; ?>">
+
+                <button type="submit" name="btninscriptionEvent" class="btn-inscription">
+                    S'inscrire
+                </button>
+            </form>
         </div>
     </div>
-
 </div>
+
+

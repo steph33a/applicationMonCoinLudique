@@ -14,21 +14,35 @@ if ($role == "admin") {
         $eventsVisible = $_SESSION['affichage'];
     }
 }
-
+  $refreshConditions=false;
 // echo "session id :".$_SESSION['id_utilisateur'];
 // echo"session role :".$_SESSION['role'];
 //  echo $_GET['refresh'];
+
+$actionEnCours=false;
+if (!empty($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    $actionEnCours=true;
+}
 $list_evenements = [];
-// var_dump($_SESSION['list_evenements']);
+
+// Si on a une liste valide en session, on la récupère (temporairement)
 if (isset($_SESSION['list_evenements']) && is_array($_SESSION['list_evenements'])) {
     $list_evenements = $_SESSION['list_evenements'];
 }
-if ((isset($_SESSION["refresh"])&& $_SESSION["refresh"] === true)) {
-    unset($_SESSION['list_evenements']);
-
-    
+if (!isset($_SESSION['list_evenements']) || ($_SESSION['list_evenements']=null)) {
+   $refreshConditions=true;
 }
 
+// Si ce n'est pas une action POST ET qu'on ne veut pas rafraîchir la session,
+// alors on vide la session pour éviter de stocker inutilement
+if ((!$actionEnCours)&&((!isset($_SESSION["data_transferred_from_controller"]))||(isset($_SESSION["data_transferred_from_controller"])&& $_SESSION["data_transferred_from_controller"] === false))) {
+    $list_evenements = [];
+
+    unset($_SESSION['$list_evenements']);
+    $refreshContitions=true;
+
+} 
+$_SESSION["data_transferred_from_controller"] = false;
 // Exemple de rôles possibles : 'admin', 'utilisateur', null si non connecté
 
 // $evenements = $_SESSION['evenements'] ?? [];
@@ -44,11 +58,7 @@ include('../composants/includes/header.php') ;
 
 <main  style="display:flex; flex-direction:column; justify-content:space-between, align-items:center; gap:20px;" id="gestionEvenements"class="gestion_evenements">
      <?php
-    $refreshCondition = empty($list_evenements) && (!isset($_SESSION['refresh']) || $_SESSION['refresh'] !== true);
-    
-   
-
-    if ($refreshCondition) { ?>
+    if ($refreshConditions) { ?>
      
         <div id="formulaire_invisible">
             <form id="autoSubmitForm" action="../../controller/controller.php" method="post" style="display:none;">
