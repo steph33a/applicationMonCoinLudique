@@ -1278,14 +1278,14 @@ body {
   font-size: 2rem;
   margin-bottom: 1.5rem;
   text-align: center;
-  color: #4a4a89;
+  color: #5aa53a;
 }
 
 /* Sous-titres (ex. “Paramètres du compte”) */
 .gestion_utilisateurs h3 {
   margin: 25px 0 15px;
   font-weight: 600;
-  color: #4a4a89;
+  color: #5aa53a;
 }
 
 /* ---------- Formulaire ---------- */
@@ -1298,7 +1298,7 @@ body {
 /* Étiquette */
 .gestion_utilisateurs form label {
   font-weight: 600;
-  color: #555;
+  color: #5aa53a;
 }
 
 /* Champs texte & e-mail & password */
@@ -1313,8 +1313,8 @@ body {
 }
 
 .gestion_utilisateurs form input:focus {
-  border-color: #4a4a89;
-  background-color: #f9f9ff;
+  border-color: #5aa53a;
+  background-color: #5aa53a;
   outline: none;
 }
 
