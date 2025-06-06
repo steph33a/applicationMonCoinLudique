@@ -968,7 +968,11 @@ document.querySelectorAll(".closeModal").forEach(el =>
 
 function globalOverlayClickAction(){
   fermerTousLesModals();
-  document.getElementById('id_evenementParticulier').value = '';
+  let id_evenementParticulier = document.getElementById('id_evenementParticulier');
+  if (id_evenementParticulier) {
+    document.getElementById('id_evenementParticulier').value = '';
+  }
+  
 }
 
 // Fermer si clic sur l'overlay (extérieur de la modale)
@@ -1160,15 +1164,7 @@ if (form) {
 }
 });
 
-window.addEventListener('DOMContentLoaded', () => {
-  const form = document.getElementById('autoSubmitForm');
-  if (form) {
-    console.log("Auto submit form déclenché");
-    form.submit();
-  } else {
-    console.warn("Le formulaire autoSubmitForm n'existe pas sur cette page.");
-  }
-});
+
 function afficherFormulaireModificationEvenement() {
     const div = document.getElementById('modificationEvenementContent');
     if (div) {
@@ -1179,9 +1175,7 @@ function afficherFormulaireModificationEvenement() {
     }
 }
 
-   window.addEventListener('DOMContentLoaded', () => {
-     document.getElementById('autoSubmitForm').submit();
- });
+
 
 // // Dans la fonction fichier.js
 // function attacherEcouteurs(idFormulaire,tableauInputIndispensable) {

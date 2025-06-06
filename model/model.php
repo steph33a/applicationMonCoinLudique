@@ -279,7 +279,7 @@ function allChampsNecessaryPresents($datas,$fonctionnalite)
     $champNecessary=["email","motDePasse","confirmationMotDePasse"];
  }
 
-    
+   
 
   foreach ($champNecessary as $champ) {
     // echo "champ".$champ;
@@ -288,7 +288,7 @@ function allChampsNecessaryPresents($datas,$fonctionnalite)
             //    echo "champ 262 ".$champ;
               return [
         "success" => false,
-        "champNecessaryPresents" => $champNecessary
+        "champManquant" => $champ
     ];
         }
     }

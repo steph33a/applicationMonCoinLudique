@@ -1,13 +1,14 @@
+
 <?php
 
-
 session_start();
-// session_destroy();
-//   var_dump($_SESSION);
+if (isset($_SESSION["phraseEchec"] )){
+        ?>
+        <p> <?php echo $_SESSION["phraseEchec"]; ?></p>
+        <?php
+    }
+  var_dump($_SESSION);
 //   $_SESSION["email"] ="stephaniemarquant87@gmail.com";
-// echo "accueil ligne8";
-//  var_dump($_SESSION);
-
 
 // echo "session id :".$_SESSION['user_id'];
 // echo"session role :".$_SESSION['role'];
@@ -22,12 +23,12 @@ $actionEnCours=false;
 // 
 
 if (isset($_SESSION["refresh"])) {
-    echo $_SESSION["refresh"];
+    // echo $_SESSION["refresh"];
     // exit();
    $actionEnCours=true;
 }
 $list_evenements = [];
-var_dump($_SESSION);
+// var_dump($_SESSION);
 // Si on a une liste valide en session, on la récupère (temporairement)
 if (isset($_SESSION['list_evenements']) && is_array($_SESSION['list_evenements'])) {
     $list_evenements = $_SESSION['list_evenements'];
@@ -42,7 +43,7 @@ if (isset($_SESSION['evenementSelected']))
     
     $refreshConditions=false;
     // var_dump($evenementSelected);
-}
+} 
 // Si ce n'est pas une action POST ET qu'on ne veut pas rafraîchir la session,
 // alors on vide la session pour éviter de stocker inutilement
 if ((!$actionEnCours)&&((!isset($_SESSION["data_transferred_from_controller"]))||(isset($_SESSION["data_transferred_from_controller"])&& $_SESSION["data_transferred_from_controller"] === false))) {
@@ -70,6 +71,13 @@ include('../composants/includes/header.php');
 ?>
 
 <main style="display:flex; flex-direction:column;gap:20px; width:100%; justify-content:center; align-items:center">
+    <?php
+    if (isset($_SESSION["phraseEchec"] )){
+        ?>
+        <p> <?php echo $_SESSION["phraseEchec"]; ?></p>
+        <?php
+    }
+    ?>
     <div style="display:flex;min_height:337px; position:relative; " id="mainAccueil" class="accueil mainWithoutModal">
       
    
@@ -176,9 +184,7 @@ include('../composants/includes/header.php');
 
         </div>
     </div>
-        
-</main>
-<?php  if ($refreshConditions) { ; ?>
+    <?php  if ($refreshConditions) { ; ?>
         <div id="formulaire_invisible">
             <form id="autoSubmitForm" action="../../controller/controller.php" method="post" style="display:none;">
                 <!-- Tu peux ajouter des champs cachés ici -->
@@ -193,6 +199,9 @@ include('../composants/includes/header.php');
         <?php 
         } 
     ?>
+        
+</main>
+
 
 <?php  include('../composants/includes/footer.php'); ?>
  

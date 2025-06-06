@@ -26,7 +26,10 @@ require ($_SERVER['DOCUMENT_ROOT'].'/model/model.php');
     }
 
     $file = $_FILES['imageProfil'] ?? null;
-    $imageUpload = !empty($_FILES['imageEvent']['tmp_name']);
+    $imageUpload = !empty($_FILES['imageProfil']['tmp_name']);
+    if ($imageUpload) {
+       $_POST["imageProfil"] = "exist";
+    }
 
     $result = allChampsNecessaryPresents($_POST, 'inscription');
     if ($result["success"]) {
@@ -79,8 +82,11 @@ require ($_SERVER['DOCUMENT_ROOT'].'/model/model.php');
             $_SESSION["phraseEchec"] = $valid["phraseEchec"];
         }
     } else {
-        $_SESSION["phraseEchec"] = $result["phraseEchec"];
+        $_SESSION["phraseEchec"] = $result["champManquant"];
+        echo $_SESSION["phraseEchec"];
     }
+    $_SESSION["data_transferred_from_controller"] = true;
+     exit();
 
     redirectAccueil();
 }
@@ -115,6 +121,7 @@ require ($_SERVER['DOCUMENT_ROOT'].'/model/model.php');
               $_SESSION['role'] = $result['utilisateur']['role'];
               session_write_close();
               $_SESSION["data_transferred_from_controller"]=true;
+                $_SESSION["data_transferred_from_controller"] = true;
                 locationView('gestion_evenements');
               exit();
           }
@@ -129,6 +136,8 @@ require ($_SERVER['DOCUMENT_ROOT'].'/model/model.php');
             $phrase=$result["phraseEchec"];
       }
     }
+    $_SESSION["data_transferred_from_controller"] = true;
+    locationView('accueil');
   }
   
 

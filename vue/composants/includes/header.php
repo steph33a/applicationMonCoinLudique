@@ -15,13 +15,16 @@ if ($affichageFormulaireRedefinitionMotDePasse==true) {
 }
 
 $modal=null;
+
 //  var_dump($_SESSION['modal']);
 if (isset($_SESSION['modal'])) {
 $modal = $_SESSION['modal'];
 echo"modal:" . $modal ;
 
 }
-
+if ($modal="visionEvenementAndInscription" && (!isset($evenementSelectedSpecial)|| $evenementSelectedSpecial == null)) {
+    $modal="";
+}
 
 ?>
 <!DOCTYPE html>
@@ -33,6 +36,7 @@ echo"modal:" . $modal ;
     <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="../styles/styles.css" />
     <script>
+    
      let modalToOpen = <?php echo json_encode($modal); ?>;
     </script>
     <script src="../js/fichier.js" defer></script>

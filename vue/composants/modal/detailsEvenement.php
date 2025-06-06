@@ -123,7 +123,7 @@
     </div>
     <div class="partie4">
         <?php $estInscrit = false;
-        if (!empty($evenementSelectedSpecial['inscrits'])) {
+        if (!empty($evenementSelectedSpecial['inscrits'])&& isset($_SESSION['id_utilisateur'])) {
             foreach ($evenementSelectedSpecial['inscrits'] as $inscrit) {
     if ($inscrit['id_inscrit'] == $_SESSION['id_utilisateur']) {
         $estInscrit = true;
