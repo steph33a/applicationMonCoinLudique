@@ -309,9 +309,7 @@ input{
 .displayBlock{
   display:block;
 }
- .displayNone{
-  display:none;
-}
+
 #overlayPrincipalAccueil{
 
 }
@@ -1316,6 +1314,408 @@ body {
   border-color: #5aa53a;
   background-color: #5aa53a;
   outline: none;
+}
+.formulaire {
+    background-color: #FFFFFF;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.formulaire-connexion,
+.formulaire-admin-login {
+    /* Spécifique à chaque formulaire si besoin */
+}
+
+.formulaire-titre {
+    width: 305px;
+    font-size: 36px;
+    font-weight: 700;
+    margin: 28px auto 0 auto;
+    font-family: 'Nunito Sans', sans-serif;
+    text-align: center;
+}
+
+.formulaire-label {
+    width: 305px;
+    text-align: left;
+    font-size: 18px;
+    color: #000000;
+    margin-top: 20px;
+    font-family: 'Nunito Sans', sans-serif;
+}
+
+.formulaire-input {
+    width: 305px;
+    font-weight: 600;
+    padding-right: 25px;
+    text-align: left;
+    font-size: 18px;
+    color: #4c4c4c;
+    margin-top: 10px;
+    font-family: 'Nunito Sans', sans-serif;
+}
+
+.formulaire-commentaire {
+    width: 305px;
+    font-size: 14px;
+    color: red;
+}
+
+.formulaire-checkbox-container {
+    display: flex;
+    flex-direction: row;
+    width: 305px;
+    margin-top: 10px;
+}
+
+.formulaire-liens {
+    width: 305px;
+    margin-top: 28px;
+    list-style-type: none;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0;
+}
+
+.btnFormulaire {
+    width: 114px;
+    height: 40px;
+    background-color: #6EBA46;
+    color: #FFFFFF;
+    font-size: 18px;
+    font-weight: 600;
+    font-family: 'Nunito Sans', sans-serif;
+    border: none;
+    cursor: pointer;
+    margin-top: 20px;
+}
+/* FORMULAIRE GÉNÉRAL */
+.formulaire {
+  background-color: #FFFFFF;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: 'Nunito Sans', sans-serif;
+}
+
+.formulaire h2 {
+  font-size: 36px;
+  font-weight: 700;
+  margin: 28px auto 0;
+}
+
+/* CHOIX PROFIL */
+#choixProfil {
+  display: flex;
+  justify-content: space-between;
+  width: 305px;
+  flex-direction: row;
+  align-items: center;
+  margin-top: 25px;
+}
+
+#choixProfil.admin {
+  flex-direction: column;
+}
+
+/* RADIO */
+#choixProfil input[type="radio"] {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+/* PHOTO DE PROFIL */
+.photo-label {
+  margin-top: 25px;
+  cursor: pointer;
+  display: inline-block;
+}
+
+.photo-container {
+  position: relative;
+  width: 100px;
+  height: 100px;
+}
+
+.photo-preview {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.photo-add-icon {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background-color: #6EBA46;
+  color: white;
+  font-weight: bold;
+  border-radius: 50%;
+  padding: 2px 6px;
+}
+
+/* FORMULAIRE CHAMPS */
+.formulaire-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 305px;
+  margin-top: 20px;
+}
+
+.formulaire-section label {
+  text-align: left;
+  margin-top: 25px;
+}
+
+.formulaire-section input[type="text"],
+.formulaire-section input[type="email"],
+.formulaire-section input[type="password"],
+.formulaire-section input[type="date"] {
+  width: 100%;
+  padding: 8px;
+  font-size: 16px;
+}
+
+.commentaire {
+  color: red;
+  font-size: 12px;
+}
+
+
+
+/* CHECKBOXES */
+.checkbox-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.checkbox-row input[type="checkbox"] {
+  width: 25px;
+  height: 25px;
+  background-color: #D9D9D9;
+}
+
+/* CONDITIONS */
+.conditions-utilisation {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+}
+
+/* BOUTONS */
+.formulaire-buttons {
+  display: flex;
+  justify-content: space-between;
+  width: 305px;
+  margin-bottom: 25px;
+  margin-top: 20px;
+}
+
+.formulaire-buttons button {
+  width: 114px;
+  height: 40px;
+  background-color: #6EBA46;
+  color: #FFFFFF;
+  font-size: 18px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+}
+.formulaireMotDePasse {
+    width: 620px;
+    min-height: 448px;
+    background-color: #FFFFFF;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'Nunito Sans', sans-serif;
+}
+
+.blocChampsFormulaire {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 305px;
+}
+
+.titreFormulaire {
+    font-size: 36px;
+    font-weight: 700;
+    margin: 28px auto 0 auto;
+    font-family: 'Nunito Sans', sans-serif;
+    text-align: center;
+}
+
+.labelFormulaire {
+    text-align: left;
+    margin-top: 25px;
+}
+
+.formElement {
+    margin-top: 5px;
+    padding: 8px;
+    font-size: 16px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.boutonValidation {
+    margin-top: 25px;
+    width: 114px;
+    height: 40px;
+    background-color: #6EBA46;
+    color: #FFFFFF;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    border-radius: 4px;
+}
+
+.commentaire {
+    font-size: 12px;
+    color: red;
+    margin-top: 4px;
+}
+
+
+.formRechercheAvancee {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 40px; /* un peu d’espace entre les colonnes */
+    font-family: 'Nunito Sans', sans-serif;
+}
+
+.titreRecherche {
+    font-size: 36px;
+    font-weight: 700;
+    text-align: left;
+    margin-bottom: 20px;
+    flex-basis: 100%; /* pour que le titre prenne toute la largeur au-dessus */
+}
+
+.colonneForm {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    flex: 1; /* répartir la largeur à parts égales */
+    max-width: 300px; /* largeur max pour chaque colonne */
+}
+
+.formElement {
+    padding: 8px;
+    font-size: 16px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.btnRecherche {
+    margin-top: 30px;
+    background-color: #6EBA46;
+    color: white;
+    font-size: 18px;
+    font-weight: 600;
+    font-family: 'Nunito Sans', sans-serif;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+    align-self: flex-start; /* bouton aligné à gauche de la colonne */
+    transition: background-color 0.3s ease;
+}
+
+.btnRecherche:hover {
+    background-color: #5aa138;
+}
+
+.formulaire {
+    width: 620px;
+    min-height: 448px;
+    background-color: #FFFFFF;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 40px;
+    box-sizing: border-box;
+    font-family: 'Nunito Sans', sans-serif;
+}
+
+.titreFormulaire {
+    font-size: 36px;
+    font-weight: 700;
+    margin: 28px auto 20px auto;
+}
+
+.labelForm {
+    text-align: left;
+    font-size: 18px;
+    color: #000000;
+    width: 100%;
+    margin-top: 20px;
+    display: block;
+}
+
+.formElement {
+    width: 100%;
+    font-weight: 600;
+    font-size: 18px;
+    color: #4c4c4c;
+    padding: 10px 25px 10px 10px;
+    margin-top: 10px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.inputMDP {
+    /* input de type mot de passe */
+}
+
+.commentaire {
+    color: red; /* ou autre couleur pour les messages d’erreur */
+    font-size: 14px;
+    margin-top: 5px;
+    width: 100%;
+}
+
+.checkboxContainer {
+    width: 100%;
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btnEnvoyer {
+    margin-top: 30px;
+    width: 114px;
+    height: 40px;
+    background-color: #6EBA46;
+    color: #FFFFFF;
+    font-size: 18px;
+    font-weight: 600;
+    font-family: 'Nunito Sans', sans-serif;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btnEnvoyer:hover {
+    background-color: #5aa138;
 }
 
 
