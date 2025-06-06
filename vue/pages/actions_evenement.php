@@ -1,7 +1,7 @@
 <?php
 
 session_start();
-var_dump($_SESSION);
+
 $evenementSelected=[];
 if (isset($_SESSION['evenementSelected'])){
     $evenementSelected = $_SESSION['evenementSelected'];

@@ -324,7 +324,7 @@ function handleResearchAllUsers() {
         locationView('gestion_evenements');
         exit();
       } else if (isset($_SESSION['role']) && $_SESSION['role'] == 'admin') {
-        $_SESSION['list_evenements'] = $events;
+        $_SESSION['list_evenementsGestion'] = $events;
         $_SESSION["refresh"] = "gestion_evenements";
         locationView('gestion_evenements');
       }
@@ -358,7 +358,7 @@ function handleResearchEventsByUser() {
     }
    
 
-    $_SESSION['list_evenements'] = $events;
+    $_SESSION['list_evenementsGestion'] = $events;
     $_SESSION["data_transferred_from_controller"] = true;
      $_SESSION["modal"]="";
     if ($_POST['page_contexte'] == "accueil") {
@@ -925,6 +925,7 @@ function handleRefreshAllEvents(){
     $pageContexte = $_POST['page_contexte'] ?? 'accueil';
 
     if ($pageContexte === "gestion_evenements") {
+       $_SESSION['list_evenementsGestion'] =  $list_evenements;
         locationView('gestion_evenements');
     } else {
         locationView('accueil');

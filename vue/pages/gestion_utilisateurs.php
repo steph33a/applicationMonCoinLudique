@@ -4,7 +4,7 @@ $refreshConditions=false;
 // if ($_SESSION){
 // var_dump($_SESSION);
 // }
-var_dump($_SESSION);
+
 $actionEnCours=false;
 if (!empty($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $actionEnCours=true;
@@ -42,13 +42,7 @@ if (isset($_SESSION["action"]) ) {
     $action=null;
    
 }
-if  ($refreshConditions==true)
-{
-    echo "refresh conditions true";
-    
-}else {
-     echo "refresh conditions false";
-}
+
 // Si ce n'est pas une action POST ET qu'on ne veut pas rafraîchir la session,
 // alors on vide la session pour éviter de stocker inutilement
 if ((!$actionEnCours)&&((!isset($_SESSION["refresh"])||((isset($_SESSION["refresh"]))&& ($_SESSION["refresh"] !== "gestion_utilisateurs"))))) {
@@ -62,13 +56,7 @@ $list_utilisateurs = $_SESSION['list_utilisateurs'];
     $refreshConditions=true;
 
 } 
-if  ($refreshConditions==true)
-{
-    echo "refresh conditions true";
-    
-}else {
-     echo "refresh conditions false";
-}
+
 
 if (!isset($list_utilisateurs) || ($list_utilisateurs==null)) {
    $refreshConditions=true;

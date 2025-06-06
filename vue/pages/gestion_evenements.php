@@ -1,6 +1,6 @@
 <?php
 session_start();
- var_dump($_SESSION);
+
 // echo"rentre dans gestion_evenements";
 // sleep(3000);
 $role = $_SESSION['role'] ?? null;
@@ -25,11 +25,16 @@ if (!empty($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST')
 }
 $list_evenements = [];
 
-// Si on a une liste valide en session, on la récupère (temporairement)
-if (isset($_SESSION['list_evenements']) && ($_SESSION['list_evenements']!=null)) {
+if (isset($_SESSION['list_evenements']) && ($_SESSION['role']=="admin")) {
     $list_evenements = $_SESSION['list_evenements'];
 }
-if (!isset($_SESSION['list_evenements']) || ($_SESSION['list_evenements']=null)) {
+
+// Si on a une liste valide en session, on la récupère (temporairement)
+if (isset($_SESSION['list_evenementsGestion']) && ($_SESSION['list_evenementsGestion']!=null)) {
+    $list_evenements = $_SESSION['list_evenementsGestion'];
+}
+
+if (!isset($_SESSION['list_evenementsGestion']) || ($_SESSION['list_evenementsGestion']=null)) {
    $refreshConditions=true;
 }
 
@@ -38,6 +43,7 @@ if (!isset($_SESSION['list_evenements']) || ($_SESSION['list_evenements']=null))
 if ((!$actionEnCours)&&((!isset($_SESSION["refresh"])||(isset($_SESSION["refresh"])&& $_SESSION["refresh"] !=="gestion_evenements")))) {
 
     unset($_SESSION['$list_evenements']);
+    unset($_SESSION['$list_evenementsGestion']);
     $refreshContitions=true;
 
 } 
@@ -52,6 +58,7 @@ if (!$estConnecte) {
 else {
 include('../composants/includes/header.php') ;
 }
+
 ?>
 
 <main  style="display:flex; flex-direction:column; justify-content:space-between, align-items:center; gap:20px;" id="gestionEvenements"class="gestion_evenements">
