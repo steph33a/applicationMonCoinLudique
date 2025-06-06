@@ -918,10 +918,12 @@ function afficherFormulaireCreationEvenement(){
 }
 
 function fermerTousLesModals() {
+    //  
   document.getElementById("globalOverlay").classList.add("displayNone");
   document.querySelectorAll(".modal").forEach(modal => {
     modal.classList.add("displayNone");
   });
+
 }
 
 function ouvrirModal(idModal) {
@@ -964,12 +966,15 @@ document.querySelectorAll(".closeModal").forEach(el =>
   el.addEventListener("click", () => fermerTousLesModals())
 );
 
+function globalOverlayClickAction(){
+  fermerTousLesModals();
+  document.getElementById('id_evenementParticulier').value = '';
+}
+
 // Fermer si clic sur l'overlay (extérieur de la modale)
 const globalOverlay = document.getElementById("globalOverlay");
 if (globalOverlay) {
-  globalOverlay.addEventListener("click", () => fermerTousLesModals());
-
-   document.getElementById('id_evenementParticulier').value = '';
+  globalOverlay.addEventListener("click", () => globalOverlayClickAction());
 
 }
 
@@ -1132,8 +1137,6 @@ console.log("modalElement998",modalToOpen);
         ouvrirModal("modalFormGestionUtilisateurInformationsUtilisateur");
         break;
       case "visionEvenementAndInscription":
-       
-        
         ouvrirModal("modalFormVisionEvenementAndInscription");
         break;
       
