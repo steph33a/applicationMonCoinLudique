@@ -61,11 +61,11 @@ include('../composants/includes/header.php') ;
         <div id="formulaire_invisible">
             <form id="autoSubmitForm" action="../../controller/controller.php" method="post" style="display:none;">
                 
-                <?php if ($eventsVisible == "eventPersonnel") {?> 
+                <?php if ($eventsVisible == "eventPersonnel"){?> 
                 <input type="hidden" name="page_contexte" value="gestion_evenements">
                 <input type="hidden" name="id_utilisateur" value="<?php echo htmlspecialchars($_SESSION['id_utilisateur']); ?>">
                 <input type="hidden" name="researchAllEventForThisUser" value="alleventForThisUser">
-                <?php } else { ?>
+                <?php } else if ($role == "admin") { ?>
                 <input type="hidden" name="researchAllEvent" value="allevent">
                 <?php } ?>
             </form>
@@ -78,16 +78,21 @@ include('../composants/includes/header.php') ;
     //     }
    ?>
     <div>
+        <?php
+        if ($role == "admin") { ?>
         <form action="../../controller/controller.php" method="post">
                 <input type="hidden" name="page_contexte" value="gestion_evenements">
                 <button class="btn" style="display:block;margin: 45px auto 0 auto;" name="researchAllEvent" id="btn_rechercheAllEvent32">gérer tous les événements</button>
         </form>
+        <?php
+        }
+        ?>
     </div>
     <div>
         <form action="../../controller/controller.php" method="post">
                 <input type="hidden" name="page_contexte" value="gestion_evenements">
                  <input type="hidden" name="id_utilisateur" value="<?php echo htmlspecialchars($_SESSION['id_utilisateur']); ?>">
-                <button class="btn" style="display:block;margin: 45px auto 0 auto;" name="researchAllEventForThisUser" id="btn_rechercheAllEvent34">gérer ses événements d'admin</button>
+                <button class="btn" style="display:block;margin: 45px auto 0 auto;" name="researchAllEventForThisUser" id="btn_rechercheAllEvent34">gérer ses événements utilisateur</button>
         </form>
     </div>
     <div style="margin-top:75px;margin-left: 75px;" id="gestion_evenements_title" class="gestion_evenements_title"><h2>Gestion des Evenements</h2></div>

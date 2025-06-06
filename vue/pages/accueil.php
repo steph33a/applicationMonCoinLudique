@@ -8,7 +8,7 @@ if (isset($_SESSION["phraseEchec"] )){
     }
 $refreshConditions=false;
 $actionEnCours=false;
-  var_dump($_SESSION);
+//   var_dump($_SESSION);
 if (isset($_SESSION["refresh"])) {
 
    $actionEnCours=true;

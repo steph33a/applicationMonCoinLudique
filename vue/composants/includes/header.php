@@ -21,15 +21,15 @@ if ($modal="visionEvenementAndInscription" && (!isset($evenementSelectedSpecial)
 //  var_dump($_SESSION['modal']);
 if (isset($_SESSION['modal'])) {
 $modal = $_SESSION['modal'];
- echo"modal:" . $modal ;
+//  echo"modal:" . $modal ;
 
 }
 
 if (isset($_GET['modal'])) {
     $modal = $_GET['modal'];
-     echo "modal: " . htmlspecialchars($modal);
+    //  echo "modal: " . htmlspecialchars($modal);
 }
-echo $modal;
+// echo $modal;
 ?>
 <!DOCTYPE html>
 <html lang="fr">
