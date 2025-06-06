@@ -1,9 +1,14 @@
 <?php
 session_start();
+if (!isset($_SESSION["id_utilisateur"] )){
+ 
+    header('Location: accueil.php');
+    exit();
+} 
 // var_dump($_SESSION);
 $utilisateur = [];
 // var_dump($_SESSION['list_evenements']);
-if (isset($_SESSION['utilisateur']) && is_array($_SESSION['utilisateur'])) {
+if (isset($_SESSION['utilisateur'])) {
     $utilisateur = $_SESSION['utilisateur'];
 }
 if ((isset($_SESSION["refresh"])&& $_SESSION["refresh"] === true)) {
@@ -11,6 +16,8 @@ if ((isset($_SESSION["refresh"])&& $_SESSION["refresh"] === true)) {
 
     
 }
+
+$id_utilisateur = '';
 $image_profil="";
 $pseudo = '';
 $email = '';
@@ -21,6 +28,8 @@ $reponse2 = '';
 $role="";
 
     if (!empty($utilisateur)) {
+        $estConnecte=true;
+        $id_utilisateur = $utilisateur['id_utilisateur'];
         $image_profil = $utilisateur['imageProfil'];
         $pseudo = $utilisateur['pseudo'];
         $email = $utilisateur['email'];
@@ -33,12 +42,7 @@ $role="";
     }
 // Exemple de rôles possibles : 'admin', 'utilisateur', null si non connecté
 $role = $_SESSION['role'] ?? null;
-$estConnecte = isset($_SESSION['id_utilisateur']); // ou autre variable qui dit si connecté
-if (!$estConnecte) { 
-    header('Location: accueil.php');
-    exit();
-} 
-else {
+
 
 
 include('../composants/includes/header.php') 
@@ -90,9 +94,9 @@ include('../composants/includes/header.php')
         <button class="btn" type="submit" name="actionModifierParametresCompte" value="modifierCompte">Modifier le compte</button>
     </form>
 </main>  
-
+exit();
     <?php
     include('../composants/includes/footer.php');
-}
+
 ?>
 

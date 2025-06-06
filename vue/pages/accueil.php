@@ -1,30 +1,16 @@
 
 <?php
-
 session_start();
 if (isset($_SESSION["phraseEchec"] )){
         ?>
         <p> <?php echo $_SESSION["phraseEchec"]; ?></p>
         <?php
     }
-  var_dump($_SESSION);
-//   $_SESSION["email"] ="stephaniemarquant87@gmail.com";
-
-// echo "session id :".$_SESSION['user_id'];
-// echo"session role :".$_SESSION['role'];
-// Exemple de rôles possibles : 'admin', 'utilisateur', null si non connecté
-
-// var_dump($role);
-
 $refreshConditions=false;
 $actionEnCours=false;
-
-// exit();
-// 
-
+  var_dump($_SESSION);
 if (isset($_SESSION["refresh"])) {
-    // echo $_SESSION["refresh"];
-    // exit();
+
    $actionEnCours=true;
 }
 $list_evenements = [];
@@ -37,15 +23,21 @@ if (!isset($_SESSION['list_evenements']) || ($_SESSION['list_evenements']==null)
 
      $refreshConditions=true;
 }
-if (isset($_SESSION['evenementSelected']))
+
+if (isset($_SESSION['evenementSelectedSpecial']))
 {
-    $evenementSelectedSpecial = $_SESSION['evenementSelected'];
+    $evenementSelectedSpecial = $_SESSION['evenementSelectedSpecial'];
     
     $refreshConditions=false;
     // var_dump($evenementSelected);
 } 
-// Si ce n'est pas une action POST ET qu'on ne veut pas rafraîchir la session,
-// alors on vide la session pour éviter de stocker inutilement
+if (isset($_SESSION['evenementSelected'])&&($_SESSION['evenementSelected']==false))
+{
+    $refreshConditions=true;
+    // var_dump($evenementSelected);
+}
+
+
 if ((!$actionEnCours)&&((!isset($_SESSION["data_transferred_from_controller"]))||(isset($_SESSION["data_transferred_from_controller"])&& $_SESSION["data_transferred_from_controller"] === false))) {
     $list_evenements = [];
     unset($_SESSION['evenementSelected']);
@@ -54,19 +46,19 @@ if ((!$actionEnCours)&&((!isset($_SESSION["data_transferred_from_controller"]))|
      $refreshConditions=true;
 
 } 
-
-      $_SESSION["data_transferred_from_controller"] = false;
-//  var_dump($_SESSION['list_evenements']);
-
-
-
+     $_SESSION["data_transferred_from_controller"] = false;
+// if  ($refreshConditions==true)
+// {
+//     echo "refresh conditions true";
+    
+// }else {
+//      echo "refresh conditions false";
+// }
 
 $estConnecte = isset($_SESSION['id_utilisateur']); // ou autre variable qui dit si connecté
  $role = $_SESSION['role'] ?? null;
  $page_contexte = 'accueil';
 include('../composants/includes/header.php');
-
-
 
 ?>
 
@@ -188,8 +180,10 @@ include('../composants/includes/header.php');
         <div id="formulaire_invisible">
             <form id="autoSubmitForm" action="../../controller/controller.php" method="post" style="display:none;">
                 <!-- Tu peux ajouter des champs cachés ici -->
-                
-                <input id="id_evenementParticulier" type="hidden" name="id_evenementParticulier" value="<?php echo $evenementSelectedSpecial['id_evenement']; ?>">
+                <?php if (isset($evenementSelectedSpecial['id_evenement'])) { ?>
+                <input id="id_evenementParticulier" type="hidden" name="id_evenement" value="<?php echo $evenementSelectedSpecial['id_evenement']; ?>">
+                <?php } ?>
+               
                 <input type="hidden" name="page_contexte" value="accueil">
                 <input type="hidden" name="refresh" value="done">
             

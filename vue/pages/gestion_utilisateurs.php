@@ -4,7 +4,7 @@ $refreshConditions=false;
 // if ($_SESSION){
 // var_dump($_SESSION);
 // }
-
+var_dump($_SESSION);
 $actionEnCours=false;
 if (!empty($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $actionEnCours=true;
@@ -15,25 +15,43 @@ if (!empty($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST')
 // Si on a une liste valide en session, on la récupère (temporairement)
 if (isset($_SESSION['list_utilisateurs']) && is_array($_SESSION['list_utilisateurs'])) {
     $list_utilisateurs = $_SESSION['list_utilisateurs'];
+    // unset($_SESSION['list_utilisateurs']);
     // echo "list_utilisateurs";
     // var_dump ($list_utilisateurs);
 } else {
     $list_utilisateurs = [];
 }
 
-if (isset($_SESSION["action"]) || isset($_SESSION["utilisateurSelected"])) {
+if ( isset($_SESSION["utilisateurSelected"])) {
 
-        $action=$_SESSION["action"];
+        
         $utilisateurSelected=$_SESSION["utilisateurSelected"];
         
        
 }else{
-    $action=null;
+    
     $utilisateurSelected=null;
+}
+if (isset($_SESSION["action"]) ) {
+
+        $action=$_SESSION["action"];
+       
+        
+       
+}else{
+    $action=null;
+   
+}
+if  ($refreshConditions==true)
+{
+    echo "refresh conditions true";
+    
+}else {
+     echo "refresh conditions false";
 }
 // Si ce n'est pas une action POST ET qu'on ne veut pas rafraîchir la session,
 // alors on vide la session pour éviter de stocker inutilement
-if ((!$actionEnCours)&&((!isset($_SESSION["data_transferred_from_controller"]))||((isset($_SESSION["data_transferred_from_controller"]))&& ($_SESSION["data_transferred_from_controller"] === false)))) {
+if ((!$actionEnCours)&&((!isset($_SESSION["refresh"])||((isset($_SESSION["refresh"]))&& ($_SESSION["refresh"] !== "gestion_utilisateurs"))))) {
     
      $action=$_SESSION["action"];
         $utilisateurSelected=$_SESSION["utilisateurSelected"];
@@ -44,11 +62,18 @@ $list_utilisateurs = $_SESSION['list_utilisateurs'];
     $refreshConditions=true;
 
 } 
-
+if  ($refreshConditions==true)
+{
+    echo "refresh conditions true";
+    
+}else {
+     echo "refresh conditions false";
+}
 
 if (!isset($list_utilisateurs) || ($list_utilisateurs==null)) {
    $refreshConditions=true;
 }
+
 $_SESSION["data_transferred_from_controller"] = false;
 
 // Exemple de rôles possibles : 'admin', 'utilisateur', null si non connecté
@@ -114,8 +139,8 @@ include('../composants/includes/header.php')
                         
                         <input type="hidden" name="id_utilisateur" value="<?php echo $utilisateur['id_utilisateur'] ?>">
                         <input type="hidden" name="page_contexte" value="gestion_utilisateurs" readonly>
-                        <button type="submit" name="btnGetFormulaireModificationUser" id="btnModifyUser" title="Modifier">✏️</button>
-                        <button type="submit" name="btnGetSectionWithInformationUser" id="btnVoirUser" title="Voir">👁️</button>
+                        <button type="submit" name="btnGetFormulaireModificationUser" class="btnModifyUser" title="Modifier">✏️</button>
+                        <button type="submit" name="btnGetSectionWithInformationUser" class="btnVoirUser" title="Voir">👁️</button>
                         <button type ="submit" name="btnDeleteUser" title="Supprimer">🗑️</button>
                        
                     </form>

@@ -1217,9 +1217,9 @@ function importReponsesQuestions($id_utilisateur){
         ]
     );
     // fetch pour récupérer le premier résultat qui sera de toute façon le seul
-    $evenements=$requetePreparee->fetch(PDO::FETCH_ASSOC);
-    $resultats=getEvenementsWithEssentialInfos($evenements);
-    return $resultats;
+    $result=$requetePreparee->fetch(PDO::FETCH_ASSOC);
+   
+    return $result;
 }
 // à revoir
 function nettoyerNomFichier($filename) {

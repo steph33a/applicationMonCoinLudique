@@ -26,7 +26,7 @@ if (!empty($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST')
 $list_evenements = [];
 
 // Si on a une liste valide en session, on la récupère (temporairement)
-if (isset($_SESSION['list_evenements']) && is_array($_SESSION['list_evenements'])) {
+if (isset($_SESSION['list_evenements']) && ($_SESSION['list_evenements']!=null)) {
     $list_evenements = $_SESSION['list_evenements'];
 }
 if (!isset($_SESSION['list_evenements']) || ($_SESSION['list_evenements']=null)) {
@@ -35,15 +35,13 @@ if (!isset($_SESSION['list_evenements']) || ($_SESSION['list_evenements']=null))
 
 // Si ce n'est pas une action POST ET qu'on ne veut pas rafraîchir la session,
 // alors on vide la session pour éviter de stocker inutilement
-if ((!$actionEnCours)&&((!isset($_SESSION["data_transferred_from_controller"]))||(isset($_SESSION["data_transferred_from_controller"])&& $_SESSION["data_transferred_from_controller"] === false))) {
-    $list_evenements = [];
+if ((!$actionEnCours)&&((!isset($_SESSION["refresh"])||(isset($_SESSION["refresh"])&& $_SESSION["refresh"] !=="gestion_evenements")))) {
 
     unset($_SESSION['$list_evenements']);
     $refreshContitions=true;
 
 } 
-$_SESSION["data_transferred_from_controller"] = false;
-// Exemple de rôles possibles : 'admin', 'utilisateur', null si non connecté
+
 
 // $evenements = $_SESSION['evenements'] ?? [];
 $estConnecte = isset($_SESSION['id_utilisateur']); // ou autre variable qui dit si connecté
@@ -74,9 +72,10 @@ include('../composants/includes/header.php') ;
         </div>
 
     <?php ;
-    } else{
-            $_SESSION['refresh'] = false;
-        }
+    } 
+    // else{
+    //         $_SESSION['refresh'] = false;
+    //     }
    ?>
     <div>
         <form action="../../controller/controller.php" method="post">
@@ -107,7 +106,7 @@ include('../composants/includes/header.php') ;
     <hr>
     <div style="margin-top:75px;margin-left: 75px;" class="gestion_evenements_title"><h2>Evenements approuvés</h2></div>
     <div style="display:block; margin: 45px auto 45px auto;"class="miniEventToActionsContent">
-        <?php if (empty($list_evenements)){ ?>
+        <?php  if (empty($list_evenements)){  echo "non";?>
         <p  style="display:block; margin: 45px auto 0 auto; text-align:center;">Aucun événement approuvé pour le moment.</p>
         <?php }else{ ?>
     <div style="display:block;" class="miniEventToActionsContent" id="miniEventToActionsContent">

@@ -3,6 +3,7 @@
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
+
 // echo "<script>console.log('arrive dans inscription ligne6');</script>";
 
 //  var_dump($_SESSION);
@@ -270,7 +271,7 @@ require ($_SERVER['DOCUMENT_ROOT'].'/model/model.php');
 
 function handleResearchAllUsers() {
 
-  $_SESSION["refresh"] = "handleResearchAllUsers";
+  
     if (!isset($_SESSION['id_utilisateur'])) {
         
         exit();
@@ -285,7 +286,7 @@ function handleResearchAllUsers() {
     $_SESSION['list_utilisateurs'] = $list_utilisateurs;
     $_SESSION["data_transferred_from_controller"] = true;
          $_SESSION["modal"]="";
-
+      $_SESSION["refresh"] = "gestion_utilisateurs";
     // Si besoin, décommenter et adapter pour redirection
      if ($_POST['page_contexte'] === 'gestion_utilisateurs') {
          locationView('gestion_utilisateurs');
@@ -308,15 +309,17 @@ function handleResearchAllUsers() {
     $_SESSION['list_evenements'] = $events;
     $_SESSION["data_transferred_from_controller"] = true;
     $_SESSION["modal"] = "";
-    $_SESSION["refresh"] = "handleResearchAllEvents";
+   
 
     $pageContexte = $_POST['page_contexte'] ?? 'accueil';
   
     if ($pageContexte === "gestion_evenements") {
        if ((!isset($_SESSION['id_utilisateur'])) && ((!isset($_SESSION['role']) || $_SESSION['role'] != 'admin'))){
-         locationView('accueil');
+          $_SESSION["refresh"] = "accueil";
+        locationView('accueil');
         exit();
     } else{
+       $_SESSION["refresh"] = "gestion_evenements";
         locationView('gestion_evenements');
     }
         
@@ -350,9 +353,11 @@ function handleResearchEventsByUser() {
     $_SESSION["data_transferred_from_controller"] = true;
      $_SESSION["modal"]="";
     if ($_POST['page_contexte'] == "accueil") {
+       $_SESSION["refresh"] = "accueil";
         locationView('accueil');
         exit();
     } else if ($_POST['page_contexte'] == "gestion_evenements") {
+       $_SESSION["refresh"] = "gestion_evenements";
         locationView('gestion_evenements');
         exit();
     }
@@ -360,7 +365,7 @@ function handleResearchEventsByUser() {
 
 
 function handleResearchUserInscriptions() {
-   $_SESSION["refresh"] = "handleResearchUserInscriptions";
+   $_SESSION["refresh"] = "accueil";
     if (!isset($_SESSION['id_utilisateur'])) {
         
         exit();
@@ -383,7 +388,7 @@ function handleResearchUserInscriptions() {
 
 
 function handleEventCreation() {
-   $_SESSION["refresh"] = "handleEventCreation";
+   $_SESSION["refresh"] = "gestion_evenements";
     if (!isset($_SESSION['id_utilisateur'])) {
       
         exit();
@@ -444,7 +449,7 @@ function handleEventCreation() {
 
 
 function handleEventActionView() {
-   $_SESSION["refresh"] = "handleEventActionView";
+   $_SESSION["refresh"] = "actions_evenement";
     if (!isset($_SESSION['id_utilisateur'])) {
         locationView('accueil');
         exit();
@@ -474,7 +479,7 @@ function handleEventActionView() {
 }
 
 function handleEventModification() {
-   $_SESSION["refresh"] = "handleEventModification";
+   $_SESSION["refresh"] = "gestion_evenements";
   if (!isset($_SESSION['id_utilisateur'])) {
         locationView('accueil');
         exit();
@@ -551,7 +556,7 @@ function handleEventDeletion() {
         locationView('accueil');
         exit();
     }
-   $_SESSION["refresh"] = "handleEventDeletion";
+   $_SESSION["refresh"] = "gestion_evenements";
   $id_evenement = $_POST['id_evenement'] ?? null;
     if (!$id_evenement) {
         // echo "Événement non spécifié";
@@ -585,7 +590,7 @@ function handleEventDeletion() {
 // }
 
 function handleUserDeletion() {
- $_SESSION["refresh"] = "handleUserDeletion";
+ $_SESSION["refresh"] = "gestion_utilisateurs";
     // Idem pour la suppression, gérer la suppression d'un utilisateur ici
     $id_utilisateur = $_POST['id_utilisateur'] ?? null;
     
@@ -601,6 +606,9 @@ function handleUserDeletion() {
     deleteUser($id_utilisateur);
          $_SESSION["modal"]="";
     unset($_SESSION["utilisateur"]);
+    
+    $list_utilisateurs = selectAllInfosUtilisateurs();
+    $_SESSION['list_utilisateurs'] = $list_utilisateurs;
     locationView('gestion_utilisateurs');
     exit();
 }
@@ -611,7 +619,7 @@ function handleEventDatasForThisEvent(){
         locationView('accueil');
         exit();
     }
-   $_SESSION["refresh"] = "handleEventDatasForThisEvent";
+   $_SESSION["refresh"] = "actions_evenement";
     $id_evenement = $_POST['id_evenement'] ?? null;
     $id_organisateur = $_SESSION['id_utilisateur'];
 
@@ -637,7 +645,7 @@ function handleEventDatasForThisEvent(){
 
 
 function actionAdminModifierParametresCompteUtilisateur() {
-   $_SESSION["refresh"] = "actionAdminModifierParametresCompteUtilisateur";
+   $_SESSION["refresh"] = "gestions_utilisateurs";
    if ((!$id_utilisateur) && $_SESSION["role"] != 'admin') {
         // echo "Utilisateur non spécifié";
         locationView('accueil');
@@ -693,7 +701,7 @@ function actionAdminModifierParametresCompteUtilisateur() {
     exit();
 }
 function handleAccountSettingsUpdate() {
-   $_SESSION["refresh"] = "handleAccountSettingsUpdate";
+   $_SESSION["refresh"] = "monCompte";
     if (!isset($_SESSION['id_utilisateur'])) {
         
         exit();
@@ -737,12 +745,12 @@ function handleAccountSettingsUpdate() {
     exit();
 }
 function resarchAllInfosForUserSession() {
-     if ((!$id_utilisateur)) {
+     if (!$_SESSION['id_utilisateur']) {
         // echo "Utilisateur non spécifié";
         locationView('accueil');
         exit();
     }
-   $_SESSION["refresh"] = "resarchAllInfosForUserSession";
+   $_SESSION["refresh"] = "monCompte";
  
     $id_utilisateur = $_SESSION['id_utilisateur'];
     $utilisateur = selectAllInfosUtilisateurById($id_utilisateur);
@@ -755,7 +763,7 @@ function resarchAllInfosForUserSession() {
             }
         locationView('monCompte');
         exit();
-    exit();
+    
     
 }
 
@@ -765,7 +773,7 @@ function resarchAllInfosForUserSession() {
         locationView('accueil');
         exit();
     }
-   $_SESSION["refresh"] = "resarchSectionUtilisateurForLecture";
+   $_SESSION["refresh"] = "gestion_utilisateurs";
   $id_utilisateur = $_POST['id_utilisateur'] ?? null;
  $utilisateur = selectAllInfosUtilisateurById($id_utilisateur);
  $_SESSION["data_transferred_from_controller"] = true;
@@ -776,19 +784,18 @@ function resarchAllInfosForUserSession() {
   exit();
 }
 function handleVisionEvenement(){
-   $_SESSION["refresh"] = "handleVisionEvenement";
+   $_SESSION["refresh"] = "accueil";
   $id_evenement = $_POST['id_evenement'] ?? null;
   $evenement = selectAllInfosEvenementById($id_evenement);
   // var_dump($evenement);
- $_SESSION['evenementSelected'] = $evenement;
+ $_SESSION['evenementSelectedSpecial'] = $evenement;
   
   $list_evenements = selectAllEvents();
   
   $_SESSION['list_evenements'] =  $list_evenements;
   $_SESSION["data_transferred_from_controller"] = true;
   $_SESSION["modal"]="visionEvenementAndInscription";
- 
- 
+
 //    var_dump($evenement);
   $_SESSION['action'] = 'lectureInformationsEvenement';
  
@@ -801,7 +808,7 @@ function handleEventDesinscription(){
         locationView('accueil');
         exit();
     }
-   $_SESSION["refresh"] = "handleEventDesinscription";
+   $_SESSION["refresh"] = "accueil";
   $id_evenement = $_POST['id_evenement'] ?? null;
   $id_utilisateur = $_SESSION['id_utilisateur'];
   desinscriptionAtThisEvent($id_evenement,$id_utilisateur);
@@ -823,7 +830,7 @@ function handleEventInscription(){
         locationView('accueil');
         exit();
     }
-   $_SESSION["refresh"] = "handleEventInscription";
+   $_SESSION["refresh"] = "accueil";
   $id_evenement = $_POST['id_evenement'] ?? null;
   $id_utilisateur = $_SESSION['id_utilisateur'];
   $nombreInscrits = $_POST['nbInscrits'] ?? null;
@@ -846,7 +853,7 @@ function resarchFormulaireUtilisateurForModification(){
         locationView('accueil');
         exit();
     }
-   $_SESSION["refresh"] = "resarchFormulaireUtilisateurForModification";
+   $_SESSION["refresh"] = "gestion_utilisateurs";
   $id_utilisateur = $_POST['id_utilisateur'] ?? null;
  $utilisateur = selectAllInfosUtilisateurById($id_utilisateur);
  $_SESSION["data_transferred_from_controller"] = true;
@@ -857,7 +864,7 @@ function resarchFormulaireUtilisateurForModification(){
   exit();
 }
 function handleRefreshAllEvents(){
- 
+
   // var_dump($evenement);
   $list_evenements = selectAllEvents();
      if (!$events || empty($events)) {
@@ -875,11 +882,12 @@ function handleRefreshAllEvents(){
 
   $evenement = selectAllInfosEvenementById($id_evenementSelected);
       // echo "Événement non spécifique";
-      $_SESSION['evenementSelected'] = $evenement;
+      $_SESSION['evenementSelectedSpecial'] = $evenement;
    $_SESSION["modal"]="visionEvenementAndInscription";
     $_SESSION["refresh"] = "refreshAllEventsAndEventSpecial";
+    
   } else {
-    unset ($_SESSION['evenementSelected']);
+    unset ($_SESSION['evenementSelectedSpecial']);
     $_SESSION["modal"]="";
        $_SESSION["refresh"] = "refreshAllEventsButNotEventSpecial";
   }

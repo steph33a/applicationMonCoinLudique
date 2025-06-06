@@ -100,7 +100,7 @@ imageEventInput.addEventListener('change', function (e) {
 
     // Si le type du fichier n'est pas dans la liste autorisée, on alerte l'utilisateur
     if (!allowedTypes.includes(file.type)) {
-      console.log(validChamps);
+      // console.log(validChamps);
        // Ajouter à validChamps si pas déjà dedans
          indexInput = validChamps.indexOf("imageEvent");
         if (indexInput !== -1) {
@@ -136,7 +136,7 @@ imageEventInput.addEventListener('change', function (e) {
 });}
 
 function showTextComment(classIdentification,text){
-  console.log("showTextComment");
+  // console.log("showTextComment");
   // Cette fonction montre juste le commentaire et met le display on 
   let element=document.querySelector("."+classIdentification);
   if (element){
@@ -152,7 +152,7 @@ function showTextComment(classIdentification,text){
 }
 function removeTextComment(classIdentification){
  let element = document.querySelector("."+classIdentification);
- console.log("element".$element);
+//  console.log("element".$element);
   if (element) {
     element.textContent = "";
 
@@ -167,7 +167,7 @@ function removeTextComment(classIdentification){
   }
 }
 function cleanChampValue(classChamp,champValue){
-  console.log("classChamp",classChamp);
+  // console.log("classChamp",classChamp);
   let champTocleanChampValue=["dateNaissance","numberPhoneEvent","pseudo","email","motDePasse","confirmationMotDePasse","emailEvent","codePostalEvent","numRueEvent","nbParticipants","ageRequis"];
   if (champTocleanChampValue.includes(classChamp)) {
      champValue= champValue.trim();
@@ -178,8 +178,8 @@ function cleanChampValue(classChamp,champValue){
   return champValue;
 }
 function champFormulaireIsValid(classInput,champValue) {
-  console.log("classInput125 ",classInput);
-  console.log("champValue126",champValue);
+  // console.log("classInput125 ",classInput);
+  // console.log("champValue126",champValue);
   // champ pour vérification des événements 
   if ((classInput === "villeEvent") || (classInput === "url1") || (classInput === "url2")|| (classInput === "rueEvent")||(classInput === "jeuxThemesEvent") || (classInput === "titre")|| (classInput === "recurrence")) return ( champValue.length >= 3) ? true : false;;
   
@@ -490,31 +490,31 @@ let validChamps = [];
  // Définition de la fonction en dehors de la boucle
 function validateField(element) {
   let formulaire = element.form;
-  console.log("formulaire", formulaire);
+  // console.log("formulaire", formulaire);
 
   let listInputs = findAllInputs(formulaire);
   let tableauIndispensablesInputs = findAllIndispensablesInputs(formulaire);
 
-  console.log(formulaire ? formulaire.id : 'Pas dans un formulaire');
-  console.log("listInputs", listInputs);
+  // console.log(formulaire ? formulaire.id : 'Pas dans un formulaire');
+  // console.log("listInputs", listInputs);
 
   let classInput = Array.from(element.classList).find(cls => listInputs.includes(cls));
   if (!classInput) return;
 
-  console.log("classInput279", classInput);
+  // console.log("classInput279", classInput);
 
   let champValue = formulaire.querySelector("." + classInput).value;
 
   champValue = cleanChampValue(classInput, champValue);
-  console.log("champValue287", champValue);
+  // console.log("champValue287", champValue);
 
   let classCommentaire = classInput + "Commentaire";
   let success = champFormulaireIsValid(classInput, champValue);
 
-  console.log("success289", success);
+  // console.log("success289", success);
 
   if (champValue === "" && !tableauIndispensablesInputs.includes(classInput)) {
-    console.log("success429", success);
+    // console.log("success429", success);
     success = true;
   }
 
@@ -522,7 +522,7 @@ function validateField(element) {
     let motDePasse = formulaire.querySelector(".motDePasse").value;
     let confirmationMotDePasse = formulaire.querySelector(".confirmationMotDePasse").value;
     success = (motDePasse === confirmationMotDePasse);
-    console.log("success289", success);
+    // console.log("success289", success);
   }
 
   if (!success) {
@@ -535,7 +535,7 @@ function validateField(element) {
     }
 
   } else {
-    console.log(classCommentaire);
+    // console.log(classCommentaire);
 
     if (classCommentaire !== "") {
       removeTextComment(classCommentaire);
@@ -717,7 +717,7 @@ formulaireInscription.addEventListener('submit', function (e) {
           alert("Champs obligatoires incomplets ou incorrects :\n- " + champsInvalides.join("\n- "));
           return;
         }
-       console.log("envoi du formulaire");
+      //  console.log("envoi du formulaire");
 
         // Si tout est OK, on peut envoyer le formulaire
         // formulaireInscription.requestSubmit(boutonInscription);
@@ -742,9 +742,9 @@ formulaireConnexion.addEventListener('submit', function (e) {
       });
     }
         if (formulaireLoginAsUser) {
-          console.log("formulaireLoginAsUser");
+          // console.log("formulaireLoginAsUser");
 formulaireLoginAsUser.addEventListener('submit', function (e) {
-   console.log("submit");
+  //  console.log("submit");
 
         let elementIndispensableConnexionAdmin=findAllIndispensablesInputs(formulaireLoginAsUser);
        
@@ -773,7 +773,7 @@ console.log(mode);
 formulaireCreationEvenement.addEventListener('submit', function (e) {
 
      if (mode==="creationEvenement") {
-        console.log("776formulaireCreationEvenement");
+        
       if (divCreateEventForGroupe) {
             listInputsIndispensablesCreateEvent= ["emailEvent","numberPhoneEvent","codePostalEvent","villeEvent","rueEvent","numRueEvent","titreEvent","heureEvent","typeSoiree","nbParticipants","imageEvent"];
         
@@ -781,8 +781,7 @@ formulaireCreationEvenement.addEventListener('submit', function (e) {
              listInputsIndispensableCreateEvent=findAllIndispensablesInputs(formulaireCreationEvenement);
         }
       } else if (mode==="modificationEvenement") {
-          console.log("formulairemodifEvenement");
-        console.log("781modificationEvenement");
+       
         if (divCreateEventForGroupe) {
             listInputsIndispensablesCreateEvent= ["emailEvent","numberPhoneEvent","codePostalEvent","villeEvent","rueEvent","numRueEvent","titreEvent","heureEvent","typeSoiree","nbParticipants"];
         
@@ -806,13 +805,12 @@ formulaireCreationEvenement.addEventListener('submit', function (e) {
 
 if (formulaireRedefinitionMotDePasse) {
       formulaireRedefinitionMotDePasse.addEventListener('submit', function (e) {
-              console.log("630");
-        console.log("validChamps",validChamps);
+            
       
           const champEmail = formulaireRedefinitionMotDePasse.querySelector('input[name="email"]');
         if (champEmail && (champEmail.value.trim() !== "")) {
            validChamps.push("email");
-           console.log("validChamps",validChamps);
+           
         }
         let elementIndispensableRedefinitionMotDePasse=findAllIndispensablesInputs(formulaireRedefinitionMotDePasse);
         const champsInvalides = elementIndispensableRedefinitionMotDePasse.filter(champ => !validChamps.includes(champ));
@@ -1103,24 +1101,24 @@ document.querySelectorAll(".closeModal").forEach(btn => {
 
 window.addEventListener('DOMContentLoaded', () => {
   // Dès que le DOM est complètement chargé, on lance cette fonction
-
+ console.log ("1104");
   if (modalToOpen) {  // Si la variable modalToOpen contient une valeur non vide 
-     console.log ("1068")
+     console.log ("1077");
     //  ferme toutes les modalsvisibles.
-    // On cherche toutes les modals qui ont la classe CSS 'displayBlock' (visible)
-    document.querySelectorAll('.modal .displayBlock').forEach(modal => {
-      // On retire la classe 'displayBlock' pour masquer la modal
-      modal.classList.remove('displayBlock');
-      // On ajoute la classe 'displayNone' pour cacher la modal via CSS
-      modal.classList.add('displayNone');
-    });
+    let modalDisplayBlock=document.querySelectorAll('.modal .displayBlock');
+    if (modalDisplayBlock) {
+      modalDisplayBlock.forEach(modal => {
+        modal.classList.remove('displayBlock');
+        modal.classList.add('displayNone');
+      });
+    }
     // let overlay=document.querySelector('.overlay')
     // if ((overlay) && (overlay.classList.contains('displayNone')))
     //   {
     //     overlay.classList.add('displayBlock');
     //     overlay.classList.remove('displayNone');
     //   }
-    console.log ("1077");
+    
 console.log("modalElement998",modalToOpen);
     // On construit l'id de la modal à ouvrir à partir de modalToOpen
     // Exemple : modalToOpen = "inscription"
@@ -1138,6 +1136,7 @@ console.log("modalElement998",modalToOpen);
         ouvrirModal("modalFormRedefinitionMotDePasse");
         break;
       case "modalFormGestionUtilisateurInformationsUtilisateur":
+        console.log("ouvrirmodalFormGestionUtilisateurInformationsUtilisateur");
         ouvrirModal("modalFormGestionUtilisateurInformationsUtilisateur");
         break;
       case "visionEvenementAndInscription":
