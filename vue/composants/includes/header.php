@@ -29,7 +29,7 @@ if (isset($_GET['modal'])) {
     $modal = $_GET['modal'];
     //  echo "modal: " . htmlspecialchars($modal);
 }
-// echo $modal;
+ echo $modal;
 ?>
 <!DOCTYPE html>
 <html lang="fr">

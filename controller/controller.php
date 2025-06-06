@@ -299,14 +299,14 @@ function handleResearchAllUsers() {
 
    function handleResearchAllEvents() {
 
-  
+  exit();
 
     $events = selectAllEvents();
     if (!$events || empty($events)) {
         $events = ["pas d'evenement"];
     }
 
-    $_SESSION['list_evenements'] = $events;
+   
     $_SESSION["data_transferred_from_controller"] = true;
     $_SESSION["modal"] = "";
    
@@ -319,12 +319,21 @@ function handleResearchAllUsers() {
         locationView('accueil');
         exit();
     } else{
-       $_SESSION["refresh"] = "gestion_evenements";
+      if (!isset($_SESSION['role']) || $_SESSION['role'] != 'admin') {
+          $_SESSION["refresh"] = "gestion_evenements";
         locationView('gestion_evenements');
+        exit();
+      } else if (isset($_SESSION['role']) && $_SESSION['role'] == 'admin') {
+        $_SESSION['list_evenements'] = $events;
+        $_SESSION["refresh"] = "gestion_evenements";
+        locationView('gestion_evenements');
+      }
+       
     }
         
     } else {
-       
+        $_SESSION['list_evenements'] = $events;
+        $_SESSION["refresh"] = "accueil";
 
         locationView('accueil');
     }
@@ -337,7 +346,7 @@ function handleResearchAllUsers() {
 function handleResearchEventsByUser() {
    $_SESSION["refresh"] = "handleResearchEventsByUser";
     if (!isset($_SESSION['id_utilisateur'])) {
-        handleLoginAndRegistration();
+        locationView('accueil');
         exit();
     }
 
@@ -367,7 +376,7 @@ function handleResearchEventsByUser() {
 function handleResearchUserInscriptions() {
    $_SESSION["refresh"] = "accueil";
     if (!isset($_SESSION['id_utilisateur'])) {
-        
+        locationView('accueil');
         exit();
     }
 
@@ -594,7 +603,7 @@ function handleUserDeletion() {
     // Idem pour la suppression, gérer la suppression d'un utilisateur ici
     $id_utilisateur = $_POST['id_utilisateur'] ?? null;
     
-    if ((!$id_utilisateur) && $_SESSION["role"] != 'admin') {
+    if ((!$_SESSION['id_utilisateur']) && $_SESSION["role"] != 'admin') {
         // echo "Utilisateur non spécifié";
         locationView('accueil');
         exit();
@@ -606,9 +615,7 @@ function handleUserDeletion() {
     deleteUser($id_utilisateur);
          $_SESSION["modal"]="";
     unset($_SESSION["utilisateur"]);
-    
-    $list_utilisateurs = selectAllInfosUtilisateurs();
-    $_SESSION['list_utilisateurs'] = $list_utilisateurs;
+    selectAllInfosUtilisateurs();
     locationView('gestion_utilisateurs');
     exit();
 }
@@ -644,9 +651,28 @@ function handleEventDatasForThisEvent(){
 
 
 
+/*************  ✨ Windsurf Command ⭐  *************/
+/**
+ * Handles the modification of user account settings by an admin.
+ *
+ * This function is responsible for processing changes to user account
+ * settings initiated by an admin. It ensures that the requesting user
+ * is an admin and that a user ID is specified. The function performs
+ * data trimming, empty field removal, and protection against XSS. If
+ * the provided account parameters are valid and differ from the current
+ * database values, it updates the user information in the database. It
+ * also handles password recovery updates and creates a recovery entry
+ * if necessary. The updated user information is stored in session
+ * variables for further processing.
+ *
+ * @return void This function does not return a value. It redirects to
+ * the 'gestion_utilisateurs' view upon completion.
+ */
+
+/*******  9d77da12-411b-4c1f-ace1-5d1a01a03b76  *******/
 function actionAdminModifierParametresCompteUtilisateur() {
    $_SESSION["refresh"] = "gestions_utilisateurs";
-   if ((!$id_utilisateur) && $_SESSION["role"] != 'admin') {
+   if ((!$_SESSION['id_utilisateur']) && $_SESSION["role"] != 'admin') {
         // echo "Utilisateur non spécifié";
         locationView('accueil');
         exit();
@@ -703,7 +729,7 @@ function actionAdminModifierParametresCompteUtilisateur() {
 function handleAccountSettingsUpdate() {
    $_SESSION["refresh"] = "monCompte";
     if (!isset($_SESSION['id_utilisateur'])) {
-        
+        locationView('accueil');
         exit();
     }
 
@@ -768,7 +794,7 @@ function resarchAllInfosForUserSession() {
 }
 
  function resarchSectionUtilisateurForLecture(){
-     if ((!$id_utilisateur) && $_SESSION["role"] != 'admin') {
+     if ((!$_SESSION['id_utilisateur']) && $_SESSION["role"] != 'admin') {
         // echo "Utilisateur non spécifié";
         locationView('accueil');
         exit();
@@ -803,7 +829,7 @@ function handleVisionEvenement(){
    
 }
 function handleEventDesinscription(){
-     if ((!$id_utilisateur) ) {
+     if ((!$_SESSION['id_utilisateur']) ) {
         // echo "Utilisateur non spécifié";
         locationView('accueil');
         exit();
@@ -825,11 +851,12 @@ function handleEventDesinscription(){
    locationView('accueil');
 }
 function handleEventInscription(){
-     if ((!$id_utilisateur)) {
+     if (!$_SESSION['id_utilisateur']) {
         // echo "Utilisateur non spécifié";
         locationView('accueil');
         exit();
     }
+
    $_SESSION["refresh"] = "accueil";
   $id_evenement = $_POST['id_evenement'] ?? null;
   $id_utilisateur = $_SESSION['id_utilisateur'];
@@ -848,7 +875,7 @@ function handleEventInscription(){
    locationView('accueil');
 }
 function resarchFormulaireUtilisateurForModification(){
-     if ((!$id_utilisateur) && $_SESSION["role"] != 'admin') {
+     if ((!$_SESSION['id_utilisateur']) && $_SESSION["role"] != 'admin') {
         // echo "Utilisateur non spécifié";
         locationView('accueil');
         exit();
@@ -905,6 +932,7 @@ function handleRefreshAllEvents(){
 
     }
 }
+
 // Liste des boutons et fonctions associées
 $actions = [
     'btnConnexion' => 'handleConnexion',

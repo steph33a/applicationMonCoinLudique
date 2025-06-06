@@ -1,13 +1,17 @@
 <?php
+
 session_start();
 var_dump($_SESSION);
 $evenementSelected=[];
+if (isset($_SESSION['evenementSelected'])){
+    $evenementSelected = $_SESSION['evenementSelected'];
+}
 $page_contexte = 'actions_evenement';
 // var_dump($_SESSION);
 // var_dump($_SESSION['list_evenements']);
-if (isset($_SESSION["evenementSelected"])) {
+if (isset($_SESSION["evenementSelectedSpecial"])) {
 
-    $evenementSelected = $_SESSION['evenementSelected'];
+    $evenementSelected = $_SESSION['evenementSelectedSpecial'];
     // var_dump($evenementSelected);
 }
 

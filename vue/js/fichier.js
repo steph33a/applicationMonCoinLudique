@@ -488,6 +488,20 @@ return listInputsIndispensables;
 }
 let validChamps = [];
  // Définition de la fonction en dehors de la boucle
+ let btninscriptionEvent=document.querySelector('#btnInscriptionEvent');
+ if (btninscriptionEvent) {
+   btninscriptionEvent.addEventListener('click', function(event) {
+     
+    console.log("Bouton cliqué btninscriptionEvent");
+    let formActionInscription = document.getElementById("formActionInscription");
+    if (formActionInscription) {
+      console.log("pas inscription");
+        //  event.preventDefault();
+      formActionInscription.submit();
+    } 
+  
+   });
+ }
 function validateField(element) {
   let formulaire = element.form;
   // console.log("formulaire", formulaire);
@@ -916,8 +930,8 @@ function afficherFormulaireCreationEvenement(){
 }
 
 function fermerTousLesModals() {
-    //  
-  document.getElementById("globalOverlay").classList.add("displayNone");
+    let globalOverlayReel=document.getElementById("globalOverlay");
+  globalOverlayReel.classList.add("displayNone");
   document.querySelectorAll(".modal").forEach(modal => {
     modal.classList.add("displayNone");
   });

@@ -8,11 +8,11 @@ if (isset($_SESSION["phraseEchec"] )){
     }
 $refreshConditions=false;
 $actionEnCours=false;
-//   var_dump($_SESSION);
-if (isset($_SESSION["refresh"])) {
+ var_dump($_SESSION);
+// if (isset($_SESSION["refresh"])) {
 
-   $actionEnCours=true;
-}
+//    $actionEnCours=true;
+// }
 $list_evenements = [];
 // var_dump($_SESSION);
 // Si on a une liste valide en session, on la récupère (temporairement)
@@ -37,15 +37,19 @@ if (isset($_SESSION['evenementSelected'])&&($_SESSION['evenementSelected']==fals
     // var_dump($evenementSelected);
 }
 
-
-if ((!$actionEnCours)&&((!isset($_SESSION["data_transferred_from_controller"]))||(isset($_SESSION["data_transferred_from_controller"])&& $_SESSION["data_transferred_from_controller"] === false))) {
+echo $actionEnCours;
+if ((!$actionEnCours)&&((!isset($_SESSION["refresh"]))||((isset($_SESSION["refresh"])&& $_SESSION["refresh"] !== "accueil")))) {
+    if (($_SESSION['refresh'] !== "refreshAllEventsButNotEventSpecial")){
     $list_evenements = [];
     unset($_SESSION['evenementSelected']);
 
     unset($_SESSION['list_evenements']);
      $refreshConditions=true;
+     echo "refresh conditions true";
 
 } 
+}
+
      $_SESSION["data_transferred_from_controller"] = false;
 // if  ($refreshConditions==true)
 // {
@@ -87,8 +91,9 @@ include('../composants/includes/header.php');
             </div>
             <!-- Modal CONNEXION -->
             <div class="modal displayNone" id="modalFormVisionEvenementAndInscription">
+               
                 <span class="closeModal" data-target="modalFormVisionEvenementAndInscription">&times;</span>
-                <?php if (!$estConnecte || $role === 'admin') include '../composants/modal/detailsEvenement.php'; ?>
+                <?php include '../composants/modal/detailsEvenement.php'; ?>
             </div>
             
 
@@ -186,6 +191,7 @@ include('../composants/includes/header.php');
                
                 <input type="hidden" name="page_contexte" value="accueil">
                 <input type="hidden" name="refresh" value="done">
+              
             
                 <input type="hidden" name="refreshAllEvents" value="researchAllEvent"><!-- Exemple d'action -->
             </form>
