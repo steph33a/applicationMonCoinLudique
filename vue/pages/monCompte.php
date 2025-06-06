@@ -73,28 +73,40 @@ include('../composants/includes/header.php')
 
     <form action="../../controller/controller.php" method="post">
         <input type="hidden" name="page_contexte" value="monCompte">
+        
         <label for="pseudo">Pseudo</label>
+        
         <input type="text" name="pseudo" id="pseudo" value="<?php echo $pseudo; ?>">
+       
         <label for="email">Email</label>
+       
         <input type="email" name="email" id="email" value="<?php echo $email; ?>">
+         
         <label for="prenom_utilisateur">prenom utilisateur</label>
         <input type="text" name="prenomUtilisateur" id="prenom_utilisateur" value="<?php echo $prenom_utilisateur; ?>">
+         
         <label for="nom_utilisateur">nom utilisateur</label>
         <input type="text" name="nomUtilisateur" id="nom_utilisateur" value="<?php echo $nom_utilisateur; ?>">
+         
         <label for="motDePasse">Mot de passe</label>
         <input type="password" name="motDePasse" id="password" placeholder="Modifier le mot de passe">
+         
         <label for="confirmationMotDePasse">confirmation mot de passe</label>
         <input type="password" name="confirmationMotDePasse" id="password" placeholder="confirmerlenouveaumotdepasse">
+        
         <h3>Informations à donner pour la récupération de compte</h3>
+         
         <label for="question1">Répondre à la question1 quel est votre jeu préféré ?</label>
         <input class="jeuPrefereUser" type="text" name="jeuPrefereUser" id="reponse1" value="<?php echo $reponse1; ?>">
+        
         <label for="question2">Répondre à la question2 quel est votre chanteur préféré ?</label>
         <input class="chanteurPrefereUser" type="text" name="chanteurPrefereUser" id="reponse2" value="<?php echo $reponse2; ?>">
+        
         <input type="hidden" name="id_utilisateur" value="<?php echo $_SESSION['id_utilisateur']; ?>">
         <button class="btn" type="submit" name="actionModifierParametresCompte" value="modifierCompte">Modifier le compte</button>
     </form>
 </main>  
-exit();
+
     <?php
     include('../composants/includes/footer.php');
 

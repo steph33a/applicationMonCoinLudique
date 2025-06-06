@@ -5,7 +5,7 @@ h1,h2,h3,h4,h5,h6{
   margin-block-start: 0px;
   margin-block-end: 0px;
   padding: 0;
-  border: 1px solid red; /* Pour voir la boîte */
+ 
 
 }
 ul {
@@ -1261,3 +1261,62 @@ body {
 .modal input[type="submit"]:active {
   background-color: #4C4C4C;
 }
+
+
+/* Conteneur principal */
+.gestion_utilisateurs {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 30px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,.1);
+}
+
+/* Titre principal */
+.gestion_utilisateurs .gestion_utilisateurs_title h2 {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  color: #4a4a89;
+}
+
+/* Sous-titres (ex. “Paramètres du compte”) */
+.gestion_utilisateurs h3 {
+  margin: 25px 0 15px;
+  font-weight: 600;
+  color: #4a4a89;
+}
+
+/* ---------- Formulaire ---------- */
+
+.gestion_utilisateurs form {
+  display: grid;
+  gap: 18px;
+}
+
+/* Étiquette */
+.gestion_utilisateurs form label {
+  font-weight: 600;
+  color: #555;
+}
+
+/* Champs texte & e-mail & password */
+.gestion_utilisateurs form input[type="text"],
+.gestion_utilisateurs form input[type="email"],
+.gestion_utilisateurs form input[type="password"] {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  transition: border-color .2s;
+}
+
+.gestion_utilisateurs form input:focus {
+  border-color: #4a4a89;
+  background-color: #f9f9ff;
+  outline: none;
+}
+
+
+
