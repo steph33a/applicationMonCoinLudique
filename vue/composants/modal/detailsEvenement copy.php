@@ -1,14 +1,4 @@
-<div id="eventSelected" class="eventSelectedSpecial event-card">
-     
-    <?php 
-    if (!function_exists('cleanImagePath')) {
-            function cleanImagePath($fullPath) {
-                if ($fullPath === null) return $fullPath;
-                return str_replace('/moncoinludique/vue/', '../', $fullPath);
-            }
-        }
-    
-    if (isset($evenementSelectedSpecial)and $evenementSelectedSpecial !== null) {
+   <?php if (isset($evenementSelectedSpecial)and $evenementSelectedSpecial !== null) {
       $eventTypePublic = !empty($evenementSelectedSpecial['prenom-utilisateur']); ?>
 
     <!-- Colonne gauche : Image événement + Liens -->
@@ -132,8 +122,108 @@
         <p>Aucun événement disponible</p> <?php
     } 
     ?>
-    
-</div>
 
+#eventSelected .event-card {
+    width: 620px;
+    background-color: #F8F3EB;
+    opacity: 0.7;
+    border: 1px solid #704405;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
 
+#eventSelected .left-column {
+    width: 190px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+#eventSelected .photo-label {
+    margin-top: 0px;
+    cursor: pointer;
+    display: inline-block;
+}
+
+#eventSelected .photo-container,
+#eventSelected .photoProfil-container {
+    position: relative;
+}
+
+#eventSelected .photoEvent,
+#eventSelected .photoProfil {
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    object-fit: cover;
+}
+
+#eventSelected .right-column {
+    width: 345px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+#eventSelected .host-section {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#eventSelected .host-info h3,
+#eventSelected .host-info h4 {
+    margin: 0;
+}
+
+#eventSelected .event-info {
+    margin-top: 10px;
+}
+
+#eventSelected .info-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 305px;
+    margin: 5px 0;
+}
+
+#eventSelected .info-label {
+    font-weight: bold;
+}
+
+#eventSelected .info-value {
+    text-align: right;
+}
+
+#eventSelected .boutonContainer {
+    width: 320px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    margin: 0 10px;
+}
+
+#eventSelected .formActionInscription {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+}
+
+#eventSelected .btn-inscription {
+    width: 114px;
+    height: 40px;
+    background-color: #6EBA46;
+    color: #FFF;
+    font-size: 18px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+}
 

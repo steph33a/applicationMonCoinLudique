@@ -1012,9 +1012,14 @@ function adjustModalSpacers() {
     }
   });
 }
+// let boutons = document.getElementsByClassName("btnVoirEvenement");
 
-// Appeler au chargement
-
+// for (let i = 0; i < boutons.length; i++) {
+//     boutons[i].addEventListener("click", function(event) {
+//         event.preventDefault();
+//         console.log("Bouton cliqué btnVoirEvenement");
+//     });
+// }
 const allModals = document.querySelectorAll('.overlay');
 
   adjustModalSpacers();

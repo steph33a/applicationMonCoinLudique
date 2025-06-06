@@ -14,24 +14,33 @@ session_start();
 // Exemple de rôles possibles : 'admin', 'utilisateur', null si non connecté
 
 // var_dump($role);
+
 $refreshConditions=false;
 $actionEnCours=false;
-if (!empty($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST') {
-    $actionEnCours=true;
+
+// exit();
+// 
+
+if (isset($_SESSION["refresh"])) {
+    echo $_SESSION["refresh"];
+    // exit();
+   $actionEnCours=true;
 }
 $list_evenements = [];
-
+var_dump($_SESSION);
 // Si on a une liste valide en session, on la récupère (temporairement)
 if (isset($_SESSION['list_evenements']) && is_array($_SESSION['list_evenements'])) {
     $list_evenements = $_SESSION['list_evenements'];
 }
 if (!isset($_SESSION['list_evenements']) || ($_SESSION['list_evenements']==null)) {
-    $refreshConditions=true;
+
+     $refreshConditions=true;
 }
 if (isset($_SESSION['evenementSelected']))
 {
-    $evenementSelectedSpecial = $_SESSION['evenementSelectedSpecial'];
+    $evenementSelectedSpecial = $_SESSION['evenementSelected'];
     unset($_SESSION['evenementSelected']);
+    $refreshConditions=false;
     // var_dump($evenementSelected);
 }
 // Si ce n'est pas une action POST ET qu'on ne veut pas rafraîchir la session,
@@ -40,11 +49,11 @@ if ((!$actionEnCours)&&((!isset($_SESSION["data_transferred_from_controller"]))|
     $list_evenements = [];
 
     unset($_SESSION['list_evenements']);
-    $refreshConditions=true;
+     $refreshConditions=true;
 
 } 
 
-  
+      $_SESSION["data_transferred_from_controller"] = false;
 //  var_dump($_SESSION['list_evenements']);
 
 
@@ -61,11 +70,12 @@ include('../composants/includes/header.php');
 
 <main style="display:flex; flex-direction:column;gap:20px; width:100%; justify-content:center; align-items:center">
     <div style="display:flex;min_height:337px; position:relative; " id="mainAccueil" class="accueil mainWithoutModal">
-      <?php  if ($refreshConditions) { echo"formulaireRefreshici"; ?>
+      <?php  if ($refreshConditions) { ; ?>
         <div id="formulaire_invisible">
             <form id="autoSubmitForm" action="../../controller/controller.php" method="post" style="display:none;">
                 <!-- Tu peux ajouter des champs cachés ici -->
                 <input type="hidden" name="page_contexte" value="accueil">
+                <input type="hidden" name="refresh" value="done">
             
                 <input type="hidden" name="researchAllEvent" value="researchAllEvent"><!-- Exemple d'action -->
             </form>
@@ -91,6 +101,7 @@ include('../composants/includes/header.php');
                 <span class="closeModal" data-target="modalFormVisionEvenementAndInscription">&times;</span>
                 <?php if (!$estConnecte || $role === 'admin') include '../composants/modal/detailsEvenement.php'; ?>
             </div>
+            
 
             <!-- Modal MOT DE PASSE OUBLIÉ -->
             <div class="modal displayNone" id="modalFormMotDePasseOublie">
@@ -137,7 +148,7 @@ include('../composants/includes/header.php');
     
 
 
-        <?php if (($estConnecte) && ($role=="particulier" || $role=="groupe")) { ?>
+        <?php if (($estConnecte) && ($role=="particulier" || $role=="groupe")) {   ?>
         <div style="display:block;" id="btnInsciptionEvent">
              <form id="formulaireGoInscription" action="../../controller/controller.php" method="post" style="display:block;">
             <!-- Tu peux ajouter des champs cachés ici -->
@@ -153,23 +164,23 @@ include('../composants/includes/header.php');
        
 
         <div style="display:block;" id="miniEventsContainers">
-        <?php
+        <?php 
         if (is_array($list_evenements)) {
             foreach ($list_evenements as $evenementSelected) {
                 if (is_array($evenementSelected)) {
-                    echo"fdsf";
+                    
                     include '../composants/includes/mini_event.php';
                 } else {
-                        echo"fdsf";
+                        
                     echo  "<p>" . htmlspecialchars($evenementSelected) . "</p>";
                 }
-                echo"fdsf";
+                
             }
-            echo"fdsf";
+            
         } else {
             echo  "<p>" . htmlspecialchars($list_evenements) . "</p>";
         }
-        $_SESSION["data_transferred_from_controller"] = false;
+    
         ?>
         
 
@@ -179,6 +190,6 @@ include('../composants/includes/header.php');
         
 </main>
 
-<?php echo"fdsf"; include('../composants/includes/footer.php'); ?>
+<?php  include('../composants/includes/footer.php'); ?>
  
 

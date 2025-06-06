@@ -1,6 +1,9 @@
 
 <?php 
+
   $mode = ($mode === 'modificationEvenement') ? 'modificationEvenement' : 'creationEvenement'; 
+  
+
 ?>
  <form data-mode="<?php echo htmlspecialchars($mode); ?>" style="width:700px; background-color: #F8F3EB; opacity: 0.7; border: #704405 solid 1px; display:flex; flex-direction:column; justify-content:space-between; align-items:center;margin:25px auto;" class="formulaire" id="formulaireCreationEvenement" enctype="multipart/form-data" action="../../controller/controller.php" method="POST">
     <div style="display:flex; flex-direction:column; justify-content:space-between;   width:700px">

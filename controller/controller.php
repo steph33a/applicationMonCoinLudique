@@ -4,106 +4,91 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 // echo "<script>console.log('arrive dans inscription ligne6');</script>";
-// var_dump($_POST);
+
 //  var_dump($_SESSION);
-//   var_dump($_SESSION);
+  // var_dump($_SESSION);
 // // session_destroy();
 include_once ($_SERVER['DOCUMENT_ROOT'].'/model/db.php'); //require $_SERVER['DOCUMENT_ROOT'] /model/db.php';
 
 require ($_SERVER['DOCUMENT_ROOT'].'/model/model.php');
 //fonctiosns helpers
  
-function handleLoginAndRegistration() {
 
-  if ((!isset($_POST['btnAdminLoginAsUser']))&&(!isset($_POST['btnInscription']))&&(!isset($_POST['btnEnvoiReponsesRecupMotDePasse']))&& (!isset($_SESSION['id']))&& (!isset($_POST['btnConnexion']))){
-     
-    if (isset($_POST['researchAllEvent'])){
- 
-      $events=selectAllEvents();
-      if (!$events) {
-          $events=["pas d'evenement"];
+      function handleInscription() {
+         $_SESSION["refresh"] = "handleInscription";
+    $roleDemande = htmlspecialchars(trim($_POST['role'] ?? 'particulier'));
+    $roleSession = $_SESSION['role'] ?? null;
+
+    if ($roleSession === 'admin') {
+        $_POST['role'] = $roleDemande;
+    } else {
+        $_POST['role'] = in_array($roleDemande, ['particulier', 'groupe']) ? $roleDemande : 'particulier';
+    }
+
+    $file = $_FILES['imageProfil'] ?? null;
+    $imageUpload = !empty($_FILES['imageEvent']['tmp_name']);
+
+    $result = allChampsNecessaryPresents($_POST, 'inscription');
+    if ($result["success"]) {
+        $champNecessaryPresents = $result["champNecessaryPresents"];
+
+        if ($file) {
+            $verifImage = verificationImageProfil();
+            if (!$verifImage["success"]) {
+                $_SESSION["phraseEchec"] = $verifImage["phraseEchec"];
+                redirectAccueil();
+                return;
+            }
+
+            $cheminTemporaireServeur = $verifImage["cheminTemporaireServeur"];
+            $fileOriginalName = $verifImage["fileOriginalName"];
         }
-        $_SESSION['list_evenements'] = $events;
-        $_SESSION["data_transferred_from_controller"]=true;
-        locationView('accueil');
-        exit();
-      } else {
-        $_SESSION["data_transferred_from_controller"]=true;
-        locationView('accueil');
-        exit();
-      }
-  }
- 
-//   var_dump($_POST);
-//  var_dump($_SESSION);
-  // var_dump($_POST);
-  
-  else if ( isset($_POST['btnEnvoiReponsesRecupMotDePasse'])){
-   
-    // var_dump($_POST);
-    $result=allChampsNecessaryPresents($_POST,'reponsesQuestionForRecupMotDePasse');
-    if ($result["success"]==true){ 
-      $champNecessaryPresents=$result["champNecessaryPresents"];
-      // echo"ligne26 controller";
-      $datas=trimData($_POST);
-      $datas=protectData($datas);
-      $datas["reponse2"]=$datas["chanteurPrefereUser"];
-      $datas["reponse1"]=$datas["jeuPrefereUser"];
-      //verif exist in db va rechercher dans la bd si l'utilisateur existe ou non suivant le mail si il existe
-      $result=verifExistInDb($datas);
-    // var_dump($result);    
-      if (is_array($result) && isset($result["success"]) && $result["success"] === true){
-          $id_utilisateur=$result["utilisateur"] ["id_utilisateur"];
-        $result=importReponsesQuestions($id_utilisateur);
 
-          $firstReponseInBD=$result["reponse1"];
-          $firstReponseInBD=htmlspecialchars(trim($firstReponseInBD));
-          $secondReponseInBD=$result["reponse2"];
-          $secondReponseInBD=htmlspecialchars(trim($secondReponseInBD));
+        $datas = protectData(trimData($_POST));
+        $valid = areValidChamps($datas, $champNecessaryPresents);
 
-        if (($firstReponseInBD==$datas["reponse1"])&&($secondReponseInBD==$datas["reponse2"])){
-          // echo "reussite";
-          // var_dump($_SESSION);
-            $_SESSION['redefinitionMotDePasse']=true;
-            $_SESSION['modal']='redefinitionMotDePasse';
-            $_SESSION['email']=$datas['email'];
-            $_SESSION["data_transferred_from_controller"]=true;
-              locationView('accueil');
-              exit();
-        }
-        else if (($firstReponseInBD!=$datas["reponse1"])&&($secondReponseInBD!=$datas["reponse2"])){
-          $phrase="Les reponses sont incorrectes";
+        if ($valid["success"]) {
+            $exist = verifExistInDb($datas);
+
+            if (!$exist["success"]) {
+                $insert = insertInBD($datas);
+                if ($insert["success"]) {
+                    $id_utilisateur = $insert["id_utilisateur"];
+                    createRecupMotDePasse($id_utilisateur);
+
+                    if ($imageUpload) {
+                        $upload = enregistrementImageProfil($id_utilisateur, $cheminTemporaireServeur, $fileOriginalName);
+                        if (!$upload["success"]) {
+                            $_SESSION["phraseEchec"] = $upload["phraseEchec"];
+                            redirectAccueil();
+                            return;
+                        }
+                        sendImageProfilInBd($id_utilisateur, $upload["webPath"]);
+                    }
+
+                    $_SESSION["data_transferred_from_controller"] = true;
+                    locationView('gestion_evenements');
+                    exit();
+                } else {
+                    $_SESSION["phraseEchec"] = $insert["data"];
+                }
+            } else {
+                $_SESSION["phraseEchec"] = $exist["phraseEchec"];
+            }
         } else {
-          $phrase="erreur";
+            $_SESSION["phraseEchec"] = $valid["phraseEchec"];
         }
-      }
+    } else {
+        $_SESSION["phraseEchec"] = $result["phraseEchec"];
     }
-  } 
+
+    redirectAccueil();
+}
   
-  else if (isset($_POST['btnRedefinitionMotDePasse'])){
-    // var_dump($_POST);
-    $result=allChampsNecessaryPresents($_POST,'btnRedefinitionMotDePasse');
-    if ($result["success"]==true){ 
-      $champNecessaryPresents=$result["champNecessaryPresents"];
-      $datas=trimData($_POST);
-      $datas=protectData($datas);
-      //verif exist in db va rechercher dans la bd si l'utilisateur existe ou non suivant le mail si il existe
-      $result=verifExistInDb($datas);
-      // var_dump($result);
-      if (is_array($result) && isset($result["success"]) && $result["success"] === true){
-      modificationMotDePasse($datas); 
-      $_SESSION["data_transferred_from_controller"]=true;
 
-       locationView('gestion_evenements');
-     
-      }
-      else {
-        $phrase=$result["phraseEchec"];
-      }
-    }
-  }
-
-  else if (isset($_POST['btnConnexion'])){
+  
+  function handleConnexion(){
+          $_SESSION["refresh"] = "handleConnexion";
     // echo "ligne 88 controller";
     $result=allChampsNecessaryPresents($_POST,'connexion');
     if ($result["success"]==true){ 
@@ -145,9 +130,84 @@ function handleLoginAndRegistration() {
       }
     }
   }
-  else if (isset($_POST['btnAdminLoginAsUser']) && $_SESSION['role'] === 'admin') {
+  
+
+  function handleRedefinitionMotDePasse(){
+          $_SESSION["refresh"] = "redefinitionMotDePasse";
+        // var_dump($_POST);
+    $result=allChampsNecessaryPresents($_POST,'btnRedefinitionMotDePasse');
+    if ($result["success"]==true){ 
+      $champNecessaryPresents=$result["champNecessaryPresents"];
+      $datas=trimData($_POST);
+      $datas=protectData($datas);
+      //verif exist in db va rechercher dans la bd si l'utilisateur existe ou non suivant le mail si il existe
+      $result=verifExistInDb($datas);
+      // var_dump($result);
+      if (is_array($result) && isset($result["success"]) && $result["success"] === true){
+      modificationMotDePasse($datas); 
+      $_SESSION["data_transferred_from_controller"]=true;
+
+       locationView('gestion_evenements');
+     
+      }
+      else {
+        $phrase=$result["phraseEchec"];
+      }
+    }
+    
+  }
+  function handleRecupMotDePasse(){
+    $_SESSION["refresh"] = "redefinitionMotDePasse";
+    // var_dump($_POST);
+    $result=allChampsNecessaryPresents($_POST,'reponsesQuestionForRecupMotDePasse');
+    if ($result["success"]==true){ 
+      $champNecessaryPresents=$result["champNecessaryPresents"];
+      // echo"ligne26 controller";
+      $datas=trimData($_POST);
+      $datas=protectData($datas);
+      $datas["reponse2"]=$datas["chanteurPrefereUser"];
+      $datas["reponse1"]=$datas["jeuPrefereUser"];
+      //verif exist in db va rechercher dans la bd si l'utilisateur existe ou non suivant le mail si il existe
+      $result=verifExistInDb($datas);
+    // var_dump($result);    
+      if (is_array($result) && isset($result["success"]) && $result["success"] === true){
+          $id_utilisateur=$result["utilisateur"] ["id_utilisateur"];
+        $result=importReponsesQuestions($id_utilisateur);
+
+          $firstReponseInBD=$result["reponse1"];
+          $firstReponseInBD=htmlspecialchars(trim($firstReponseInBD));
+          $secondReponseInBD=$result["reponse2"];
+          $secondReponseInBD=htmlspecialchars(trim($secondReponseInBD));
+
+        if (($firstReponseInBD==$datas["reponse1"])&&($secondReponseInBD==$datas["reponse2"])){
+          // echo "reussite";
+          // var_dump($_SESSION);
+            $_SESSION['redefinitionMotDePasse']=true;
+            $_SESSION['modal']='redefinitionMotDePasse';
+            $_SESSION['email']=$datas['email'];
+            $_SESSION["refresh"] = "redefinitionMotDePasse";
+            $_SESSION["data_transferred_from_controller"]=true;
+              locationView('accueil');
+              exit();
+        }
+        else if (($firstReponseInBD!=$datas["reponse1"])&&($secondReponseInBD!=$datas["reponse2"])){
+          $phrase="Les reponses sont incorrectes";
+        } else {
+          $phrase="erreur";
+        }
+      }
+    }
+  }
+
+//   var_dump($_POST);
+//  var_dump($_SESSION);
   // var_dump($_POST);
-    $_SESSION['role'] = 'particulier';
+  
+ 
+  function handleAdminLoginAsUser(){
+    $_SESSION["refresh"] = "handleAdminLoginAsUser";
+    if ($_SESSION['role'] === 'admin') {
+       $_SESSION['role'] = 'particulier';
     $result=allChampsNecessaryPresents($_POST,'connexionAdminAsUser');
     if ($result["success"]==true){ 
       $champNecessaryPresents=$result["champNecessaryPresents"];
@@ -164,6 +224,7 @@ function handleLoginAndRegistration() {
           $_SESSION['pseudo'] = $result['utilisateur']['pseudo'];
           $_SESSION['role'] = $result['utilisateur']['role'];
           $_SESSION["data_transferred_from_controller"]=true;
+
           session_write_close();
           locationView('gestion_evenements');
           exit();
@@ -178,118 +239,12 @@ function handleLoginAndRegistration() {
         $phrase=$result["phraseEchec"];
     }
   }
-
-  // Traiter la connexion en tant qu’un autre utilisateur
-  // var_dump($_SESSION);
-  // var_dump($_POST);
-  else if (isset($_POST['btnInscription'])){
-    $roleDemande  = htmlspecialchars(trim($_POST['role'] ?? 'particulier'));
-    $roleSession = $_SESSION['role'] ?? null;
-    if ($roleSession === 'admin') {
-      $_POST['role'] = $roleDemande;
-    } else {
-      if ($roleDemande === 'particulier' || $roleDemande === 'groupe') {
-          $_POST['role'] = $roleDemande;
-      } else {
-          $_POST['role'] = 'particulier'; // sécurité par défaut
-      }
-    }
-    $file=$_FILES['imageProfil'];
-    // echo"ligne195";
-    // echo "<script>console.log('arrive dans inscription ligne50');</script>";
-    if (!empty($_FILES['imageEvent']['tmp_name'])) {
-  // un fichier a bien été uploadé
-    }
-
-    $result=allChampsNecessaryPresents($_POST,'inscription');
-    if ($result["success"]==true){ 
-      $champNecessaryPresents=$result["champNecessaryPresents"];
-      if (isset($file)) {
-        $result=verificationImageProfil();
-        if ($result["success"] === false){
-          $phrase=$result["phraseEchec"];
-          
-        } else {
-          $cheminTemporaireServeur=$result["cheminTemporaireServeur"];
-          $fileOriginalName=$result["fileOriginalName"];
-          $fileSize=$result["fileSize"];
-          //  echo"228".$fileOriginalName;
-          //  echo"229".$cheminTemporaireServeur;
-          //  echo"230".$fileSize;
-        }
-      }
-   
-      $datas=trimData($_POST);
-      $datas=protectData($datas);
-      $result=areValidChamps($datas,$champNecessaryPresents);
-        //  echo "<script>console.log('arrive dans inscription ligne50');</script>";
-        if ($result["success"]==true){
-          $result=verifExistInDb($datas);
-
-          if ($result["success"]==false){
-            $result=insertInBD($datas);
-            createRecupMotDePasse($result["id_utilisateur"]);
-            // var_dump($result); 
-
-            if ($result["success"]==true){
-              $id_utilisateur=$result["id_utilisateur"];
-              $file=$_FILES['imageProfil'];
-
-             
-              // var_dump($file);
-              if (!empty($_FILES['imageEvent']['tmp_name'])) {
-                $result=enregistrementImageProfil($id_utilisateur,$cheminTemporaireServeur,$fileOriginalName);
-                if ($result["success"] === false){
-
-                  $phrase=$result["phraseEchec"];
-                } else {
-                  $datas["imageEvent"]=$result["webPath"];
-
-                  // echo"228".$datas["imageEvent"];
-                  sendImageProfilInBd($_SESSION['id_utilisateur'],$datas["imageEvent"]);
-                  $_SESSION["data_transferred_from_controller"]=true;
-                  locationView('gestion_evenements');
-                  exit();
-                }
-              }
-                // echo "reussite";
-            } else {
-                 $phrase=$result["data"];
-                //  echo $phrase;
-            }
-          } else {
-          $phrase=$result["phraseEchec"];
-          }
-        
-        } else {
-            $phrase=$result["phraseEchec"];
-        }
-    } else {
-        $phrase=$result["phraseEchec"];
-    }
-  }
-  else {
     
-  $_SESSION["data_transferred_from_controller"]=true;
-  locationView('accueil');
-  $_SESSION["phraseEchec"]=$phrase;
-   exit();
   }
-}  
 
 
   
-function includeView($viewName) {
-    include($_SERVER['DOCUMENT_ROOT'] . "/vue/{$viewName}.php");
-}
 
-
-
- function locationView($viewName) {
-    $path =  "../vue/pages/{$viewName}.php";
-    header("Location: $path");
-    exit();
-}
 
 
 
@@ -301,12 +256,13 @@ function includeView($viewName) {
   
 
 function handleResearchAllUsers() {
+  $_SESSION["refresh"] = "handleResearchAllUsers";
     if (!isset($_SESSION['id_utilisateur'])) {
-        handleLoginAndRegistration();
+        
         exit();
     }
     if (!isset($_SESSION['role']) || $_SESSION['role'] != 'admin') {
-        handleLoginAndRegistration();
+        
         exit();
     }
     // echo "arrive dans handleResearchAllUsers";
@@ -326,31 +282,41 @@ function handleResearchAllUsers() {
  
 
 
-function handleResearchAllEvents() {
+   function handleResearchAllEvents() {
+
     if (!isset($_SESSION['id_utilisateur'])) {
-        handleLoginAndRegistration();
+        $_SESSION['phraseEchec'] = "Vous devez être connecté pour accéder aux événements.";
+        locationView('accueil');
         exit();
     }
 
     $events = selectAllEvents();
-    if (!$events) {
+    if (!$events || empty($events)) {
         $events = ["pas d'evenement"];
     }
+
     $_SESSION['list_evenements'] = $events;
     $_SESSION["data_transferred_from_controller"] = true;
-         $_SESSION["modal"]="";
+    $_SESSION["modal"] = "";
+    $_SESSION["refresh"] = "handleResearchAllEvents";
 
-    if ($_POST['page_contexte'] == "accueil") {
-        locationView('accueil');
-        exit();
-    } else if ($_POST['page_contexte'] == "gestion_evenements") {
+    $pageContexte = $_POST['page_contexte'] ?? 'accueil';
+
+    if ($pageContexte === "gestion_evenements") {
         locationView('gestion_evenements');
-        exit();
+    } else {
+        locationView('accueil');
+
+
     }
+    
 }
 
 
+
+
 function handleResearchEventsByUser() {
+   $_SESSION["refresh"] = "handleResearchEventsByUser";
     if (!isset($_SESSION['id_utilisateur'])) {
         handleLoginAndRegistration();
         exit();
@@ -362,6 +328,7 @@ function handleResearchEventsByUser() {
     if (!$events) {
         $events = ["pas d'evenement"];
     }
+   
 
     $_SESSION['list_evenements'] = $events;
     $_SESSION["data_transferred_from_controller"] = true;
@@ -377,8 +344,9 @@ function handleResearchEventsByUser() {
 
 
 function handleResearchUserInscriptions() {
+   $_SESSION["refresh"] = "handleResearchUserInscriptions";
     if (!isset($_SESSION['id_utilisateur'])) {
-        handleLoginAndRegistration();
+        
         exit();
     }
 
@@ -397,10 +365,11 @@ function handleResearchUserInscriptions() {
     exit();
 }
 
- 
+
 function handleEventCreation() {
+   $_SESSION["refresh"] = "handleEventCreation";
     if (!isset($_SESSION['id_utilisateur'])) {
-        handleLoginAndRegistration();
+      
         exit();
     }
 
@@ -459,6 +428,7 @@ function handleEventCreation() {
 
 
 function handleEventActionView() {
+   $_SESSION["refresh"] = "handleEventActionView";
     if (!isset($_SESSION['id_utilisateur'])) {
         handleLoginAndRegistration();
         exit();
@@ -488,6 +458,7 @@ function handleEventActionView() {
 }
 
 function handleEventModification() {
+   $_SESSION["refresh"] = "handleEventModification";
   if (!isset($_SESSION['id_utilisateur'])) {
         
         exit();
@@ -551,7 +522,7 @@ $result = allChampsNecessaryPresents($_POST, 'modificationEvenement');
     } else {
       
     }
-    $_SESSION["localisation"] = "voici";
+    
 
     locationView('actions_evenement');
     exit();
@@ -560,6 +531,7 @@ $result = allChampsNecessaryPresents($_POST, 'modificationEvenement');
 }
 
 function handleEventDeletion() {
+   $_SESSION["refresh"] = "handleEventDeletion";
   $id_evenement = $_POST['id_evenement'] ?? null;
     if (!$id_evenement) {
         // echo "Événement non spécifié";
@@ -575,24 +547,25 @@ function handleEventDeletion() {
     // Idem pour la suppression, gérer la suppression d'un événement ici
 }
 
-function handleDefaultOrAdminFallback() {
-    if (isset($_SESSION['role']) && $_SESSION['role'] == 'admin') {
-        if (isset($_POST['btnInscription']) || isset($_POST['btnAdminLoginAsUser']) || isset($_POST['btnRedefinitionMotDePasse']) || isset($_POST['btnDeconnexion'])) {
-            handleLoginAndRegistration();
-        } else {
-          // echo" ligne596 controller";
-            $_SESSION["data_transferred_from_controller"] = true;
-                 $_SESSION["modal"]="";
-            locationView('gestion_evenements');
-          exit();
-        }
-    } else {
-        handleLoginAndRegistration();
-        exit();
-    }
-}
+// function handleDefaultOrAdminFallback() {
+//     if (isset($_SESSION['role']) && $_SESSION['role'] == 'admin') {
+//         if (isset($_POST['btnInscription']) || isset($_POST['btnAdminLoginAsUser']) || isset($_POST['btnRedefinitionMotDePasse']) || isset($_POST['btnDeconnexion'])) {
+//             handleLoginAndRegistration();
+//         } else {
+//           // echo" ligne596 controller";
+//             $_SESSION["data_transferred_from_controller"] = true;
+//                  $_SESSION["modal"]="";
+//             locationView('gestion_evenements');
+//           exit();
+//         }
+//     } else {
+//         handleLoginAndRegistration();
+//         exit();
+//     }
+// }
 
 function handleUserDeletion() {
+ $_SESSION["refresh"] = "handleUserDeletion";
     // Idem pour la suppression, gérer la suppression d'un utilisateur ici
     $id_utilisateur = $_POST['id_utilisateur'] ?? null;
     if (!$id_utilisateur) {
@@ -609,11 +582,10 @@ function handleUserDeletion() {
     locationView('gestion_utilisateurs');
     exit();
 }
-if (!isset($_SESSION['id_utilisateur'])) {
-    handleLoginAndRegistration();
-    exit();
-}
+
+
 function handleEventDatasForThisEvent(){
+   $_SESSION["refresh"] = "handleEventDatasForThisEvent";
     $id_evenement = $_POST['id_evenement'] ?? null;
     $id_organisateur = $_SESSION['id_utilisateur'];
     if (!$id_evenement) {
@@ -635,11 +607,12 @@ function handleEventDatasForThisEvent(){
 }
 
 
-
+ 
 
 function actionAdminModifierParametresCompteUtilisateur() {
+   $_SESSION["refresh"] = "actionAdminModifierParametresCompteUtilisateur";
 if (!isset($_SESSION['id_utilisateur'])) {
-        handleLoginAndRegistration();
+        
         exit();
     }
      $_SESSION['action'] = 'modificationInformationsUtilisateur';
@@ -692,8 +665,9 @@ if (!isset($_SESSION['id_utilisateur'])) {
     exit();
 }
 function handleAccountSettingsUpdate() {
+   $_SESSION["refresh"] = "handleAccountSettingsUpdate";
     if (!isset($_SESSION['id_utilisateur'])) {
-        handleLoginAndRegistration();
+        
         exit();
     }
 
@@ -735,6 +709,11 @@ function handleAccountSettingsUpdate() {
     exit();
 }
 function resarchAllInfosForUserSession() {
+   $_SESSION["refresh"] = "resarchAllInfosForUserSession";
+    if (!isset($_SESSION['id_utilisateur'])) {
+        
+        exit();
+    }
     $id_utilisateur = $_SESSION['id_utilisateur'];
     $utilisateur = selectAllInfosUtilisateurById($id_utilisateur);
     $_SESSION['utilisateur'] = $utilisateur;
@@ -751,6 +730,7 @@ function resarchAllInfosForUserSession() {
 }
 
  function resarchSectionUtilisateurForLecture(){
+   $_SESSION["refresh"] = "resarchSectionUtilisateurForLecture";
   $id_utilisateur = $_POST['id_utilisateur'] ?? null;
  $utilisateur = selectAllInfosUtilisateurById($id_utilisateur);
  $_SESSION["data_transferred_from_controller"] = true;
@@ -761,22 +741,27 @@ function resarchAllInfosForUserSession() {
   exit();
 }
 function handleVisionEvenement(){
+   $_SESSION["refresh"] = "handleVisionEvenement";
   $id_evenement = $_POST['id_evenement'] ?? null;
   $evenement = selectAllInfosEvenementById($id_evenement);
+  // var_dump($evenement);
  $_SESSION['evenementSelected'] = $evenement;
+  
   $list_evenements = selectAllEvents();
   
   $_SESSION['list_evenements'] =  $list_evenements;
   $_SESSION["data_transferred_from_controller"] = true;
   $_SESSION["modal"]="visionEvenementAndInscription";
  
-// var_dump($_SESSION);
+ 
 //    var_dump($evenement);
   $_SESSION['action'] = 'lectureInformationsEvenement';
-     locationView('accueil');
+ 
+   locationView('accueil');
    
 }
 function resarchFormulaireUtilisateurForModification(){
+   $_SESSION["refresh"] = "resarchFormulaireUtilisateurForModification";
   $id_utilisateur = $_POST['id_utilisateur'] ?? null;
  $utilisateur = selectAllInfosUtilisateurById($id_utilisateur);
  $_SESSION["data_transferred_from_controller"] = true;
@@ -786,8 +771,15 @@ function resarchFormulaireUtilisateurForModification(){
   locationView('gestion_utilisateurs');
   exit();
 }
+
 // Liste des boutons et fonctions associées
 $actions = [
+    'btnConnexion' => 'handleConnexion',
+    'btnInscription' => 'handleInscription',
+    'btnEnvoiReponsesRecupMotDePasse' => 'handleRecupMotDePasse',
+    'btnRedefinitionMotDePasse' => 'handleRedefinitionMotDePasse',
+    'btnAdminLoginAsUser' => 'handleAdminLoginAsUser',
+    'researchAllEvent' => 'handleResearchAllEvents',
     'btnResearchAllProfilInfosForThisUser' => 'resarchAllInfosForUserSession',
     'btnResearchAllInfosOfAllUsers' => 'handleResearchAllUsers',
     'actionModifierParametresCompte' => 'handleAccountSettingsUpdate',
@@ -799,7 +791,6 @@ $actions = [
     'btnModificationEvenement' => 'handleEventModification',
     'btnSuppressionEvenement' => 'handleEventDeletion',
     'btnDeleteUser' => 'handleUserDeletion',
-    
     'btnGetSectionWithInformationUser' => 'resarchSectionUtilisateurForLecture',
     'btnGetFormulaireModificationUser' => 'resarchFormulaireUtilisateurForModification',
     'researchAllDataForThisEvent' => 'handleEventDatasForThisEvent',
@@ -808,7 +799,7 @@ $actions = [
     
 ];
 
-
+var_dump($_POST);
 // Parcours des boutons attendus pour détecter celui qui a été soumis
 $actionFound = false;
 foreach ($actions as $btnName => $functionName) {
@@ -818,10 +809,35 @@ foreach ($actions as $btnName => $functionName) {
         break; // on arrête dès qu'on a trouvé un bouton cliqué
     }
 }
-
+// var_dump(POST);
+// exit();
+// echo $actionFound;
 if (!$actionFound) {
-    handleDefaultOrAdminFallback();
+   $_SESSION["refresh"] = "accueilDebut";
+    $_SESSION["data_transferred_from_controller"] = true;
+     locationView('accueil');
+    exit();
 }
+
+function redirectAccueil() {
+    $_SESSION["data_transferred_from_controller"] = true;
+    locationView('accueil');
+    exit();
+}
+function includeView($viewName) {
+    include($_SERVER['DOCUMENT_ROOT'] . "/vue/{$viewName}.php");
+}
+
+
+
+ function locationView($viewName) {
+    $path =  "../vue/pages/{$viewName}.php";
+    header("Location: $path");
+    exit();
+}
+// if (!$actionFound) {
+//     redirectAccueil();
+// }
 
 exit();
 

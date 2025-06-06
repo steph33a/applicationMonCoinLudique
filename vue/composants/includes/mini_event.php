@@ -68,20 +68,20 @@
             </div>
         </div>
          <div style="width:320px; display:flex; flex-direction:row; justify-content:flex-end; align-items:center;" class="boutonContainer" style="margin: 0 10px;">
-            <form action="../../controller/controller.php" method="post" class="formActionMiniEvenement">
+            <form action="../../controller/controller.php" method="POST" class="formActionMiniEvenement">
                 <input type="hidden" name="id_evenement" readonly value="<?php echo ($evenementSelected['id_evenement']); ?>">
 
-                <?php if ($page_contexte === 'accueil' || $page_contexte === 'actionEvenement'): ?>
+                <?php if ($page_contexte === 'accueil' || $page_contexte === 'actionEvenement'){ ?>
                     <button
                         type="submit"
                         name="btnVoirEvenement"
                         value="voir_details"
                         class="btnVoirEvenement"
                         style="width:114px; height:40px; background-color:#6EBA46; color:#FFF; font-size:18px; font-weight:600;"
-                    >
+                    class="btnVoirEvenement">
                         Voir
                     </button>
-                <?php elseif ($page_contexte === 'gestion_evenements'): ?>
+                <?php } elseif ($page_contexte === 'gestion_evenements'){ ?>
 
                     <button
                         type="submit"
@@ -92,7 +92,7 @@
                     >
                         Gérer
                     </button>
-                <?php endif; ?>
+                <?php }; ?>
             </form>
         </div>
     </div>
