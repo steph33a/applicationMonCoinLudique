@@ -2,7 +2,17 @@
 include_once 'db.php';
  global $connexion_bd;
 
-
+function inscriptionAtThisEvent($id_evenement,$id_inscrit,$nbInscrits){
+    global $connexion_bd;
+    $requete = "INSERT INTO inscriptions (id_evenement, id_inscrit, nombre_inscrit,date_inscription) VALUES (:id_evenement, :id_inscrit,:nbInscrits,now())";
+    $requetePreparee = $connexion_bd->prepare($requete);
+    $requetePreparee->execute([
+        ':id_evenement' => $id_evenement,
+        ':id_inscrit' => $id_inscrit,
+        
+        ':nbInscrits' => $nbInscrits
+    ]);
+}
 function isValidPassword($password) {
     // Vérifier la longueur du mot de passe (min 8 caractères)
     if (strlen($password) < 8) {
@@ -968,13 +978,19 @@ function insertInBD($datas){
 }
 function selectAllInfosEvenementById($id_evenement){
  global $connexion_bd;
+        
+    $nbInscrits = 0;
   
         // Compter les inscrits pour cet événement
-        $requete = "SELECT COUNT(*) as nbInscrits FROM inscriptions WHERE id_evenement = :id_evenement";
+        $requete = "SELECT  nombre_inscrit as nbInscrits FROM inscriptions I join utilisateurs U on I.id_inscrit = U.id_utilisateur WHERE id_evenement = :id_evenement";
         $requetePreparee = $connexion_bd->prepare($requete);
         $requetePreparee->execute([':id_evenement' => $id_evenement]);
-        $inscriptionData = $requetePreparee->fetch(PDO::FETCH_ASSOC);
-        $nbInscrits =  $inscriptionData['nbInscrits'];
+        $result = $requetePreparee->fetchAll(PDO::FETCH_ASSOC);
+        
+      for ($i = 0; $i < count($result); $i++) {
+          $nbInscrits +=  $result[$i]["nbInscrits"];
+      }
+      
     
             // Récupérer les infos complètes de l'événement + utilisateur
             $requete = "SELECT 
@@ -1016,7 +1032,7 @@ function selectAllInfosEvenementById($id_evenement){
             if ($evenement) {
                 // Ajouter le champ nbInscrits
                 $evenement['nbInscrits'] = $nbInscrits;
-                $resultats[] = $evenement;
+             
                 // var_dump($resultats);
                 if ($evenement['nbInscrits'] > 0) {
                     // Récupérer les inscrits
@@ -1026,16 +1042,20 @@ function selectAllInfosEvenementById($id_evenement){
                         WHERE I.id_evenement = :id_evenement";
                         $requetePreparee = $connexion_bd->prepare($requete);
                         $requetePreparee->execute([':id_evenement' => $id_evenement]);
-                        $inscrits = $requetePreparee->fetchAll;
-                    (PDO::FETCH_ASSOC);
+                        $inscrits = $requetePreparee->fetchAll(PDO::FETCH_ASSOC);
+                    
                         $evenement['inscrits'] = $inscrits;
+
+                }
+                       
                 
                 // var_dump($resultats);
 
             }
+                return $evenement;
         }
-        return $evenement;
-}
+      
+
 function getEvenementsWithAllInfos($evenements)
 {
     global $connexion_bd;

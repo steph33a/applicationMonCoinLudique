@@ -760,6 +760,24 @@ function handleVisionEvenement(){
    locationView('accueil');
    
 }
+function handleEventInscription(){
+   $_SESSION["refresh"] = "handleEventInscription";
+  $id_evenement = $_POST['id_evenement'] ?? null;
+  $id_utilisateur = $_SESSION['id_utilisateur'];
+  $nombreInscrits = $_POST['nbInscrits'] ?? null;
+ inscriptionAtThisEvent($id_evenement,$id_utilisateur,$nombreInscrits);
+  // var_dump($evenement);
+  $list_evenements = selectAllEvents();
+  
+  $_SESSION['list_evenements'] =  $list_evenements;
+  $_SESSION["data_transferred_from_controller"] = true;
+  $_SESSION["modal"]="visionEvenementAndInscription";
+ 
+//    var_dump($evenement);
+  $_SESSION['action'] = 'inscriptionEvenement';
+ 
+   locationView('accueil');
+}
 function resarchFormulaireUtilisateurForModification(){
    $_SESSION["refresh"] = "resarchFormulaireUtilisateurForModification";
   $id_utilisateur = $_POST['id_utilisateur'] ?? null;
@@ -796,10 +814,11 @@ $actions = [
     'researchAllDataForThisEvent' => 'handleEventDatasForThisEvent',
     'actionAdminModifierParametresCompteUtilisateur' => 'actionAdminModifierParametresCompteUtilisateur',
     'btnVoirEvenement' => 'handleVisionEvenement',
+    'btninscriptionEvent' => 'handleEventInscription',
     
 ];
 
-var_dump($_POST);
+// var_dump($_POST);
 // Parcours des boutons attendus pour détecter celui qui a été soumis
 $actionFound = false;
 foreach ($actions as $btnName => $functionName) {

@@ -751,7 +751,7 @@ input.url2 {
   border-radius: 10px;
   position: relative;
   z-index: 901;
-  max-width: 600px;
+  max-width: 700px;
   width: 100%;
   max-height: 90vh; 
   overflow-y: auto;
@@ -897,70 +897,6 @@ h3 {
   color: #333;
 }
 
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1.2rem;
-  background-color: #fff;
-  padding: 2rem;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
-}
-
-form label {
-  font-weight: 600;
-  font-size: 1rem;
-  color: #000000;
-}
-
-form input[type="text"],
-form input[type="email"],
-form input[type="password"] {
-  height: 40px;
-  padding: 0 1rem;
-  border: 1px solid #4C4C4C;
-  border-radius: 5px;
-  background-color: #ffffff;
-  font-size: 1rem;
-}
-
-form input::placeholder {
-  color: #aaa;
-}
-
-input.jeuPrefereUser,
-input.chanteurPrefereUser {
-  width: 100%;
-}
-
-form btn,
-form button,
-input[type="submit"],
-button[type="submit"] {
-  background-color: #6EBA46;
-  color: #fff;
-  font-size: 1.1rem;
-  font-weight: 700;
-  padding: 10px 16px;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  width: fit-content;
-  align-self: flex-end;
-  transition: background-color 0.2s;
-}
-
-form btn:hover,
-form button:hover,
-input[type="submit"]:hover {
-  background-color: #5aa53a;
-}
-
-form btn:active,
-form button:active,
-input[type="submit"]:active {
-  background-color: #4C4C4C;
-}
 div .miniEventToActionsContent {
   
 background-color:transparent;
@@ -1055,3 +991,273 @@ body {
 /* #actions_evenement .btn:hover {
     background-color: #0056b3;
 }  */
+
+.event-card #separationColonne {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+#modalFormVisionEvenementAndInscription .event-card {
+    width: 620px;
+    background-color: #F8F3EB;
+    opacity: 0.7;
+    border: 1px solid #704405;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap:30px;
+    padding: 20px;
+    margin: 20px auto;
+    border-radius: 20px;
+}
+
+#eventSelected .left-column {
+    width: 190px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+#eventSelected .photo-label {
+    margin-top: 0px;
+    cursor: pointer;
+    display: inline-block;
+}
+
+#eventSelected .photo-container,
+#eventSelected .photoProfil-container {
+    position: relative;
+}
+
+#eventSelected .photoEvent,
+#eventSelected .photoProfil {
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    object-fit: cover;
+}
+
+#eventSelected .right-column {
+    width: 345px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+#eventSelected .host-section {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#eventSelected .host-info h3,
+#eventSelected .host-info h4 {
+    margin: 0;
+}
+
+
+
+#eventSelected .info-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 305px;
+    margin: 5px 0;
+}
+
+#eventSelected .info-label {
+    font-weight: bold;
+}
+
+#eventSelected .info-value {
+    text-align: right;
+}
+
+#eventSelected .boutonContainer {
+    width: 320px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    margin: 0 10px;
+}
+
+#eventSelected .formActionInscription {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+    padding: 0rem;
+    border-radius: 0px;
+    box-shadow: 0 0 0px rgba(0, 0, 0, 0.05);
+}
+
+#eventSelected .btn-inscription {
+    width: 114px;
+    height: 40px;
+    background-color: #6EBA46;
+    color: #FFF;
+    font-size: 18px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+}
+#eventSelected .partie2{
+    display: block;
+  
+    width: 100%;
+    
+}
+#eventSelected .partieEventInfos{
+    display:block;
+   
+    width: 90%;
+    
+    
+}
+#eventSelected .event-info {
+  width:300px;
+    margin-left: auto;
+    font-size: 16px;
+    font-weight: 600;
+    font-family: 'Nunito Sans', sans-serif;
+}
+
+
+
+
+.formActionInscription {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    font-family: 'Nunito Sans', sans-serif;
+}
+
+/* Conteneur ligne label + input */
+.inputRow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.formActionInscription label {
+    font-weight: 600;
+    font-size: 16px;
+    color: #333;
+    white-space: nowrap;
+}
+
+.formActionInscription input[type="number"] {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    width: 100%;
+    max-width: 100px;
+}
+
+.formActionInscription input[type="number"]:disabled {
+    background-color: #f0f0f0;
+    cursor: not-allowed;
+}
+#eventSelected .btn-inscription {
+    width: 114px;
+    height: 40px;
+    background-color: #6EBA46;
+    color: #FFF;
+    font-size: 18px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    
+    display: block;
+    margin: 10px auto 0 auto; /* espace au-dessus et centrage horizontal */
+}
+
+
+.btn-inscription:hover:not([disabled]) {
+    background-color: #45a049;
+}
+
+.btn-inscription[disabled] {
+    background-color: #ccc;
+    cursor: not-allowed;
+    opacity: 0.8;
+}
+
+#eventSelected .formActionInscription {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centre horizontalement tous les enfants, dont le bouton */
+    background-color:transparent;
+}
+
+
+
+.modal form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  background-color: #fff;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+.modal form label {
+  font-weight: 600;
+  font-size: 1rem;
+  color: #000000;
+}
+
+.modal form input[type="text"],
+.modal form input[type="email"],
+.modal form input[type="password"] {
+  height: 40px;
+  padding: 0 1rem;
+  border: 1px solid #4C4C4C;
+  border-radius: 5px;
+  background-color: #ffffff;
+  font-size: 1rem;
+}
+
+.modal form input::placeholder {
+  color: #aaa;
+}
+
+.modal input.jeuPrefereUser,
+.modal input.chanteurPrefereUser {
+  width: 100%;
+}
+
+.modal form btn,
+.modal form button,
+.modal input[type="submit"],
+.modal button[type="submit"] {
+  background-color: #6EBA46;
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 700;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  width: fit-content;
+  align-self: flex-end;
+  transition: background-color 0.2s;
+}
+
+.modal form btn:hover,
+.modal form button:hover,
+.modal input[type="submit"]:hover {
+  background-color: #5aa53a;
+}
+
+.modal form btn:active,
+.modal form button:active,
+.modal input[type="submit"]:active {
+  background-color: #4C4C4C;
+}
