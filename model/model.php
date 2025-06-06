@@ -1036,7 +1036,7 @@ function selectAllInfosEvenementById($id_evenement){
                 // var_dump($resultats);
                 if ($evenement['nbInscrits'] > 0) {
                     // Récupérer les inscrits
-                $requete = "SELECT U.id_utilisateur, U.pseudo, U.prenom_utilisateur, U.nom_utilisateur
+                $requete = "SELECT I.id_inscrit, U.pseudo, U.prenom_utilisateur, U.nom_utilisateur
                         FROM inscriptions I
                         JOIN utilisateurs U ON I.id_inscrit = U.id_utilisateur
                         WHERE I.id_evenement = :id_evenement";
@@ -1054,7 +1054,12 @@ function selectAllInfosEvenementById($id_evenement){
             }
                 return $evenement;
         }
-      
+function  desinscriptionAtThisEvent($id_evenement,$id_inscrit){
+    global $connexion_bd;
+    $requete = "DELETE FROM inscriptions WHERE id_evenement = :id_evenement AND id_inscrit = :id_inscrit";
+    $requetePreparee = $connexion_bd->prepare($requete);
+    $requetePreparee->execute([':id_evenement' => $id_evenement, ':id_inscrit' => $id_inscrit]);
+}
 
 function getEvenementsWithAllInfos($evenements)
 {

@@ -205,6 +205,10 @@ require ($_SERVER['DOCUMENT_ROOT'].'/model/model.php');
   
  
   function handleAdminLoginAsUser(){
+       if (!isset($_SESSION['id_utilisateur'])) {
+        
+        exit();
+    }
     $_SESSION["refresh"] = "handleAdminLoginAsUser";
     if ($_SESSION['role'] === 'admin') {
        $_SESSION['role'] = 'particulier';
@@ -256,6 +260,7 @@ require ($_SERVER['DOCUMENT_ROOT'].'/model/model.php');
   
 
 function handleResearchAllUsers() {
+
   $_SESSION["refresh"] = "handleResearchAllUsers";
     if (!isset($_SESSION['id_utilisateur'])) {
         
@@ -284,11 +289,7 @@ function handleResearchAllUsers() {
 
    function handleResearchAllEvents() {
 
-    if (!isset($_SESSION['id_utilisateur'])) {
-        $_SESSION['phraseEchec'] = "Vous devez être connecté pour accéder aux événements.";
-        locationView('accueil');
-        exit();
-    }
+  
 
     $events = selectAllEvents();
     if (!$events || empty($events)) {
@@ -301,13 +302,19 @@ function handleResearchAllUsers() {
     $_SESSION["refresh"] = "handleResearchAllEvents";
 
     $pageContexte = $_POST['page_contexte'] ?? 'accueil';
-
+  
     if ($pageContexte === "gestion_evenements") {
+       if ((!isset($_SESSION['id_utilisateur'])) && ((!isset($_SESSION['role']) || $_SESSION['role'] != 'admin'))){
+         locationView('accueil');
+        exit();
+    } else{
         locationView('gestion_evenements');
+    }
+        
     } else {
+       
+
         locationView('accueil');
-
-
     }
     
 }
@@ -430,7 +437,7 @@ function handleEventCreation() {
 function handleEventActionView() {
    $_SESSION["refresh"] = "handleEventActionView";
     if (!isset($_SESSION['id_utilisateur'])) {
-        handleLoginAndRegistration();
+        locationView('accueil');
         exit();
     }
 
@@ -460,7 +467,7 @@ function handleEventActionView() {
 function handleEventModification() {
    $_SESSION["refresh"] = "handleEventModification";
   if (!isset($_SESSION['id_utilisateur'])) {
-        
+        locationView('accueil');
         exit();
     }
 
@@ -531,6 +538,10 @@ $result = allChampsNecessaryPresents($_POST, 'modificationEvenement');
 }
 
 function handleEventDeletion() {
+  if (!isset($_SESSION['id_utilisateur'])) {
+        locationView('accueil');
+        exit();
+    }
    $_SESSION["refresh"] = "handleEventDeletion";
   $id_evenement = $_POST['id_evenement'] ?? null;
     if (!$id_evenement) {
@@ -568,11 +579,13 @@ function handleUserDeletion() {
  $_SESSION["refresh"] = "handleUserDeletion";
     // Idem pour la suppression, gérer la suppression d'un utilisateur ici
     $id_utilisateur = $_POST['id_utilisateur'] ?? null;
-    if (!$id_utilisateur) {
+    
+    if ((!$id_utilisateur) && $_SESSION["role"] != 'admin') {
         // echo "Utilisateur non spécifié";
-        locationView('gestion_utilisateurs');
+        locationView('accueil');
         exit();
     }
+    
     deletePasswordRecupByUser($id_utilisateur);
     deleteAllIscriptionsByUser($id_utilisateur); 
     deleteAllEventsByOrganisateur($id_utilisateur);
@@ -585,9 +598,14 @@ function handleUserDeletion() {
 
 
 function handleEventDatasForThisEvent(){
+  if (!isset($_SESSION['id_utilisateur'])) {
+        locationView('accueil');
+        exit();
+    }
    $_SESSION["refresh"] = "handleEventDatasForThisEvent";
     $id_evenement = $_POST['id_evenement'] ?? null;
     $id_organisateur = $_SESSION['id_utilisateur'];
+
     if (!$id_evenement) {
         // echo "Événement non spécifié";
         locationView('actions_evenement');
@@ -607,12 +625,13 @@ function handleEventDatasForThisEvent(){
 }
 
 
- 
+
 
 function actionAdminModifierParametresCompteUtilisateur() {
    $_SESSION["refresh"] = "actionAdminModifierParametresCompteUtilisateur";
-if (!isset($_SESSION['id_utilisateur'])) {
-        
+   if ((!$id_utilisateur) && $_SESSION["role"] != 'admin') {
+        // echo "Utilisateur non spécifié";
+        locationView('accueil');
         exit();
     }
      $_SESSION['action'] = 'modificationInformationsUtilisateur';
@@ -709,11 +728,13 @@ function handleAccountSettingsUpdate() {
     exit();
 }
 function resarchAllInfosForUserSession() {
-   $_SESSION["refresh"] = "resarchAllInfosForUserSession";
-    if (!isset($_SESSION['id_utilisateur'])) {
-        
+     if ((!$id_utilisateur)) {
+        // echo "Utilisateur non spécifié";
+        locationView('accueil');
         exit();
     }
+   $_SESSION["refresh"] = "resarchAllInfosForUserSession";
+ 
     $id_utilisateur = $_SESSION['id_utilisateur'];
     $utilisateur = selectAllInfosUtilisateurById($id_utilisateur);
     $_SESSION['utilisateur'] = $utilisateur;
@@ -730,6 +751,11 @@ function resarchAllInfosForUserSession() {
 }
 
  function resarchSectionUtilisateurForLecture(){
+     if ((!$id_utilisateur) && $_SESSION["role"] != 'admin') {
+        // echo "Utilisateur non spécifié";
+        locationView('accueil');
+        exit();
+    }
    $_SESSION["refresh"] = "resarchSectionUtilisateurForLecture";
   $id_utilisateur = $_POST['id_utilisateur'] ?? null;
  $utilisateur = selectAllInfosUtilisateurById($id_utilisateur);
@@ -760,7 +786,34 @@ function handleVisionEvenement(){
    locationView('accueil');
    
 }
+function handleEventDesinscription(){
+     if ((!$id_utilisateur) ) {
+        // echo "Utilisateur non spécifié";
+        locationView('accueil');
+        exit();
+    }
+   $_SESSION["refresh"] = "handleEventDesinscription";
+  $id_evenement = $_POST['id_evenement'] ?? null;
+  $id_utilisateur = $_SESSION['id_utilisateur'];
+  desinscriptionAtThisEvent($id_evenement,$id_utilisateur);
+  // var_dump($evenement);
+  $list_evenements = selectAllEvents();
+  
+  $_SESSION['list_evenements'] =  $list_evenements;
+  $_SESSION["data_transferred_from_controller"] = true;
+  $_SESSION["modal"]="visionEvenementAndInscription";
+ 
+//    var_dump($evenement);
+  $_SESSION['action'] = 'desinscriptionEvenement';
+ 
+   locationView('accueil');
+}
 function handleEventInscription(){
+     if ((!$id_utilisateur)) {
+        // echo "Utilisateur non spécifié";
+        locationView('accueil');
+        exit();
+    }
    $_SESSION["refresh"] = "handleEventInscription";
   $id_evenement = $_POST['id_evenement'] ?? null;
   $id_utilisateur = $_SESSION['id_utilisateur'];
@@ -779,6 +832,11 @@ function handleEventInscription(){
    locationView('accueil');
 }
 function resarchFormulaireUtilisateurForModification(){
+     if ((!$id_utilisateur) && $_SESSION["role"] != 'admin') {
+        // echo "Utilisateur non spécifié";
+        locationView('accueil');
+        exit();
+    }
    $_SESSION["refresh"] = "resarchFormulaireUtilisateurForModification";
   $id_utilisateur = $_POST['id_utilisateur'] ?? null;
  $utilisateur = selectAllInfosUtilisateurById($id_utilisateur);
@@ -789,7 +847,47 @@ function resarchFormulaireUtilisateurForModification(){
   locationView('gestion_utilisateurs');
   exit();
 }
+function handleRefreshAllEvents(){
+ 
+  // var_dump($evenement);
+  $list_evenements = selectAllEvents();
+     if (!$events || empty($events)) {
+        $events = ["pas d'evenement"];
+    }
+  $_SESSION['list_evenements'] =  $list_evenements;
+  $_SESSION["data_transferred_from_controller"] = true;
+  
+ $id_evenementSelected = $_POST['id_evenementParticulier'] ?? null;
+  if (isset($id_evenementSelected)&&($id_evenementSelected=="")) {
+    unset($id_evenementSelected);
+  }
+   if (isset($id_evenementSelected)) {
+    
 
+  $evenement = selectAllInfosEvenementById($id_evenementSelected);
+      // echo "Événement non spécifique";
+      $_SESSION['evenementSelected'] = $evenement;
+   $_SESSION["modal"]="visionEvenementAndInscription";
+    $_SESSION["refresh"] = "refreshAllEventsAndEventSpecial";
+  } else {
+    unset ($_SESSION['evenementSelected']);
+    $_SESSION["modal"]="";
+       $_SESSION["refresh"] = "refreshAllEventsButNotEventSpecial";
+  }
+//    var_dump($evenement);
+  $_SESSION['action'] = 'lectureInformationsEvenement';
+ 
+  
+    $pageContexte = $_POST['page_contexte'] ?? 'accueil';
+
+    if ($pageContexte === "gestion_evenements") {
+        locationView('gestion_evenements');
+    } else {
+        locationView('accueil');
+
+
+    }
+}
 // Liste des boutons et fonctions associées
 $actions = [
     'btnConnexion' => 'handleConnexion',
@@ -815,6 +913,10 @@ $actions = [
     'actionAdminModifierParametresCompteUtilisateur' => 'actionAdminModifierParametresCompteUtilisateur',
     'btnVoirEvenement' => 'handleVisionEvenement',
     'btninscriptionEvent' => 'handleEventInscription',
+    'btnDesinscriptionEvent'=>"handleEventDesinscription",
+    'refreshAllEvents'=>"handleRefreshAllEvents",
+
+
     
 ];
 
@@ -833,6 +935,7 @@ foreach ($actions as $btnName => $functionName) {
 // echo $actionFound;
 if (!$actionFound) {
    $_SESSION["refresh"] = "accueilDebut";
+   $_SESSION["modal"] = "";
     $_SESSION["data_transferred_from_controller"] = true;
      locationView('accueil');
     exit();

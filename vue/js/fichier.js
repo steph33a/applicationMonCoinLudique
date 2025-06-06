@@ -928,6 +928,9 @@ function ouvrirModal(idModal) {
   fermerTousLesModals();
   document.getElementById("globalOverlay").classList.remove("displayNone");
   const modal = document.getElementById(idModal);
+//   modal.addEventListener('hidden.bs.modal', function () {
+//     document.getElementById('monChamp').value = '';
+// });
   if (modal) {
     modal.classList.remove("displayNone");
   }
@@ -965,6 +968,9 @@ document.querySelectorAll(".closeModal").forEach(el =>
 const globalOverlay = document.getElementById("globalOverlay");
 if (globalOverlay) {
   globalOverlay.addEventListener("click", () => fermerTousLesModals());
+
+   document.getElementById('id_evenementParticulier').value = '';
+
 }
 
 // Ne pas fermer si clic à l'intérieur de la modale
@@ -1112,6 +1118,7 @@ console.log("modalElement998",modalToOpen);
     // => "overlay" + "I" + "nscription" = "overlayInscription"
     switch (modalToOpen) {
       case "inscription":
+
         
         ouvrirModal("modalFormInscription");
         break;
@@ -1125,6 +1132,8 @@ console.log("modalElement998",modalToOpen);
         ouvrirModal("modalFormGestionUtilisateurInformationsUtilisateur");
         break;
       case "visionEvenementAndInscription":
+       
+        
         ouvrirModal("modalFormVisionEvenementAndInscription");
         break;
       
@@ -1166,30 +1175,10 @@ function afficherFormulaireModificationEvenement() {
         div.scrollIntoView({ behavior: 'smooth' });
     }
 }
-// function getUrlParameter(name) {
-//   name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
-//   const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
-//   const results = regex.exec(window.location.search);
-//   return results === null ? null : decodeURIComponent(results[1].replace(/\+/g, ' '));
-// }
 
-// window.addEventListener('load', () => {
-//   const refreshParam = getUrlParameter('refresh');
-//   const form = document.getElementById('autoSubmitForm');
-
-//   if (form && refreshParam !== '1') {
-//     // On ajoute refresh=1 dans l'URL de l'action pour éviter la boucle
-//     const url = new URL(form.action, window.location.origin);
-//     url.searchParams.set('refresh', '1');
-//     form.action = url.toString();
-
-//     form.submit();
-//   }
-// });
- 
-//  window.addEventListener('DOMContentLoaded', () => {
-//      document.getElementById('autoSubmitForm').submit();
-//   });
+   window.addEventListener('DOMContentLoaded', () => {
+     document.getElementById('autoSubmitForm').submit();
+ });
 
 // // Dans la fonction fichier.js
 // function attacherEcouteurs(idFormulaire,tableauInputIndispensable) {

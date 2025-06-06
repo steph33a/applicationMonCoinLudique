@@ -39,7 +39,7 @@ if (!isset($_SESSION['list_evenements']) || ($_SESSION['list_evenements']==null)
 if (isset($_SESSION['evenementSelected']))
 {
     $evenementSelectedSpecial = $_SESSION['evenementSelected'];
-    unset($_SESSION['evenementSelected']);
+    
     $refreshConditions=false;
     // var_dump($evenementSelected);
 }
@@ -47,6 +47,7 @@ if (isset($_SESSION['evenementSelected']))
 // alors on vide la session pour éviter de stocker inutilement
 if ((!$actionEnCours)&&((!isset($_SESSION["data_transferred_from_controller"]))||(isset($_SESSION["data_transferred_from_controller"])&& $_SESSION["data_transferred_from_controller"] === false))) {
     $list_evenements = [];
+    unset($_SESSION['evenementSelected']);
 
     unset($_SESSION['list_evenements']);
      $refreshConditions=true;
@@ -70,19 +71,7 @@ include('../composants/includes/header.php');
 
 <main style="display:flex; flex-direction:column;gap:20px; width:100%; justify-content:center; align-items:center">
     <div style="display:flex;min_height:337px; position:relative; " id="mainAccueil" class="accueil mainWithoutModal">
-      <?php  if ($refreshConditions) { ; ?>
-        <div id="formulaire_invisible">
-            <form id="autoSubmitForm" action="../../controller/controller.php" method="post" style="display:none;">
-                <!-- Tu peux ajouter des champs cachés ici -->
-                <input type="hidden" name="page_contexte" value="accueil">
-                <input type="hidden" name="refresh" value="done">
-            
-                <input type="hidden" name="researchAllEvent" value="researchAllEvent"><!-- Exemple d'action -->
-            </form>
-        </div>
-        <?php 
-        } 
-    ?>
+      
    
         <div class="overlay displayNone" id="globalOverlay">
             <!-- Modal INSCRIPTION -->
@@ -189,6 +178,21 @@ include('../composants/includes/header.php');
     </div>
         
 </main>
+<?php  if ($refreshConditions) { ; ?>
+        <div id="formulaire_invisible">
+            <form id="autoSubmitForm" action="../../controller/controller.php" method="post" style="display:none;">
+                <!-- Tu peux ajouter des champs cachés ici -->
+                
+                <input id="id_evenementParticulier" type="hidden" name="id_evenementParticulier" value="<?php echo $evenementSelectedSpecial['id_evenement']; ?>">
+                <input type="hidden" name="page_contexte" value="accueil">
+                <input type="hidden" name="refresh" value="done">
+            
+                <input type="hidden" name="refreshAllEvents" value="researchAllEvent"><!-- Exemple d'action -->
+            </form>
+        </div>
+        <?php 
+        } 
+    ?>
 
 <?php  include('../composants/includes/footer.php'); ?>
  

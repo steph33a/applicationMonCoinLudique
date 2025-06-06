@@ -122,6 +122,22 @@
         </div>
     </div>
     <div class="partie4">
+        <?php $estInscrit = false;
+        if (!empty($evenementSelectedSpecial['inscrits'])) {
+            foreach ($evenementSelectedSpecial['inscrits'] as $inscrit) {
+    if ($inscrit['id_inscrit'] == $_SESSION['id_utilisateur']) {
+        $estInscrit = true;
+        break;
+    }
+}
+        }
+
+ if ($estInscrit) {  ?>
+        <div class="boutonContainer">
+            <p>Vous vous être deja inscrit</button>
+        </div>
+        <?php
+  } ?>
 
         <div class="boutonContainer">
             <form action="../../controller/controller.php" method="post" class="formActionInscription">
@@ -136,11 +152,25 @@
                 <?php if (isset($_SESSION['id_utilisateur'])): ?>
                     <input type="hidden" name="id_utilisateur" value="<?php echo $_SESSION['id_utilisateur']; ?>">
                 <?php endif; ?>
+                <?php if ((!isset($estInscrit))||($estInscrit==false)){ ?>
 
                 <button type="submit" name="btninscriptionEvent" class="btn-inscription"
-                    <?php if (!isset($_SESSION['id_utilisateur'])) echo 'disabled title="Connectez-vous pour vous inscrire"'; ?>>
-                    S'inscrire
+                    <?php 
+                        if (!isset($_SESSION['id_utilisateur'])) {
+                            echo 'disabled title="Connectez-vous pour vous inscrire"';
+                        } 
+                         else {
+                            echo '';
+                        }
+                    ?>>
+                  s'inscrire
                 </button>
+                <?php } else {?>
+                <button type="submit" name="btnDesinscriptionEvent" class="btn-desinscription"
+                    <?php if (isset($_SESSION['id_utilisateur'])&&($estInscrit))?>>
+                    Se desinscrire
+                </button>
+                <?php } ?>
             </form>
         </div>
      
